@@ -116,9 +116,9 @@ void SetTimeAndPosition(unsigned char ID, short data, unsigned short stime){
     TxData[6] = 0x01;           // Count
                                 // Data
     TxData[7] = (unsigned char)0x00FF & data;           // Low byte
-    TxData[8] = (unsigned char)0x00FF & (data >> 8);    // Hi  byte
+    TxData[8] = (unsigned char)0xFF00 & (data >> 8);    // Hi  byte
     TxData[9] = (unsigned char)0x00FF & stime;           // Low byte
-    TxData[10] = (unsigned char)0x00FF * (stime >> 8);   // Hi  byte
+    TxData[10] = (unsigned char)0xFF00 & (stime >> 8);   // Hi  byte
     
     // CheckSum calculation
     CheckSum = TxData[2];
@@ -130,7 +130,7 @@ void SetTimeAndPosition(unsigned char ID, short data, unsigned short stime){
     // Send Packet
     REDE = 1;                   // Transmit Enable
     for(int i=0; i<12; i++){
-        device.putc(data[i]);
+        device.putc(TxData[i]);
     }
     wait_us(250);               // Wait for transmission
     REDE = 0;                   // Transmitt disable
@@ -152,10 +152,5 @@ int main() {
         wait(1);                // wait (1sec)
         SetPosition(0x01,-300);// ID = 1(0x01) , GoalPosition = -30.0deg(-300) 
         wait(1);                // wait (1sec)
-
-        SetTimeAndPosition(0x01, 500, 35);
-	wait(1);
-	SetTimeAndPosition(0x01, -500, 35);
-	wait(1);
     }
 }
