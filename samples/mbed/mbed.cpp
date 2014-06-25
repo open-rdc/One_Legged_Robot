@@ -192,9 +192,9 @@ int main() {
         }
         
         //send servo
-        SetPosition(0x01,300); // ID = 1(0x01) , GoalPosition = 30.0deg(300)
+        SetPosition(0x01,(short)split_data[0]); // ID = 1(0x01) , GoalPosition = 30.0deg(300)
         wait(1);                // wait (1sec)
-        SetPosition(0x01,-300);// ID = 1(0x01) , GoalPosition = -30.0deg(-300) 
+        SetPosition(0x01,(short)split_data[2]);// ID = 1(0x01) , GoalPosition = -30.0deg(-300) 
         wait(1);                // wait (1sec)
         
         //get pulses
