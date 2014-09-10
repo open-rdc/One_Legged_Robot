@@ -8,13 +8,11 @@
 
 #include "mbed.h"
 #include "QEI.h"
-Serial device(p9, p10);         // tx = P9, rx = P10
+
+Serial device(p13, p14);        // tx = P9, rx = P10
 DigitalOut REDE(p11);           // RS485 Transmit Enable
 QEI enc(p7, p8, NC, 624);       // encoder pin
-Serial pc(USBTX, USBRX);        // USB serial
-
-#define NUM_DATA 4
-#define LEN_DATA 20
+Serial pc(USBTX, USBRX);        // USB port
 
 /*--------------------------------------------------*/
 /* Funcyion     : mbed initialize                   */
@@ -140,64 +138,61 @@ void SetTimeAndPosition(unsigned char ID, short data, unsigned short stime){
         device.putc(TxData[i]);
     }
     wait_us(250);               // Wait for transmission
-    REDE = 0;                   // Transmitt disable
-}
+    REDE = 0;
+}                
 
 /*--------------------------------------------------*/
-/* Function     : Return buffer                     */
-/* NAME         : ReturnBuffer                      */
-/* Argument     : buffer                            */
-/* Return value : buffer                            */
+/* Function     : Read serial port character        */ 
+/* NAME         : ReadSerial                        */
+/* Argument     : ---                               */ 
+/* Return value : send(servo angle or servo time)   */
 /*--------------------------------------------------*/
-char *ReturnBuffer(char buffer[20]){
-    return buffer;
-}
-
-/*--------------------------------------------------*/
-/* Function     : Receive                           */
-/* NAME         : Receive                           */
-/* Argument     : ---                               */
-/* Return value : ReturnBuffer                      */
-/*--------------------------------------------------*/
-char *Receive(){
+int ReadSerial()
+{
     char buffer[20];
-    if(pc.readable()){
-        pc.scanf("%s", &buffer);
+    int i=0;
+    while(1)
+    {
+        buffer[i] = pc.getc();
+        if(buffer[i] == ',')
+        {
+            buffer[i] = NULL;
+            break;
+        }
+        i++;
     }
-    return ReturnBuffer(buffer);
+    
+    char *send_char = NULL;
+    send_char = &(buffer[0]);
+    int send = atoi(send_char);
+    
+    return send;
 }
-
-/*--------------------------------------------------*/
-/* Function     : main program                      */ 
-/* NAME         : main                              */
-/* Argument     : ---                               */
-/* Return value : ---                               */
-/*--------------------------------------------------*/
+    
 int main() {
     Init();                     // initialize
     Torque(0x01, 0x01);         // ID = 1(0x01) , torque = OFF (0x00)
-                                // torque = OFF(0x00), ON(0x01), BRAKE(0x02)
-    char buffer[20];
-    char split_data[NUM_DATA][LEN_DATA];
-    char *token = ",";                            
-    
-    wait(1);                    // wait (1sec)
-    while(1){
-        strcpy(buffer, Receive());
-        //split
-        strcpy(split_data[0], strtok(buffer, token));
-        for (int i = 1;  i < NUM_DATA; i++) {
-            strcpy(split_data[i], strtok(NULL, token));
-            //pc.printf("%s\n", split_data[i]);
-        }
+    Torque(0x02, 0x01);
+ 
+    while(1)
+    {
+        int servo1_angle = ReadSerial(); // get character(servo1 angle)
+        int servo1_time = ReadSerial();  // get character(servo1 time)
+        int servo2_angle = ReadSerial(); // get character(servo2 angle) 
+        int servo2_time = ReadSerial();  // get character(servo2 time)
+        int sleep = ReadSerial();        // get character(sleep time)
         
-        //send servo
-        SetPosition(0x01,(short)split_data[0]); // ID = 1(0x01) , GoalPosition = 30.0deg(300)
-        wait(1);                // wait (1sec)
-        SetPosition(0x01,(short)split_data[2]);// ID = 1(0x01) , GoalPosition = -30.0deg(-300) 
-        wait(1);                // wait (1sec)
-        
-        //get pulses
-        pc.printf("%07d\n", enc.getPulses());
+        SetTimeAndPosition(0x01, (short)servo1_angle, (unsigned short)servo1_time);
+        SetTimeAndPosition(0x02, (short)servo2_angle, (unsigned short)servo2_time);
+
+        wait_ms(sleep); // sleep(ms)
+
+        SetPosition(0x01, 0);
+        SetPosition(0x02, 0);
+
+        wait_ms(sleep); // sleep(ms)
+
+        pc.printf("get_enc:");
+        pc.printf("%07d\n", enc.getPulses()); // send to pc of encoder pulse
     }
 }
