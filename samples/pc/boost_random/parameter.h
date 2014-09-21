@@ -1,0 +1,1 @@
+static const int RANDOM_MAX = 20;
