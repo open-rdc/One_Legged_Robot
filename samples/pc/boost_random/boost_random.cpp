@@ -17,16 +17,32 @@ __int64 GetTimeStamp()
 	return diff.total_microseconds();
 }
 
-int main()
+int *initialize(int min, int max)
 {
 	boost::random::mt19937 gen(GetTimeStamp());
-	boost::random::uniform_int_distribution<> dist(0, 90);
+	boost::random::uniform_int_distribution<> dist(min, max);
 
-	int result[20];
+	int result[RANDOM_MAX];
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		result[i] = dist(gen);
+	}
+
+	return result;
+}
+
+int main()
+{
+	int *result;
+
+	result = initialize(-90, 90);
+
+
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
 		std::cout << "result:" << result[i] << std::endl;
 	}
+
+	return 0;
 }
