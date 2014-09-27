@@ -17,31 +17,49 @@ __int64 GetTimeStamp()
 	return diff.total_microseconds();
 }
 
-int *initialize(int min, int max)
+void Random(int min, int max, int *result, size_t n)
 {
 	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
 
-	int result[RANDOM_MAX];
-
-	for(int i=0; i<RANDOM_MAX; i++)
+	for(int i=0; i<RANDOM_MAX/2; i++)
 	{
 		result[i] = dist(gen);
 	}
+}
 
-	return result;
+void Initialize(std::string *gene, size_t n)
+{
+	int angle[RANDOM_MAX/2];
+	int time[RANDOM_MAX/2];
+	//std::string gene[RANDOM_MAX / GENE_LENGTH];
+
+	Random(-90, 90, angle, sizeof(angle) / sizeof(angle[0]));
+	Random(0, 1000, time, sizeof(time) / sizeof(time[0]));
+
+	for(int i=0; i<RANDOM_MAX / GENE_LENGTH; i++)
+	{
+		for(int j=0; j<GENE_LENGTH/2; j++)
+		{
+			gene[i] += std::to_string(angle[i*2 + j]);
+			gene[i] += ",";
+			gene[i] += std::to_string(time[i*2 + j]);
+			gene[i] += ",";
+		}
+		gene[i].erase(gene[i].end() - 1);
+		gene[i] += "\n";
+		std::cout << "gene[" << i << "]:" << gene[i];
+	}
 }
 
 int main()
 {
-	int *result;
+	std::string gene[RANDOM_MAX / GENE_LENGTH];
+	Initialize(gene, sizeof(gene) / sizeof(gene[0]));
 
-	result = initialize(-90, 90);
-
-
-	for(int i=0; i<RANDOM_MAX; i++)
+	for(int i=0; i<RANDOM_MAX / GENE_LENGTH; i++)
 	{
-		std::cout << "result:" << result[i] << std::endl;
+		std::cout << "gene[" << i << "]:" << gene[i];
 	}
 
 	return 0;
