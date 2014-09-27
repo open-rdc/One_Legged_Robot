@@ -32,7 +32,6 @@ void Initialize(std::string *gene, size_t n)
 {
 	int angle[RANDOM_MAX/2];
 	int time[RANDOM_MAX/2];
-	//std::string gene[RANDOM_MAX / GENE_LENGTH];
 
 	Random(-90, 90, angle, sizeof(angle) / sizeof(angle[0]));
 	Random(0, 1000, time, sizeof(time) / sizeof(time[0]));
@@ -48,7 +47,6 @@ void Initialize(std::string *gene, size_t n)
 		}
 		gene[i].erase(gene[i].end() - 1);
 		gene[i] += "\n";
-		std::cout << "gene[" << i << "]:" << gene[i];
 	}
 }
 
