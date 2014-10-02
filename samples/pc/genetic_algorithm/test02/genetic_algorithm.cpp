@@ -28,23 +28,24 @@ void Random(int min, int max, int *result, size_t n)
 	}
 }
 
-void Initialize(std::string *gene, size_t n)
+void Initialize(std::string *gene, int *angle, int *time, size_t n)
 {
-	int angle[RANDOM_MAX/2];
-	int time[RANDOM_MAX/2];
-
 	Random(-90, 90, angle, sizeof(angle) / sizeof(angle[0]));
 	Random(0, 1000, time, sizeof(time) / sizeof(time[0]));
 
-	for(int i=0; i<RANDOM_MAX / GENE_LENGTH; i++)
+	for(int i=0; i<RANDOM_MAX / TOTAL_LENGTH; i++)
 	{
-		for(int j=0; j<GENE_LENGTH/2; j++)
+		for(int j=0; j<SERVO_NUM; j++)
 		{
 			gene[i] += std::to_string(angle[i*2 + j]);
 			gene[i] += ",";
-			gene[i] += std::to_string(time[i*2 + j]);
+		}
+		for(int k=0; k<SERVO_NUM; k++)
+		{
+			gene[i] += std::to_string(time[i*2 + k]);
 			gene[i] += ",";
 		}
+
 		gene[i].erase(gene[i].end() - 1);
 		gene[i] += "\n";
 	}
@@ -52,13 +53,15 @@ void Initialize(std::string *gene, size_t n)
 
 int main()
 {
-	std::string gene[RANDOM_MAX / GENE_LENGTH];
-	Initialize(gene, sizeof(gene) / sizeof(gene[0]));
+	std::string gene[RANDOM_MAX / TOTAL_LENGTH];
+	int angle[RANDOM_MAX/2];
+	int time[RANDOM_MAX/2];
+	Initialize(gene, angle, time, sizeof(gene) / sizeof(gene[0]));
 
-	for(int i=0; i<RANDOM_MAX / GENE_LENGTH; i++)
+	for(int i=0; i<RANDOM_MAX / TOTAL_LENGTH; i++)
 	{
 		std::cout << "gene[" << i << "]:" << gene[i];
 	}
-
+	
 	return 0;
 }
