@@ -13,7 +13,6 @@ serial_port port(io, PORT);
 class Serial
 {
 	boost::array<char, 64> buf;
-	boost::system::error_code err;
 public:
 	Serial();
 	void close();
