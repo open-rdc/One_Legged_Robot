@@ -1,4 +1,5 @@
 #include <iostream>
+#include <bitset>
 #include <boost/random.hpp>
 #include <boost/date_time.hpp>
 #include <boost/date_time/c_local_time_adjustor.hpp>
@@ -67,6 +68,21 @@ void Selection(int angle[RANDOM_MAX], int result[RANDOM_MAX][2])
 	}
 }
 
+int DecimalToBinary(int decimal)
+{
+	return 0;
+}
+
+int BinaryToDecimal(int binary)
+{
+	std::bitset<32> value(binary);
+	std::string decimal_string = value.to_string();
+	int decimal = std::atoi(decimal_string.c_str());
+
+	return decimal;
+}
+
+
 int main()
 {
 	int angle[RANDOM_MAX];
@@ -87,6 +103,8 @@ int main()
 		std::cout << "result_abs:" << result[k][0] << std::endl;
 		std::cout << "result_angle:" << angle[result[k][1]] << std::endl;
 	}
+
+	std::cout << "BinaryFromDecimal:" << BinaryToDecimal(1000) << std::endl;
 
 	return 0;
 }
