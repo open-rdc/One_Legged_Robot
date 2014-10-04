@@ -68,9 +68,13 @@ void Selection(int angle[RANDOM_MAX], int result[RANDOM_MAX][2])
 	}
 }
 
-int DecimalToBinary(int decimal)
+unsigned long DecimalToBinary(int decimal)
 {
-	return 0;
+	std::stringstream decimal_string;
+	decimal_string << decimal;
+	std::bitset<32> value(decimal_string.str());
+
+	return value.to_ulong();
 }
 
 int BinaryToDecimal(int binary)
@@ -104,7 +108,9 @@ int main()
 		std::cout << "result_angle:" << angle[result[k][1]] << std::endl;
 	}
 
-	std::cout << "BinaryFromDecimal:" << BinaryToDecimal(1000) << std::endl;
+	std::cout << "----- Convert -----" << std::endl;
+	std::cout << "BinaryToDecimal:" << BinaryToDecimal(10) << std::endl;
+	std::cout << "DecimalToBinary:" << DecimalToBinary(1010) << std::endl;
 
 	return 0;
 }
