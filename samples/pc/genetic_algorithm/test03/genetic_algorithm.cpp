@@ -80,12 +80,12 @@ int main()
 	{
 		std::cout << "angle[" << i << "]:" << angle[i] << std::endl;
 	}
-	for(int j=0; j<RANDOM_MAX * RANKING_RATE; j++)
+
+	for(int k=0; k<2; k++)
 	{
-		for(int k=0; k<2; k++)
-		{
-			std::cout << "result[" << j << "][" << k << "]:" << result[j][k] << std::endl;
-		}
+		std::cout << "---- No." << k+1 << " -----" << std::endl;
+		std::cout << "result_abs:" << result[k][0] << std::endl;
+		std::cout << "result_angle:" << angle[result[k][1]] << std::endl;
 	}
 
 	return 0;
