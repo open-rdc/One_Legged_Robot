@@ -106,11 +106,8 @@ int main()
 		std::cout << "---- No." << k+1 << " -----" << std::endl;
 		std::cout << "result_abs:" << result[k][0] << std::endl;
 		std::cout << "result_angle:" << angle[result[k][1]] << std::endl;
+		std::cout << "convert_result_angle:" << BinaryToDecimal(angle[result[k][1]]) << std::endl;
 	}
-
-	std::cout << "----- Convert -----" << std::endl;
-	std::cout << "BinaryToDecimal:" << BinaryToDecimal(10) << std::endl;
-	std::cout << "DecimalToBinary:" << DecimalToBinary(1010) << std::endl;
 
 	return 0;
 }
