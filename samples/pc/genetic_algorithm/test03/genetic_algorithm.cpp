@@ -36,7 +36,7 @@ void Initialize(int angle[RANDOM_MAX])
 
 void Selection(int angle[RANDOM_MAX], int result[RANDOM_MAX][2])
 {
-	int temp, min;
+	int temp, angle_temp;
 	int target_abs[RANDOM_MAX][2];
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
@@ -44,21 +44,22 @@ void Selection(int angle[RANDOM_MAX], int result[RANDOM_MAX][2])
 		target_abs[i][1] = i;
 	}
 
-	for(int j=0; j<RANDOM_MAX; j++)
+	for(int j=0; j<RANDOM_MAX-1; j++)
 	{
-		min = j;
 		for(int k=j+1; k<RANDOM_MAX; k++)
 		{
-			if(target_abs[min][0] > target_abs[k][0])
+			if(target_abs[j][0] > target_abs[k][0])
 			{
-				min = k;
+				temp = target_abs[j][0];
+				angle_temp = target_abs[j][1];
+				target_abs[j][0] = target_abs[k][0];
+				target_abs[j][1] = target_abs[k][1];
+				target_abs[k][0] = temp;
+				target_abs[k][1] = angle_temp;
 			}
 		}
-		target_abs[j][1] = target_abs[min][1];
-		temp = target_abs[min][0];
-		target_abs[min][0] = target_abs[j][0];
-		target_abs[j][0] = temp;
 	}
+
 	for(int l=0; l<RANDOM_MAX * RANKING_RATE; l++)
 	{
 		for(int m=0; m<2; m++)
@@ -98,6 +99,7 @@ std::bitset<32> SetMask()
 			bit_counter = 0;
 		}
 	}
+
 	return mask_bit;
 }
 
@@ -105,6 +107,7 @@ void Crossover(std::bitset<32> parent1, std::bitset<32> parent2, std::bitset<32>
 {
 	std::bitset<32> child0 = child[0];
 	std::bitset<32> child1 = child[1];
+
 	for(size_t j=0; j<parent1.size(); j++)
 	{
 		if(mask.test(j) == 0)
@@ -154,5 +157,6 @@ int main()
 
 	std::cout << "child1:" << DecimalToBinary(child[0]) << std::endl;
 	std::cout << "child2:" << DecimalToBinary(child[1]) << std::endl;
+
 	return 0;
 }
