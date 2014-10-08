@@ -18,7 +18,7 @@ __int64 GetTimeStamp()
 	return diff.total_microseconds();
 }
 
-void Random(int min, int max, int *result)
+void Random(int min, int max, int result[RANDOM_MAX])
 {
 	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
@@ -29,7 +29,7 @@ void Random(int min, int max, int *result)
 	}
 }
 
-void Initialize(int *angle)
+void Initialize(int angle[RANDOM_MAX])
 {
 	Random(-90, 90, angle);
 }
@@ -68,24 +68,60 @@ void Selection(int angle[RANDOM_MAX], int result[RANDOM_MAX][2])
 	}
 }
 
-unsigned long DecimalToBinary(int decimal)
+unsigned long DecimalToBinary(std::bitset<32> decimal)
 {
-	std::stringstream decimal_string;
-	decimal_string << decimal;
-	std::bitset<32> value(decimal_string.str());
-
+	std::bitset<32> value(decimal);
+	
 	return value.to_ulong();
 }
 
-int BinaryToDecimal(int binary)
+std::bitset<32> BinaryToDecimal(std::bitset<32> binary)
 {
 	std::bitset<32> value(binary);
-	std::string decimal_string = value.to_string();
-	int decimal = std::atoi(decimal_string.c_str());
 
-	return decimal;
+	return value;
 }
 
+std::bitset<32> SetMask()
+{
+	std::bitset<32> mask_bit;
+	int bit_counter = 0;
+	for(size_t l=0; l<mask_bit.size(); l++)
+	{
+		if(bit_counter == 0)
+		{
+			mask_bit.set(l, 1);
+			bit_counter = 1;
+		}
+		else
+		{
+			bit_counter = 0;
+		}
+	}
+	return mask_bit;
+}
+
+void Crossover(std::bitset<32> parent1, std::bitset<32> parent2, std::bitset<32> mask, std::bitset<32> child[2])
+{
+	std::bitset<32> child0 = child[0];
+	std::bitset<32> child1 = child[1];
+	for(size_t j=0; j<parent1.size(); j++)
+	{
+		if(mask.test(j) == 0)
+		{
+			child0.set(j, parent1.test(j));
+			child1.set(j, parent2.test(j));
+		}
+		else
+		{
+			child0.set(j, parent2.test(j));
+			child1.set(j, parent1.test(j));
+		}
+	}
+
+	child[0] = child0;
+	child[1] = child1;
+}
 
 int main()
 {
@@ -109,5 +145,14 @@ int main()
 		std::cout << "convert_result_angle:" << BinaryToDecimal(angle[result[k][1]]) << std::endl;
 	}
 
+	std::bitset<32> parent1 = BinaryToDecimal(angle[result[0][1]]);
+	std::bitset<32> parent2 = BinaryToDecimal(angle[result[1][1]]);
+	std::bitset<32> child[2];
+	
+	std::cout << "----- Crossover -----" << std::endl;
+	Crossover(parent1, parent2, SetMask(), child);
+
+	std::cout << "child1:" << DecimalToBinary(child[0]) << std::endl;
+	std::cout << "child2:" << DecimalToBinary(child[1]) << std::endl;
 	return 0;
 }
