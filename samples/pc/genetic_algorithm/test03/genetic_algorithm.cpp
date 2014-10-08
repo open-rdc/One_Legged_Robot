@@ -31,13 +31,14 @@ void Random(int min, int max, int result[RANDOM_MAX])
 
 void Initialize(int angle[RANDOM_MAX])
 {
-	Random(-90, 90, angle);
+	Random(0, 180, angle);
 }
 
 void Selection(int angle[RANDOM_MAX], int result[RANDOM_MAX][2])
 {
 	int temp, angle_temp;
 	int target_abs[RANDOM_MAX][2];
+
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		target_abs[i][0] = std::abs(angle[i] - TARGET_VALUE);
@@ -103,33 +104,32 @@ std::bitset<32> SetMask()
 	return mask_bit;
 }
 
-void Crossover(std::bitset<32> parent1, std::bitset<32> parent2, std::bitset<32> mask, std::bitset<32> child[2])
+void Crossover(std::bitset<32> parent1, std::bitset<32> parent2, std::bitset<32> mask, std::bitset<32> child[])
 {
-	std::bitset<32> child0 = child[0];
-	std::bitset<32> child1 = child[1];
-
-	for(size_t j=0; j<parent1.size(); j++)
+	for(int i=0; i<RANDOM_MAX * RANKING_RATE; i+=2)
 	{
-		if(mask.test(j) == 0)
+		for(size_t j=0; j<parent1.size(); j++)
 		{
-			child0.set(j, parent1.test(j));
-			child1.set(j, parent2.test(j));
-		}
-		else
-		{
-			child0.set(j, parent2.test(j));
-			child1.set(j, parent1.test(j));
+			if(mask.test(j) == 0)
+			{
+				child[i].set(j, parent1.test(j));
+				child[i+1].set(j, parent2.test(j));
+			}
+			else
+			{
+				child[i].set(j, parent2.test(j));
+				child[i+1].set(j, parent1.test(j));
+			}
 		}
 	}
-
-	child[0] = child0;
-	child[1] = child1;
 }
 
 int main()
 {
 	int angle[RANDOM_MAX];
 	int result[RANDOM_MAX][2];
+	std::bitset<32> parent[RANDOM_MAX];
+	std::bitset<32> child[RANDOM_MAX];
 	
 	Initialize(angle);
 	
@@ -140,23 +140,22 @@ int main()
 		std::cout << "angle[" << i << "]:" << angle[i] << std::endl;
 	}
 
-	for(int k=0; k<2; k++)
+	for(int j=0; j<INDIVIDUALS_NUMBER; j++)
 	{
-		std::cout << "---- No." << k+1 << " -----" << std::endl;
-		std::cout << "result_abs:" << result[k][0] << std::endl;
-		std::cout << "result_angle:" << angle[result[k][1]] << std::endl;
-		std::cout << "convert_result_angle:" << BinaryToDecimal(angle[result[k][1]]) << std::endl;
+		parent[j] = BinaryToDecimal(angle[result[j][1]]);
+		std::cout << "---- No." << j+1 << " -----" << std::endl;
+		std::cout << "result_abs:" << result[j][0] << std::endl;
+		std::cout << "result_angle:" << angle[result[j][1]] << std::endl;
+		std::cout << "convert_result_angle:" << parent[j] << std::endl;
 	}
-
-	std::bitset<32> parent1 = BinaryToDecimal(angle[result[0][1]]);
-	std::bitset<32> parent2 = BinaryToDecimal(angle[result[1][1]]);
-	std::bitset<32> child[2];
 	
 	std::cout << "----- Crossover -----" << std::endl;
-	Crossover(parent1, parent2, SetMask(), child);
-
-	std::cout << "child1:" << DecimalToBinary(child[0]) << std::endl;
-	std::cout << "child2:" << DecimalToBinary(child[1]) << std::endl;
+	for(int k=0; k<INDIVIDUALS_NUMBER; k+=2)
+	{
+		Crossover(parent[k], parent[k+1], SetMask(), child);
+		std::cout << "child[" << k << "]:" << DecimalToBinary(child[k]) << std::endl;
+		std::cout << "child[" << k+1 << "]:" << DecimalToBinary(child[k+1]) << std::endl;
+	}
 
 	return 0;
 }
