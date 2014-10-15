@@ -5,7 +5,7 @@
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include "parameter.h"
 
-__int64 GetTimeStamp()
+unsigned long long GetTimeStamp()
 {
 	namespace pt = boost::posix_time;
 	namespace gg = boost::gregorian;
