@@ -3,6 +3,8 @@
 #include <boost/random.hpp>
 #include <boost/date_time.hpp>
 #include <boost/date_time/c_local_time_adjustor.hpp>
+#include <boost/chrono.hpp>
+#include <boost/thread.hpp>
 #include "parameter.h"
 
 unsigned long long GetTimeStamp()
@@ -27,6 +29,16 @@ void Random(int min, int max, int result[RANDOM_MAX])
 	{
 		result[i] = dist(gen);
 	}
+}
+
+int Random(int min, int max)
+{
+	boost::random::mt19937 gen(GetTimeStamp());
+	boost::random::uniform_int_distribution<> dist(min, max);
+
+	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
+
+	return dist(gen);
 }
 
 void Initialize(int angle[RANDOM_MAX])
@@ -88,11 +100,12 @@ std::bitset<32> SetMask()
 {
 	std::bitset<32> mask_bit;
 	int bit_counter = 0;
-	for(size_t l=0; l<mask_bit.size(); l++)
+
+	for(size_t i=0; i<mask_bit.size(); i++)
 	{
 		if(bit_counter == 0)
 		{
-			mask_bit.set(l, 1);
+			mask_bit.set(i, 1);
 			bit_counter = 1;
 		}
 		else
@@ -104,10 +117,12 @@ std::bitset<32> SetMask()
 	return mask_bit;
 }
 
-void Crossover(std::bitset<32> parent1, std::bitset<32> parent2, std::bitset<32> mask, std::bitset<32> child[])
+void Crossover(std::bitset<32> parent1, std::bitset<32> parent2, std::bitset<32> child[])
 {
-	for(int i=0; i<RANDOM_MAX * RANKING_RATE; i+=2)
-	{
+	std::bitset<32> mask = SetMask();
+
+	for(int i=0; i<RANDOM_MAX; i+=2)
+	{	
 		for(size_t j=0; j<parent1.size(); j++)
 		{
 			if(mask.test(j) == 0)
@@ -128,6 +143,7 @@ int main()
 {
 	int angle[RANDOM_MAX];
 	int result[RANDOM_MAX][2];
+	int parent_cpy = 0;
 	std::bitset<32> parent[RANDOM_MAX];
 	std::bitset<32> child[RANDOM_MAX];
 	
@@ -137,12 +153,16 @@ int main()
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
-		std::cout << "angle[" << i << "]:" << angle[i] << std::endl;
+		if(parent_cpy == 20)
+		{
+			parent_cpy = 0;
+		}
+		parent[i] = BinaryToDecimal(angle[result[parent_cpy][1]]);
+		parent_cpy += 1;
 	}
 
 	for(int j=0; j<INDIVIDUALS_NUMBER; j++)
 	{
-		parent[j] = BinaryToDecimal(angle[result[j][1]]);
 		std::cout << "---- No." << j+1 << " -----" << std::endl;
 		std::cout << "result_abs:" << result[j][0] << std::endl;
 		std::cout << "result_angle:" << angle[result[j][1]] << std::endl;
@@ -150,9 +170,9 @@ int main()
 	}
 	
 	std::cout << "----- Crossover -----" << std::endl;
-	for(int k=0; k<INDIVIDUALS_NUMBER; k+=2)
+	for(int k=0; k<RANDOM_MAX; k+=2)
 	{
-		Crossover(parent[k], parent[k+1], SetMask(), child);
+		Crossover(parent[k], parent[k+1], child);
 		std::cout << "child[" << k << "]:" << DecimalToBinary(child[k]) << std::endl;
 		std::cout << "child[" << k+1 << "]:" << DecimalToBinary(child[k+1]) << std::endl;
 	}
