@@ -117,23 +117,23 @@ std::bitset<32> SetMask()
 	return mask_bit;
 }
 
-void Crossover(std::bitset<32> parent1, std::bitset<32> parent2, std::bitset<32> child[])
+void Crossover(std::bitset<32> parent[], std::bitset<32> child[])
 {
 	std::bitset<32> mask = SetMask();
 
 	for(int i=0; i<RANDOM_MAX; i+=2)
 	{	
-		for(size_t j=0; j<parent1.size(); j++)
+		for(size_t j=0; j<parent[i].size(); j++)
 		{
 			if(mask.test(j) == 0)
 			{
-				child[i].set(j, parent1.test(j));
-				child[i+1].set(j, parent2.test(j));
+				child[i].set(j, parent[i].test(j));
+				child[i+1].set(j, parent[i+1].test(j));
 			}
 			else
 			{
-				child[i].set(j, parent2.test(j));
-				child[i+1].set(j, parent1.test(j));
+				child[i].set(j, parent[i+1].test(j));
+				child[i+1].set(j, parent[i].test(j));
 			}
 		}
 	}
@@ -170,9 +170,11 @@ int main()
 	}
 	
 	std::cout << "----- Crossover -----" << std::endl;
+
+	Crossover(parent, child);
+
 	for(int k=0; k<RANDOM_MAX; k+=2)
 	{
-		Crossover(parent[k], parent[k+1], child);
 		std::cout << "child[" << k << "]:" << DecimalToBinary(child[k]) << std::endl;
 		std::cout << "child[" << k+1 << "]:" << DecimalToBinary(child[k+1]) << std::endl;
 	}
