@@ -117,12 +117,38 @@ std::bitset<32> SetMask()
 	return mask_bit;
 }
 
+std::bitset<32> SetMaskRandom()
+{
+	std::bitset<32> mask_bit;
+	int bit_counter = 0;
+
+	for(size_t i=0; i<mask_bit.size(); i++)
+	{
+		bit_counter = Random(0, 1);
+
+		if(bit_counter == 0)
+		{
+			mask_bit.set(i, 1);
+		}
+	}
+
+	return mask_bit;
+}
+
 void Crossover(std::bitset<32> parent[], std::bitset<32> child[])
 {
 	std::bitset<32> mask = SetMask();
+	int counter = 0;
 
 	for(int i=0; i<RANDOM_MAX; i+=2)
 	{	
+		counter += 2;
+		if(counter == INDIVIDUALS_NUMBER)
+		{
+			mask = SetMaskRandom();
+			counter = 0;
+		}
+
 		for(size_t j=0; j<parent[i].size(); j++)
 		{
 			if(mask.test(j) == 0)
@@ -153,7 +179,7 @@ int main()
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
-		if(parent_cpy == 20)
+		if(parent_cpy == INDIVIDUALS_NUMBER)
 		{
 			parent_cpy = 0;
 		}
@@ -173,10 +199,9 @@ int main()
 
 	Crossover(parent, child);
 
-	for(int k=0; k<RANDOM_MAX; k+=2)
+	for(int k=0; k<RANDOM_MAX; k++)
 	{
 		std::cout << "child[" << k << "]:" << DecimalToBinary(child[k]) << std::endl;
-		std::cout << "child[" << k+1 << "]:" << DecimalToBinary(child[k+1]) << std::endl;
 	}
 
 	return 0;
