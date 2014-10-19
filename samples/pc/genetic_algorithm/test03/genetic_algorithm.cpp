@@ -176,7 +176,7 @@ void Mutation(std::bitset<32> child[])
 
 		if(random <= MUTATION_RATE)
 		{
-			mutation_pos = Random(0, child[i].size());
+			mutation_pos = Random(0, child[i].size() / 2);
 			child[i].flip(mutation_pos);
 		}
 	}
@@ -192,35 +192,45 @@ int main()
 	
 	Initialize(angle);
 	
-	Selection(angle, result);
-
-	for(int i=0; i<RANDOM_MAX; i++)
+	for(int i=0; i<LOOP_COUNT; i++)
 	{
-		if(parent_cpy == INDIVIDUALS_NUMBER)
+		std::cout << "LOOP_COUNT:" << i << std::endl;
+
+		Selection(angle, result);
+
+		for(int j=0; j<RANDOM_MAX; j++)
 		{
-			parent_cpy = 0;
+			if(parent_cpy == INDIVIDUALS_NUMBER)
+			{
+				parent_cpy = 0;
+			}
+			parent[j] = BinaryToDecimal(angle[result[parent_cpy][1]]);
+			parent_cpy += 1;
 		}
-		parent[i] = BinaryToDecimal(angle[result[parent_cpy][1]]);
-		parent_cpy += 1;
-	}
 
-	for(int j=0; j<INDIVIDUALS_NUMBER; j++)
-	{
-		std::cout << "---- No." << j+1 << " -----" << std::endl;
-		std::cout << "result_abs:" << result[j][0] << std::endl;
-		std::cout << "result_angle:" << angle[result[j][1]] << std::endl;
-		std::cout << "convert_result_angle:" << parent[j] << std::endl;
-	}
+		for(int k=0; k<INDIVIDUALS_NUMBER; k++)
+		{
+			std::cout << "---- No." << k+1 << " -----" << std::endl;
+			std::cout << "result_angle:" << angle[result[k][1]] << std::endl;
+		}
 	
-	std::cout << "----- Crossover -----" << std::endl;
-	Crossover(parent, child);
+		std::cout << "----- Crossover -----" << std::endl;
+		Crossover(parent, child);
 
-	std::cout << "----- Mutation -----" << std::endl;
-	Mutation(child);
+		std::cout << "----- Mutation -----" << std::endl;
 
-	for(int k=0; k<RANDOM_MAX; k++)
+		Mutation(child);
+
+		for(int l=0; l<RANDOM_MAX; l++)
+		{
+			angle[l] = DecimalToBinary(child[l]);
+		}
+	}
+
+	Selection(angle, result);
+	for(int m=0; m<INDIVIDUALS_NUMBER; m++)
 	{
-		std::cout << "child[" << k << "]:" << DecimalToBinary(child[k]) << std::endl;
+		std::cout << "child[" << m << "]:" << angle[result[m][1]] << std::endl;
 	}
 
 	return 0;
