@@ -41,12 +41,12 @@ int Random(int min, int max)
 	return dist(gen);
 }
 
-void Initialize(int angle[RANDOM_MAX])
+void Initialize(int angle[])
 {
 	Random(0, 180, angle);
 }
 
-void Selection(int angle[RANDOM_MAX], int result[RANDOM_MAX][2])
+void Selection(int angle[], int result[][2])
 {
 	int temp, angle_temp;
 	int target_abs[RANDOM_MAX][2];
@@ -218,7 +218,6 @@ int main()
 		Crossover(parent, child);
 
 		std::cout << "----- Mutation -----" << std::endl;
-
 		Mutation(child);
 
 		for(int l=0; l<RANDOM_MAX; l++)
