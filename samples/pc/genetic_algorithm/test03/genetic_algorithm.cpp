@@ -165,6 +165,23 @@ void Crossover(std::bitset<32> parent[], std::bitset<32> child[])
 	}
 }
 
+void Mutation(std::bitset<32> child[])
+{
+	double random;
+	int mutation_pos;
+
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		random = Random(0, 100) * 0.01;
+
+		if(random <= MUTATION_RATE)
+		{
+			mutation_pos = Random(0, child[i].size());
+			child[i].flip(mutation_pos);
+		}
+	}
+}
+
 int main()
 {
 	int angle[RANDOM_MAX];
@@ -196,8 +213,10 @@ int main()
 	}
 	
 	std::cout << "----- Crossover -----" << std::endl;
-
 	Crossover(parent, child);
+
+	std::cout << "----- Mutation -----" << std::endl;
+	Mutation(child);
 
 	for(int k=0; k<RANDOM_MAX; k++)
 	{
