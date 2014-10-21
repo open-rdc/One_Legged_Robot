@@ -20,6 +20,13 @@ unsigned long long GetTimeStamp()
 	return diff.total_microseconds();
 }
 
+std::string GetTimeISOString()
+{
+	boost::posix_time::ptime today = boost::posix_time::second_clock::local_time();
+
+	return boost::posix_time::to_iso_string(today);
+}
+
 void Random(int min, int max, int result[RANDOM_MAX])
 {
 	boost::random::mt19937 gen(GetTimeStamp());
