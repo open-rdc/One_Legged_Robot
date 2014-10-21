@@ -1,4 +1,7 @@
+#pragma warning(disable: 4819)
+
 #include <iostream>
+#include <fstream>
 #include <bitset>
 #include <boost/random.hpp>
 #include <boost/date_time.hpp>
@@ -183,7 +186,7 @@ void Mutation(std::bitset<32> child[])
 
 		if(random <= MUTATION_RATE)
 		{
-			mutation_pos = Random(0, child[i].size() / 2);
+			mutation_pos = Random(0, MUTATION_POS);
 			child[i].flip(mutation_pos);
 		}
 	}
@@ -196,12 +199,15 @@ int main()
 	int parent_cpy = 0;
 	std::bitset<32> parent[RANDOM_MAX];
 	std::bitset<32> child[RANDOM_MAX];
+
+	std::ofstream ofs(GetTimeISOString() + ".csv");
 	
 	Initialize(angle);
 	
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		std::cout << "LOOP_COUNT:" << i << std::endl;
+		ofs << "No." << i+1 << std::endl;
 
 		Selection(angle, result);
 
@@ -215,29 +221,48 @@ int main()
 			parent_cpy += 1;
 		}
 
+		ofs << "result_angle" << "\t";
+
 		for(int k=0; k<INDIVIDUALS_NUMBER; k++)
 		{
 			std::cout << "---- No." << k+1 << " -----" << std::endl;
 			std::cout << "result_angle:" << angle[result[k][1]] << std::endl;
+			ofs << angle[result[k][1]] << "\t";
 		}
+		ofs << std::endl;
 	
 		std::cout << "----- Crossover -----" << std::endl;
 		Crossover(parent, child);
 
+		ofs << "Crossover" << "\t";
+
+		for(int l=0; l<RANDOM_MAX; l++)
+		{
+			ofs << DecimalToBinary(child[l]) << "\t";
+		}
+		ofs << std::endl;
+
 		std::cout << "----- Mutation -----" << std::endl;
 		Mutation(child);
+
+		ofs << "Mutation" << "\t";
 
 		for(int l=0; l<RANDOM_MAX; l++)
 		{
 			angle[l] = DecimalToBinary(child[l]);
+			ofs  << angle[l] << "\t";
 		}
+		ofs << std::endl;
 	}
 
+	ofs << "final_result" << "\t";
 	Selection(angle, result);
 	for(int m=0; m<INDIVIDUALS_NUMBER; m++)
 	{
 		std::cout << "child[" << m << "]:" << angle[result[m][1]] << std::endl;
+		ofs << angle[result[m][1]] << "\t";
 	}
+	ofs << std::endl;
 
 	return 0;
 }
