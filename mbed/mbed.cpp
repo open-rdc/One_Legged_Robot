@@ -14,6 +14,8 @@ DigitalOut REDE(p11);           // RS485 Transmit Enable
 QEI enc(p7, p8, NC, 624);       // encoder pin
 Serial pc(USBTX, USBRX);        // USB port
 
+#define DEBUG                   // Debug symbol
+
 /*--------------------------------------------------*/
 /* Funcyion     : mbed initialize                   */
 /* NAME         : Init                              */
@@ -181,6 +183,14 @@ int main() {
         int servo2_angle = ReadSerial(); // get character(servo2 angle) 
         int servo2_time = ReadSerial();  // get character(servo2 time)
         int sleep = ReadSerial();        // get character(sleep time)
+        
+#ifdef DEBUG
+        pc.printf("servo1_angle: %d\n", servo1_angle);
+        pc.printf("servo1_time: %d\n", servo1_time);
+        pc.printf("servo2_angle: %d\n", servo2_angle);
+        pc.printf("servo2_time: %d\n", servo2_time);
+        pc.printf("sleep: %d\n", sleep);
+#endif
         
         SetTimeAndPosition(0x01, (short)servo1_angle, (unsigned short)servo1_time);
         SetTimeAndPosition(0x02, (short)servo2_angle, (unsigned short)servo2_time);
