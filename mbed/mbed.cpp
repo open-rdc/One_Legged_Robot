@@ -200,15 +200,15 @@ int main() {
  
     while(1)
     {
-        SerialErrorCheck();
+        SerialErrorCheck();              // serial read error check
         int servo1_angle = ReadSerial(); // get character(servo1 angle)
         int servo1_time = ReadSerial();  // get character(servo1 time)
         int servo2_angle = ReadSerial(); // get character(servo2 angle) 
         int servo2_time = ReadSerial();  // get character(servo2 time)
         int sleep = ReadSerial();        // get character(sleep time)
-        SerialErrorCheck();
+        SerialErrorCheck();              // serial read error check
         
-#ifdef DEBUG
+#ifdef DEBUG                             // use debug
         pc.printf("servo1_angle: %d\n", servo1_angle);
         pc.printf("servo1_time: %d\n", servo1_time);
         pc.printf("servo2_angle: %d\n", servo2_angle);
