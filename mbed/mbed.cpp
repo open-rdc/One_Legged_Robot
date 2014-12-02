@@ -1,5 +1,5 @@
 /*--------------------------------------------------*/
-/* @Program name ; mbed                             */
+/* @Program name : mbed                             */
 /* @Author : Kohei Izumi                            */
 /* @Comment : One Legged Robot program              */
 /*                                                  */
@@ -14,6 +14,7 @@ DigitalOut REDE(p11);           // RS485 Transmit Enable
 QEI enc(p7, p8, NC, 624);       // encoder pin
 Serial pc(USBTX, USBRX);        // USB port
 
+#define TIME 30
 #define DEBUG                   // Debug symbol
 
 /*--------------------------------------------------*/
@@ -161,6 +162,7 @@ int ReadSerial()
             buffer[i] = NULL;
             break;
         }
+
         i++;
     }
     
@@ -194,6 +196,7 @@ bool SerialErrorCheck()
 }
 
 int main() {
+    Timer t;
     Init();                     // initialize
     Torque(0x01, 0x01);         // ID = 1(0x01) , torque = OFF (0x00)
     Torque(0x02, 0x01);
@@ -208,23 +211,34 @@ int main() {
         int sleep = ReadSerial();        // get character(sleep time)
         SerialErrorCheck();              // serial read error check
         
-#ifdef DEBUG                             // use debug
-        pc.printf("servo1_angle: %d\n", servo1_angle);
-        pc.printf("servo1_time: %d\n", servo1_time);
-        pc.printf("servo2_angle: %d\n", servo2_angle);
-        pc.printf("servo2_time: %d\n", servo2_time);
-        pc.printf("sleep: %d\n", sleep);
+        while(1)
+        {
+            t.start();
+#ifdef DEBUG
+            pc.printf("servo1_angle: %d\n", servo1_angle);
+            pc.printf("servo1_time: %d\n", servo1_time);
+            pc.printf("servo2_angle: %d\n", servo2_angle);
+            pc.printf("servo2_time: %d\n", servo2_time);
+            pc.printf("sleep: %d\n", sleep);
+            pc.printf("time %f seconds\n", t.read());
 #endif
         
-        SetTimeAndPosition(0x01, (short)servo1_angle, (unsigned short)servo1_time);
-        SetTimeAndPosition(0x02, (short)servo2_angle, (unsigned short)servo2_time);
+            SetTimeAndPosition(0x01, (short)servo1_angle, (unsigned short)servo1_time);
+            SetTimeAndPosition(0x02, (short)servo2_angle, (unsigned short)servo2_time);
 
-        wait_ms(sleep); // sleep(ms)
+            wait_ms(sleep); // sleep(ms)
 
-        SetPosition(0x01, 0);
-        SetPosition(0x02, 0);
+            SetPosition(0x01, 0);
+            SetPosition(0x02, 0);
 
-        wait_ms(sleep); // sleep(ms)
+            wait_ms(sleep); // sleep(ms)
+            
+            if(t.read() > TIME)
+            {
+                t.reset();
+                break;
+            }
+        }
 
         pc.printf("get_enc:");
         pc.printf("%07d\n", enc.getPulses()); // send to pc of encoder pulse
