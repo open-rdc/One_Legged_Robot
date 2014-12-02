@@ -151,7 +151,7 @@ void SetTimeAndPosition(unsigned char ID, short data, unsigned short stime){
 /*--------------------------------------------------*/
 int ReadSerial()
 {
-    char buffer[20];
+    char buffer[40];
     int i=0;
     while(1)
     {
@@ -170,7 +170,29 @@ int ReadSerial()
     
     return send;
 }
-    
+
+/*--------------------------------------------------*/
+/* Function     : Check serial character            */
+/* NAME         : SerialErrorCheck                  */
+/* Argument     : ---                               */
+/* Return value : true                              */
+/*--------------------------------------------------*/
+bool SerialErrorCheck()
+{
+    char buffer[100];
+    int i=0;
+    while(1)
+    {
+        buffer[i] = pc.getc();
+        if(buffer[i] == '\n')
+        {
+            buffer[i] = NULL;
+            return true;
+        }
+        i++;
+    }
+}
+
 int main() {
     Init();                     // initialize
     Torque(0x01, 0x01);         // ID = 1(0x01) , torque = OFF (0x00)
@@ -178,11 +200,13 @@ int main() {
  
     while(1)
     {
+        SerialErrorCheck();
         int servo1_angle = ReadSerial(); // get character(servo1 angle)
         int servo1_time = ReadSerial();  // get character(servo1 time)
         int servo2_angle = ReadSerial(); // get character(servo2 angle) 
         int servo2_time = ReadSerial();  // get character(servo2 time)
         int sleep = ReadSerial();        // get character(sleep time)
+        SerialErrorCheck();
         
 #ifdef DEBUG
         pc.printf("servo1_angle: %d\n", servo1_angle);
