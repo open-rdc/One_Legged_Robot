@@ -14,7 +14,7 @@ DigitalOut REDE(p11);           // RS485 Transmit Enable
 QEI enc(p7, p8, NC, 624);       // encoder pin
 Serial pc(USBTX, USBRX);        // USB port
 
-#define TIME 30
+#define TIME 10
 #define DEBUG                   // Debug symbol
 
 /*--------------------------------------------------*/
@@ -203,13 +203,13 @@ int main() {
  
     while(1)
     {
-        SerialErrorCheck();              // serial read error check
+        SerialErrorCheck();
         int servo1_angle = ReadSerial(); // get character(servo1 angle)
         int servo1_time = ReadSerial();  // get character(servo1 time)
         int servo2_angle = ReadSerial(); // get character(servo2 angle) 
         int servo2_time = ReadSerial();  // get character(servo2 time)
         int sleep = ReadSerial();        // get character(sleep time)
-        SerialErrorCheck();              // serial read error check
+        SerialErrorCheck();
         
         while(1)
         {
@@ -242,5 +242,6 @@ int main() {
 
         pc.printf("get_enc:");
         pc.printf("%07d\n", enc.getPulses()); // send to pc of encoder pulse
+        enc.reset();
     }
 }
