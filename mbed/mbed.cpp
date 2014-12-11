@@ -27,6 +27,7 @@ void Init(void){
     device.baud(115200);        // baud Rate = 115.2kbps [Futaba default]
     REDE = 0;                   // RS485 Transmit disable
 }
+
 /*--------------------------------------------------*/
 /* Funcyion     : Servo torque enable               */
 /* NAME         : Torque                            */
@@ -35,8 +36,7 @@ void Init(void){
 /* Return value : ---                               */
 /*--------------------------------------------------*/
 void Torque (unsigned char ID, unsigned char data){
-
-    unsigned char TxData[10];    // TransmitByteData [10byte]
+    unsigned char TxData[9];    // TransmitByteData [9byte]
     unsigned char CheckSum = 0; // CheckSum calculation
     
     TxData[0] = 0xFA;           // Header
@@ -49,21 +49,21 @@ void Torque (unsigned char ID, unsigned char data){
     TxData[7] = data;           // Data
     
     // CheckSum calculation
-    CheckSum = TxData[2];
-    for(int i=3; i<8; i++){
-        CheckSum = CheckSum ^ TxData[i];
+    for(int i=2; i<=7; i++){
+        CheckSum = CheckSum ^ TxData[i];                // XOR from ID to Data
     }
     
     TxData[8] = CheckSum;       // Sum
     
     // Send Packet 
     REDE = 1;                   // RS485 Transmit Enable
-    for(int i=0; i<9; i++){
+    for(int i=0; i<=8; i++){
         device.putc(TxData[i]);
     }
     wait_us(250);               // Wait for transmission
     REDE = 0;                   // RS485 Transmitt disable
 }
+
 /*--------------------------------------------------*/
 /* Function     : Servo goal position instruction   */
 /*                (Not specify time)                */
@@ -73,8 +73,7 @@ void Torque (unsigned char ID, unsigned char data){
 /* Return value : ---                               */
 /*--------------------------------------------------*/
 void SetPosition (unsigned char ID, short data){
-
-    unsigned char TxData[15];   // TransmitByteData [15byte]
+    unsigned char TxData[10];   // TransmitByteData [10byte]
     unsigned char CheckSum = 0; // CheckSum calculation
     
     TxData[0] = 0xFA;           // Header
@@ -89,14 +88,13 @@ void SetPosition (unsigned char ID, short data){
     TxData[8] = (unsigned char)0x00FF & (data >> 8);    // Hi  byte
     
     // CheckSum calculation
-    CheckSum = TxData[2];
-    for(int i=3; i<9; i++){
-        CheckSum = CheckSum ^ TxData[i];
+    for(int i=2; i<=8; i++){
+        CheckSum = CheckSum ^ TxData[i];                // XOR from ID to Data
     }
     TxData[9] = CheckSum;       // Sum
     // Send Packet
     REDE = 1;                   // RS485 Transmitt Enable
-    for(int i=0; i<10; i++){
+    for(int i=0; i<=9; i++){
         device.putc(TxData[i]);
     }
     wait_us(250);               // Wait for transmission
@@ -124,24 +122,22 @@ void SetTimeAndPosition(unsigned char ID, short data, unsigned short stime){
     TxData[6] = 0x01;           // Count
                                 // Data
     TxData[7] = (unsigned char)0x00FF & data;           // Low byte
-    TxData[8] = (unsigned char)0xFF00 & (data >> 8);    // Hi  byte
+    TxData[8] = (unsigned char)0x00FF & (data >> 8);    // Hi  byte
     TxData[9] = (unsigned char)0x00FF & stime;           // Low byte
-    TxData[10] = (unsigned char)0xFF00 & (stime >> 8);   // Hi  byte
+    TxData[10] = (unsigned char)0x00FF & (stime >> 8);   // Hi  byte
     
     // CheckSum calculation
-    CheckSum = TxData[2];
-    for (int i=3; i<11; i++) {
-        CheckSum = CheckSum ^ TxData[i];
+    for(int i=2; i<=10; i++){
+        CheckSum = CheckSum ^ TxData[i];                // XOR from ID to Data
     }
-    TxData[11] = CheckSum;      // Sum
-
+    TxData[11] = CheckSum;       // Sum
     // Send Packet
-    REDE = 1;                   // Transmit Enable
-    for(int i=0; i<12; i++){
+    REDE = 1;                   // RS485 Transmitt Enable
+    for(int i=0; i<=11; i++){
         device.putc(TxData[i]);
     }
     wait_us(250);               // Wait for transmission
-    REDE = 0;
+    REDE = 0;                   // RS485 Transmit disable
 }                
 
 /*--------------------------------------------------*/
@@ -223,8 +219,8 @@ int main() {
             pc.printf("time %f seconds\n", t.read());
 #endif
         
-            SetTimeAndPosition(0x01, (short)servo1_angle, (unsigned short)servo1_time);
-            SetTimeAndPosition(0x02, (short)servo2_angle, (unsigned short)servo2_time);
+            SetTimeAndPosition(0x01, servo1_angle, servo1_time);
+            SetTimeAndPosition(0x02, servo2_angle, servo2_time);
 
             wait_ms(sleep); // sleep(ms)
 
@@ -240,7 +236,8 @@ int main() {
             }
         }
 
-        pc.printf("%d\n", enc.getPulses()); // send to pc of encoder pulse
+        pc.printf("get_enc:");
+        pc.printf("%07d\n", enc.getPulses()); // send to pc of encoder pulse
         enc.reset();
     }
 }
