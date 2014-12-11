@@ -43,7 +43,7 @@ link_directories(
 set(GA_SRCS
 genetic_algorithm.cpp
 
-parameter.h
+parameter.h	individualData.h
 )
 
 

@@ -9,6 +9,7 @@
 #include <boost/chrono.hpp>
 #include <boost/thread.hpp>
 #include "parameter.h" 
+#include "individualData.h"
 
 int count =0;
 int count2 =0;
