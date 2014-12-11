@@ -240,8 +240,7 @@ int main() {
             }
         }
 
-        pc.printf("get_enc:");
-        pc.printf("%07d\n", enc.getPulses()); // send to pc of encoder pulse
+        pc.printf("%d\n", enc.getPulses()); // send to pc of encoder pulse
         enc.reset();
     }
 }
