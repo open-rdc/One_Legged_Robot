@@ -1,4 +1,4 @@
-One Legged Robot
+﻿One Legged Robot
 ================
 ### 一脚ロボット用プログラム
 * mbed用のプログラムはmbed\mbed.cppになります。
@@ -26,3 +26,5 @@ One Legged Robot
 ### GA
 * 現在はサンプルプログラムが入っています。
 * CMakeでビルドしてください。
+
+victor
