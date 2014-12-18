@@ -1,4 +1,4 @@
-static const int RANDOM_MAX = 10;
+static const int RANDOM_MAX = 100;
 static const int TARGET_VALUE = 90;
 static const int LOOP_COUNT = 10;
 static const double RANKING_RATE = 0.2;
