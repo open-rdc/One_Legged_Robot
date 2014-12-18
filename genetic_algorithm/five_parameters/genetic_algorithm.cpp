@@ -149,6 +149,59 @@ std::bitset<32> SetMaskRandom()
 	return mask_bit;
 }
 
+void Crossover(std::bitset<32> parent[][PARAMETER_NUM], std::bitset<32> child[][PARAMETER_NUM])
+{
+	std::bitset<32> mask = SetMask();
+	int counter = 0;
+
+	for(int k=0; k<PARAMETER_NUM; k++)
+	{
+		for(int i=0; i<RANDOM_MAX; i+=2)
+		{	
+			counter += 2;
+			if(counter == INDIVIDUALS_NUMBER)
+			{
+				mask = SetMaskRandom();
+				counter = 0;
+			}
+
+			for(size_t j=0; j<parent[i][k].size(); j++)
+			{
+				if(mask.test(j) == 0)
+				{
+					child[i][k].set(j, parent[i][k].test(j));
+					child[i+1][k].set(j, parent[i+1][k].test(j));
+				}
+				else
+				{
+					child[i][k].set(j, parent[i+1][k].test(j));
+					child[i+1][k].set(j, parent[i][k].test(j));
+				}
+			}
+		}
+	}
+}
+
+void Mutation(std::bitset<32> child[][PARAMETER_NUM])
+{
+	double random;
+	int mutation_pos;
+
+	for(int j=0; j<PARAMETER_NUM; j++)
+	{
+		for(int i=0; i<RANDOM_MAX; i++)
+		{
+			random = Random(0, 100) * 0.01;
+
+			if(random <= MUTATION_RATE)
+			{
+				mutation_pos = Random(0, MUTATION_POS);
+				child[i][j].flip(mutation_pos);
+			}
+		}
+	}
+}
+
 int main()
 {
 	int angle[RANDOM_MAX][PARAMETER_NUM];
@@ -170,10 +223,10 @@ int main()
 		{
 			ofs << angle[j][i] << "\t";
 		}
-		ofs << "\n";
+		ofs << std::endl;
 	}
 
-	ofs << "Selection" << "\n";
+	ofs << "Selection" << std::endl;
 	for(int j=0; j<PARAMETER_NUM; j++)
 	{
 		for(int k=0; k<RANDOM_MAX; k++)
@@ -182,11 +235,39 @@ int main()
 			{
 				parent_cpy = 0;
 			}
-			parent[k][j] = DecimalToBinary(angle[result[parent_cpy][1]][j]);
+			parent[k][j] = BinaryToDecimal(angle[result[parent_cpy][1]][j]);
 			ofs << angle[result[parent_cpy][1]][j] << "\t";
 			parent_cpy += 1;
 		}
-		ofs << "\n";
+		ofs << std::endl;
 	}
+
+	Crossover(parent, child);
+
+	ofs << "Crossover" << std::endl;
+
+	for(int m=0; m<PARAMETER_NUM; m++)
+	{
+		for(int l=0; l<RANDOM_MAX; l++)
+		{
+			ofs << DecimalToBinary(child[l][m]) << "\t";
+		}
+		ofs << std::endl;
+	}
+
+	Mutation(child);
+
+	ofs << "Mutation" << std::endl;
+
+	for(int o=0; o<PARAMETER_NUM; o++)
+	{
+		for(int l=0; l<RANDOM_MAX; l++)
+		{
+			angle[l][o] = DecimalToBinary(child[l][o]);
+			ofs  << angle[l][o] << "\t";
+		}
+		ofs << std::endl;
+	}
+
 	return 0;
 }
