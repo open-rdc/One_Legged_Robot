@@ -14,7 +14,7 @@ int GetRandom(int min,int max)
 
 int main()
 {
-	int num[10];
+	int num[10], cnum[3];
 	srand((unsigned int)time(NULL));
 	for(int i=0; i<NUM; i++){
 		num[i]=GetRandom(0,100);
@@ -24,7 +24,7 @@ int main()
 	cout << endl;
 
 	for(int j=0; j<cNUM; j++){
-		num[j]=GetRandom(0,100);
-			cout<<"centerNo["<<j<<"]="<<num[j]<< endl;
+		cnum[j]=GetRandom(0,100);
+			cout<<"centerNo["<<j<<"]="<<cnum[j]<< endl;
 		}
 }
