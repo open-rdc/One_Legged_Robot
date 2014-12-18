@@ -240,8 +240,6 @@ int main()
 		{
 			for(int k=0; k<INDIVIDUALS_NUMBER; k++)
 			{
-				std::cout << "---- No." << k+1 << " -----" << std::endl;
-				std::cout << "result_angle:" << angle[result[k][1]][j] << std::endl;
 				ofs << angle[result[k][1]][j] << "\t";
 			}
 			ofs << std::endl;
