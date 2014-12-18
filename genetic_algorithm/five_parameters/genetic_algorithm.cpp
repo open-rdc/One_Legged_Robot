@@ -95,13 +95,67 @@ void Selection(int angle[][PARAMETER_NUM], int result[][2])
 		}
 	}
 }
+
+unsigned long DecimalToBinary(std::bitset<32> decimal)
+{
+	std::bitset<32> value(decimal);
+	
+	return value.to_ulong();
+}
+
+std::bitset<32> BinaryToDecimal(std::bitset<32> binary)
+{
+	std::bitset<32> value(binary);
+
+	return value;
+}
+
+std::bitset<32> SetMask()
+{
+	std::bitset<32> mask_bit;
+	int bit_counter = 0;
+
+	for(size_t i=0; i<mask_bit.size(); i++)
+	{
+		if(bit_counter == 0)
+		{
+			mask_bit.set(i, 1);
+			bit_counter = 1;
+		}
+		else
+		{
+			bit_counter = 0;
+		}
+	}
+
+	return mask_bit;
+}
+
+std::bitset<32> SetMaskRandom()
+{
+	std::bitset<32> mask_bit;
+	int bit_counter = 0;
+
+	for(size_t i=0; i<mask_bit.size(); i++)
+	{
+		bit_counter = Random(0, 1);
+
+		if(bit_counter == 0)
+		{
+			mask_bit.set(i, 1);
+		}
+	}
+
+	return mask_bit;
+}
+
 int main()
 {
 	int angle[RANDOM_MAX][PARAMETER_NUM];
 	int result[RANDOM_MAX][2];
 	int parent_cpy = 0;
-	std::bitset<32> parent[RANDOM_MAX];
-	std::bitset<32> child[RANDOM_MAX];
+	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
+	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
 
 	std::ofstream ofs(GetTimeISOString() + ".csv");
 
@@ -119,5 +173,20 @@ int main()
 		ofs << "\n";
 	}
 
+	ofs << "Selection" << "\n";
+	for(int j=0; j<PARAMETER_NUM; j++)
+	{
+		for(int k=0; k<RANDOM_MAX; k++)
+		{
+			if(parent_cpy == INDIVIDUALS_NUMBER)
+			{
+				parent_cpy = 0;
+			}
+			parent[k][j] = DecimalToBinary(angle[result[parent_cpy][1]][j]);
+			ofs << angle[result[parent_cpy][1]][j] << "\t";
+			parent_cpy += 1;
+		}
+		ofs << "\n";
+	}
 	return 0;
 }
