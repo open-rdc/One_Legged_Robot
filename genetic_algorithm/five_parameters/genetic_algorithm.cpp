@@ -214,23 +214,13 @@ int main()
 
 	Initialize(angle);
 
-	Selection(angle, result);
-
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		ofs << "No." << i+1 << std::endl;
 
-		for(int i=0; i<PARAMETER_NUM; i++)
-		{
-			for(int j=0; j<RANDOM_MAX; j++)
-			{
-				ofs << angle[j][i] << "\t";
-			}
-			ofs << std::endl;
-		}
+		Selection(angle, result);
 
-		ofs << "Selection" << std::endl;
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
 			for(int k=0; k<RANDOM_MAX; k++)
@@ -240,15 +230,27 @@ int main()
 					parent_cpy = 0;
 				}
 				parent[k][j] = BinaryToDecimal(angle[result[parent_cpy][1]][j]);
-				ofs << angle[result[parent_cpy][1]][j] << "\t";
 				parent_cpy += 1;
+			}
+		}
+
+		ofs << "result_angle" << std::endl;
+
+		for(int j=0; j<PARAMETER_NUM; j++)
+		{
+			for(int k=0; k<INDIVIDUALS_NUMBER; k++)
+			{
+				std::cout << "---- No." << k+1 << " -----" << std::endl;
+				std::cout << "result_angle:" << angle[result[k][1]][j] << std::endl;
+				ofs << angle[result[k][1]][j] << "\t";
 			}
 			ofs << std::endl;
 		}
 
-		Crossover(parent, child);
-
+		std::cout << "----- Crossover -----" << std::endl;
 		ofs << "Crossover" << std::endl;
+
+		Crossover(parent, child);
 
 		for(int m=0; m<PARAMETER_NUM; m++)
 		{
@@ -259,9 +261,10 @@ int main()
 			ofs << std::endl;
 		}
 
-		Mutation(child);
-
+		std::cout << "----- Mutation -----" << std::endl;
 		ofs << "Mutation" << std::endl;
+
+		Mutation(child);
 
 		for(int o=0; o<PARAMETER_NUM; o++)
 		{
