@@ -16,15 +16,18 @@ int main()
 {
 	int num[10];
 	srand((unsigned int)time(NULL));
+
+	cout << "No.1" << endl;
 	for(int i=0; i<NUM; i++){
-		num[i]=i+1;
-		cout <<"num["<<num[i]<<"]"<<"="<< GetRandom(0,100) << endl;
-		}
+		num[i] = GetRandom(0, 100);
+		cout << "num[" << i << "]: " << num[i] << endl;
+	}
 
-	cout << endl;
+	Sleep(2);
 
-	for(int j=0; j<cNUM; j++){
-		num[j]=j+1;
-			cout<<"num["<<num[j]<<"]"<<"="<< GetRandom(0,100) << endl;
-		}
+	cout << "No,2" << endl;
+
+	for(int i=0; i<NUM; i++){
+		cout << "num[" << i << "]: " << num[i] << endl;
+	}
 }
