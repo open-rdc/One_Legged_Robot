@@ -1,5 +1,6 @@
 #include <iostream>
 #include <time.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -13,15 +14,17 @@ int GetRandom(int min,int max)
 
 int main()
 {
-
+	int num[10];
 	srand((unsigned int)time(NULL));
 	for(int i=0; i<NUM; i++){
-		cout << GetRandom(0,100) << endl;
+		num[i]=i+1;
+		cout <<"num["<<num[i]<<"]"<<"="<< GetRandom(0,100) << endl;
 		}
 
 	cout << endl;
 
 	for(int j=0; j<cNUM; j++){
-			cout<<"center="<< GetRandom(0,100) << endl;
+		num[j]=j+1;
+			cout<<"num["<<num[j]<<"]"<<"="<< GetRandom(0,100) << endl;
 		}
 }
