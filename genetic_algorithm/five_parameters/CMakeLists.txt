@@ -9,7 +9,6 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
 find_package(Boost COMPONENTS system thread filesystem)
-find_package(OpenCV)
 
 add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 
