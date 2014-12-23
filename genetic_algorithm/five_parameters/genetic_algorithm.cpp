@@ -1,14 +1,24 @@
 #pragma warning(disable: 4819)
 
-#include <iostream>
 #include <fstream>
 #include <bitset>
 #include <boost/random.hpp>
 #include <boost/date_time.hpp>
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include <boost/chrono.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
 #include <boost/thread.hpp>
+#include <boost/array.hpp>
+#include <iostream>
 #include "parameter.h"
+
+using namespace boost::asio;
+
+const char *PORT = "COM3";
+io_service io;
+serial_port port(io, PORT);
+boost::array<char, 64> rbuf;
 
 unsigned long long GetTimeStamp()
 {
@@ -58,6 +68,35 @@ void Initialize(int angle[][PARAMETER_NUM])
 	Random(0, 180, angle, 2);
 	Random(0, 1000, angle, 3);
 	Random(0, 2000, angle, 4);
+	
+	port.set_option(serial_port_base::baud_rate(9600));
+	port.set_option(serial_port_base::character_size(8));
+	port.set_option(serial_port_base::flow_control(serial_port_base::flow_control::none));
+	port.set_option(serial_port_base::parity(serial_port_base::parity::none));
+	port.set_option(serial_port_base::stop_bits(serial_port_base::stop_bits::one));
+
+	boost::thread thr_io(boost::bind(&io_service::run, &io));
+}
+
+void ReadCallBack(const boost::system::error_code& e, std::size_t size)
+{
+	std::cout.write(rbuf.data(), size);
+	port.async_read_some(buffer(rbuf), boost::bind(&ReadCallBack, _1, _2 ));
+}
+
+void WriteCallBack(const boost::system::error_code& e, std::size_t size )
+{
+	std::cout << "write :" << size << "byte[s]" << std::endl;
+}
+
+void SerialRead()
+{
+	port.async_read_some(buffer(rbuf), boost::bind(&ReadCallBack, _1, _2 ));
+}
+
+void SerialWrite(std::string buf)
+{
+	port.async_write_some(buffer(buf), boost::bind(&WriteCallBack, _1, _2));
 }
 
 void Selection(int angle[][PARAMETER_NUM], int result[][2])
