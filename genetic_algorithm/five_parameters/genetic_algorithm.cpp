@@ -64,9 +64,9 @@ int Random(int min, int max)
 void Initialize(int angle[][PARAMETER_NUM])
 {
 	Random(0, 180, angle, 0);
-	Random(0, 1000, angle, 1);
+	Random(0, 100, angle, 1);
 	Random(0, 180, angle, 2);
-	Random(0, 1000, angle, 3);
+	Random(0, 100, angle, 3);
 	Random(0, 2000, angle, 4);
 	
 	port.set_option(serial_port_base::baud_rate(9600));
@@ -99,9 +99,47 @@ void SerialWrite(std::string buf)
 	port.async_write_some(buffer(buf), boost::bind(&WriteCallBack, _1, _2));
 }
 
-void RobotMove(int angle[][PARAMETER_NUM], int enc[])
+void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
 {
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		for(int j=0; j<PARAMETER_NUM; j++)
+		{
+			str[i] += std::to_string(angle[i][j]);
+			if(j < PARAMETER_NUM-1)
+			{
+				str[i] += ",";
+			}
+			else
+			{
+				str[i] += "\n";
+			}
+		}
+	}
+}
 
+void RobotMove(std::string str[], int move_result[])
+{
+	boost::array<char, 64> rbuf_old;
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		while(1)
+		{
+			rbuf_old = rbuf;
+			SerialRead();
+			SerialWrite(str[i]);
+			boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+			
+			if(rbuf_old != rbuf)
+			{
+				std::cout << "rbuf_old != rbuf" << std::endl;
+				break;
+			}
+		}
+
+		move_result[i] = atoi(rbuf.data());
+		std::cout << "move_result[" << i << "]: " << move_result[i] << std::endl;
+	}
 }
 
 void Selection(int angle[][PARAMETER_NUM], int result[][2])
@@ -250,7 +288,9 @@ int main()
 {
 	int angle[RANDOM_MAX][PARAMETER_NUM];
 	int result[RANDOM_MAX][2];
+	int move_result[RANDOM_MAX];
 	int parent_cpy = 0;
+	std::string str[RANDOM_MAX];
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
 
@@ -262,6 +302,15 @@ int main()
 	{
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		ofs << "No." << i+1 << std::endl;
+
+		MakeSring(angle, str);
+
+		for(int i=0; i<RANDOM_MAX; i++)
+		{
+			std::cout << "str[" << i << "]: " << str[i] << std::endl;
+		}
+
+		RobotMove(str, move_result);
 
 		Selection(angle, result);
 
