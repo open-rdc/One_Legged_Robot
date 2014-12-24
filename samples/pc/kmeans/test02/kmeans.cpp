@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <time.h>
 
 using namespace std;
@@ -19,7 +20,7 @@ int main()
 	int result[NUM][cNUM];
 	srand((unsigned int)time(NULL));
 
-	ofstream ofs("test.csv");
+	ofstream ofs(std::to_string((unsigned int)time(NULL)) + ".csv");
 
 	for(int i=0; i<NUM; i++){
 		num[i]=GetRandom(0,100);
@@ -61,7 +62,6 @@ int main()
 	for(int i=0; i<NUM; i++)
 	{
 		cout<<"----- "<<i<<"番目の個体 -----"<<endl;
-		//ofs << "No." << i << endl;
 		cout<<"個体の数値: "<<num[i]<<endl;
 		cout<<"センターポイントの位置"<<cnum[min[i][1]]<<endl;
 		cout<<"センターポイントの距離: "<<min[i][0]<<endl;
