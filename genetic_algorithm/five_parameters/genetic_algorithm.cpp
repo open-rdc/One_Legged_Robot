@@ -99,6 +99,11 @@ void SerialWrite(std::string buf)
 	port.async_write_some(buffer(buf), boost::bind(&WriteCallBack, _1, _2));
 }
 
+void RobotMove(int angle[][PARAMETER_NUM], int enc[])
+{
+
+}
+
 void Selection(int angle[][PARAMETER_NUM], int result[][2])
 {
 	int temp, angle_temp;
