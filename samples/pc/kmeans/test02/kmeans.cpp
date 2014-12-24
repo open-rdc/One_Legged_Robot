@@ -1,6 +1,5 @@
 #include <iostream>
 #include <time.h>
-#include <bitset>
 
 using namespace std;
 
@@ -15,9 +14,7 @@ int GetRandom(int min,int max)
 
 int main()
 {
-	int sum=0;
 	int num[NUM], cnum[cNUM];
-	unsigned int n;
 	int result[NUM][cNUM];
 	srand((unsigned int)time(NULL));
 
@@ -44,18 +41,19 @@ int main()
 	}
 	cout<<endl;
 
+	int min[10];
 	for(int i=0; i<NUM; i++){
-		int min = result[i][0];
+		min[i] = result[i][0];
 		for(int j=0; j<cNUM; j++){
-			if(result[i][j]<min){
-				min=result[i][j];
-				cout<<"result["<<i<<"]["<<j<<"]="<<min<<endl;
+			if(result[i][j]<min[i]){
+				min[i]=result[i][j];
 			}
 		}
+		cout<<"min ["<<i<<"]: "<<min[i]<< endl;
 	}
 
 	cout<<endl;		
 
-	}
+}
 
 	
