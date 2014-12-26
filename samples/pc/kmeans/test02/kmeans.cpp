@@ -45,7 +45,7 @@ int main()
 	}
 	cout<<endl;
 
-	int min[10][2];
+	int min[NUM][2];
 	for(int i=0; i<NUM; i++){
 		min[i][0] = result[i][0];
 		min[i][1] = 0;
@@ -58,7 +58,19 @@ int main()
 		cout<<"min ["<<i<<"][0]: "<<min[i][0]<<endl;
 		cout<<"min[" <<i<<"][1]: "<<min[i][1]<<endl;
 	}
-	
+
+	int point_counter[cNUM]={};
+	for(int i=0;i<NUM;i++)
+	{
+		for(int j=0;j<cNUM;j++)
+		{
+			if(min[i][1]==j)
+			{
+				point_counter[j]++;
+			}
+		}
+	}
+
 	for(int i=0; i<NUM; i++)
 	{
 		cout<<"----- "<<i<<"番目の個体 -----"<<endl;
@@ -68,8 +80,9 @@ int main()
 		cout<<"所属するセンターポイント: "<<min[i][1]<<endl;
 		ofs << num[i] << "\t" <<cnum[min[i][1]]<<"\t"<<min[i][0] <<"\t"<< min[i][1]<<endl;
 	}
-
-
-	cout<<endl;		
+	for(int i=0;i<cNUM;i++)
+	{
+		cout<<i<<"番目のセンターポイントに所属する個数: " << point_counter[i] << endl;
+	}
 
 }
