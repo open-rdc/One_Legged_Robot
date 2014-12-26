@@ -78,11 +78,10 @@ int main()
 		cout<<"センターポイントの位置"<<cnum[min[i][1]]<<endl;
 		cout<<"センターポイントの距離: "<<min[i][0]<<endl;
 		cout<<"所属するセンターポイント: "<<min[i][1]<<endl;
-		ofs << num[i] << "\t" <<cnum[min[i][1]]<<"\t"<<min[i][0] <<"\t"<< min[i][1]<<endl;
+		ofs<<num[i]<<"\t"<<cnum[min[i][1]]<<"\t"<<min[i][0] <<"\t"<<min[i][1]<<endl;
 	}
 	for(int i=0;i<cNUM;i++)
 	{
-		cout<<i<<"番目のセンターポイントに所属する個数: " << point_counter[i] << endl;
+		cout<<i<<"番目のセンターポイントに所属する個数: "<<point_counter[i]<<endl;
 	}
-
 }
