@@ -25,7 +25,7 @@ link_directories(
 )
 
 set(SC_SRCS
-Serial.cpp
+Serial.cpp	main.cpp
 
 Serial.h
 )

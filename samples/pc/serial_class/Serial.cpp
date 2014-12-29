@@ -1,6 +1,10 @@
 #include "Serial.h"
 
-Serial::Serial()
+const char *PORT = "COM3";
+io_service io;
+serial_port port(io, PORT);
+
+void Serial::Init()
 {	
 	port.set_option(serial_port_base::baud_rate(9600));
 	port.set_option(serial_port_base::character_size(8));
@@ -35,9 +39,4 @@ void Serial::BoostWrite(std::string buf)
 void Serial::BoostRead()
 {
 	port.async_read_some(buffer(buf), boost::bind(&Serial::ReadCallBack, this, _1, _2 ));
-}
-
-int main()
-{
-	return 0;
 }

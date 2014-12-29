@@ -1,3 +1,6 @@
+#if !defined(SERIAL_H_)
+#define SERIAL_H_
+
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
@@ -6,18 +9,17 @@
 
 using namespace boost::asio;
 
-const char *PORT = "COM3";
-io_service io;
-serial_port port(io, PORT);
-
 class Serial
 {
-	boost::array<char, 64> buf;
 public:
-	Serial();
+	void Init();
 	void close();
 	void BoostWrite(std::string buf);
 	void BoostRead();
+
+private:
+	boost::array<char, 64> buf;
 	void ReadCallBack(const boost::system::error_code& e, std::size_t size);
 	void WriteCallBack(const boost::system::error_code& e, std::size_t size);
 };
+#endif
