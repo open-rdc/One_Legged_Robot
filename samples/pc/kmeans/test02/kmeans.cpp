@@ -44,60 +44,56 @@ int main()
 
 	while (loop)
 	{
-		
-
-	for(int i=0; i<NUM; i++){
-		for(int j=0; j<cNUM; j++){
-			distance[i][j]=abs(individual[i]-centerpoint[j]);
-			//cout<<"result["<<i<<"]["<<j<<"]="<<result[i][j]<<endl;
+		for(int i=0; i<NUM; i++){
+			for(int j=0; j<cNUM; j++){
+				distance[i][j]=abs(individual[i]-centerpoint[j]);
+				//cout<<"result["<<i<<"]["<<j<<"]="<<distance[i][j]<<endl;
 				
+			}
 		}
-	}
 
-	cout<<endl;
+		cout<<endl;
 
-	for(int i=0; i<NUM; i++){
-		min[i][0] = distance[i][0];
-		min[i][1]=0;
-		for(int j=0; j<cNUM; j++){
-			if(distance[i][j]<min[i][0]){
-				min[i][0]=distance[i][j];
-				min[i][1]=j;
+		for(int i=0; i<NUM; i++){
+			min[i][0] = distance[i][0];
+			min[i][1]=0;
+			for(int j=0; j<cNUM; j++){
+				if(distance[i][j]<min[i][0]){
+					min[i][0]=distance[i][j];
+					min[i][1]=j;
 				
+				}
+		
+			}
+		}
+
+		for(int i=0; i<NUM; i++){
+			for(int j=0; j<cNUM; j++){
+				if(min[i][1]==j){
+					individualsum[j] += individual[i];
+					point_counter[j]++;
+				}
+		
 			}
 		
 		}
-		
-	}
 
-	for(int i=0; i<NUM; i++){
-		for(int j=0; j<cNUM; j++){
-			if(min[i][1]==j){
-				individualsum[j] += individual[i];
-		        point_counter[j]++;
-			}
-		
-		}
-		
-	}
-
-	 int same_count = 0;
-	 for(int i=0;i<cNUM; i++){
-           
- 
-            if(point_counter[i] != 0){
+		int same_count = 0;
+		for(int i=0;i<cNUM; i++){
+			if(point_counter[i] != 0){
 				if((individualsum[i] / point_counter[i]) == centerpoint[i])
-                        same_count ++;
-               
+						same_count ++;
+				
 				centerpoint[i] = individualsum[i] / point_counter[i];
-                
-            }
+			}
+
 			if(same_count == cNUM){
-                loop=false;
-            }
+				loop=false;
+			}
 			cout<<"new cneterpoint:"<<centerpoint[i]<<endl;
-	 }cout<<endl;
-	 
+		}
+		
+		cout<<endl;
 	}
 
 /*
