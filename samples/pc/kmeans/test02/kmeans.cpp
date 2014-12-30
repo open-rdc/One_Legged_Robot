@@ -71,7 +71,6 @@ int main()
 					point_counter[j]++;
 				}
 			}
-		
 		}
 
 		int same_count = 0;
