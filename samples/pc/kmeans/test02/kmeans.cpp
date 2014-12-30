@@ -47,8 +47,7 @@ int main()
 		for(int i=0; i<NUM; i++){
 			for(int j=0; j<cNUM; j++){
 				distance[i][j]=abs(individual[i]-centerpoint[j]);
-				//cout<<"result["<<i<<"]["<<j<<"]="<<distance[i][j]<<endl;
-				
+				//cout<<"result["<<i<<"]["<<j<<"]="<<distance[i][j]<<endl;	
 			}
 		}
 
@@ -61,9 +60,7 @@ int main()
 				if(distance[i][j]<min[i][0]){
 					min[i][0]=distance[i][j];
 					min[i][1]=j;
-				
 				}
-		
 			}
 		}
 
