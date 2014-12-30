@@ -26,6 +26,3 @@
 ### GA
 * 現在はサンプルプログラムが入っています。
 * CMakeでビルドしてください。
-
-
-[jsで実装したk-means法](http://tech.nitoyon.com/ja/blog/2013/11/07/k-means/)
