@@ -70,7 +70,6 @@ int main()
 					individualsum[j] += individual[i];
 					point_counter[j]++;
 				}
-		
 			}
 		
 		}
