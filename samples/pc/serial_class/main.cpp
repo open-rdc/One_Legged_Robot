@@ -10,6 +10,7 @@ int main()
 	{
 		serial.BoostRead();
 		serial.BoostWrite(wbuf);
+		serial.AsyncBoostWrite(wbuf);
 	}
 	
 	return 0;

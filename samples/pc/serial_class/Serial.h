@@ -1,4 +1,4 @@
-#if !defined(SERIAL_H_)
+#ifndef SERIAL_H_
 #define SERIAL_H_
 
 #include <boost/asio.hpp>
@@ -14,6 +14,7 @@ class Serial
 public:
 	void Init();
 	void close();
+	void AsyncBoostWrite(std::string buf);
 	void BoostWrite(std::string buf);
 	void BoostRead();
 
