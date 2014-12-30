@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define NUM 10
+#define NUM 100
 #define cNUM 3
 
 int GetRandom(int min,int max)
@@ -16,113 +16,108 @@ int GetRandom(int min,int max)
 	return min + (int)(rand()*(max-min+1.0)/(1.0+RAND_MAX));
 }
 
-
 int main()
 {
-	int num[NUM], cnum[cNUM];
-	int result[NUM][cNUM];
+	int individual[NUM], centerpoint[cNUM];
+	int distance[NUM][cNUM];
+	int min[NUM][cNUM];
+	int point_counter[cNUM]={};
+	int individualsum[cNUM]={};
 	srand((unsigned int)time(NULL));
 
 	ofstream ofs(std::to_string((unsigned int)time(NULL)) + ".csv");
-
+	
 	for(int i=0; i<NUM; i++){
-		num[i]=GetRandom(0,100);
-		cout<<"No["<<i<<"] = "<<num[i]<<endl;
+		individual[i]=GetRandom(0,100);
+		//cout<<"No["<<i<<"] = "<<individual[i]<<endl;
 	}
-
 	cout << endl;
 
 	for(int j=0; j<cNUM; j++){
-		cnum[j]=GetRandom(0,100);
-			cout<<"centerNo["<<j<<"]="<<cnum[j]<< endl;
+		centerpoint[j]=GetRandom(0,100);
+		cout<<"centerNo["<<j<<"]="<<centerpoint[j]<< endl;
 		}
 
 	cout<<endl;
 
 	bool loop=true;
 
-	while(loop){
-	
+	while (loop)
+	{
+		
+
 	for(int i=0; i<NUM; i++){
 		for(int j=0; j<cNUM; j++){
-			result[i][j]=abs(num[i]-cnum[j]);
-			cout<<"result["<<i<<"]["<<j<<"]="<<result[i][j]<<endl;
+			distance[i][j]=abs(individual[i]-centerpoint[j]);
+			//cout<<"result["<<i<<"]["<<j<<"]="<<result[i][j]<<endl;
 				
 		}
 	}
+
 	cout<<endl;
 
-	int min[NUM][2];
 	for(int i=0; i<NUM; i++){
-		min[i][0] = result[i][0];
-		min[i][1] = 0;
+		min[i][0] = distance[i][0];
+		min[i][1]=0;
 		for(int j=0; j<cNUM; j++){
-			if(result[i][j]<min[i][0]){
-				min[i][0]=result[i][j];
+			if(distance[i][j]<min[i][0]){
+				min[i][0]=distance[i][j];
 				min[i][1]=j;
+				
 			}
+		
 		}
-		//cout<<"min ["<<i<<"][0]: "<<min[i][0]<<endl;
-		//cout<<"min[" <<i<<"][1]: "<<min[i][1]<<endl;
+		
 	}
 
-	int point_counter[cNUM]={};
-	int sum[cNUM]={};
-	int newcenter[cNUM]={};
-	int count_Group[cNUM]={};
-	for(int i=0;i<NUM;i++)
-	{
-		for(int j=0;j<cNUM;j++)
-		{
-			if(min[i][1]==j)
-			{
-				point_counter[j]++;
-				sum[j] += num[j];
-				newcenter[j]=sum[j]/cnum[j];
-				count_Group[j]++;
+	for(int i=0; i<NUM; i++){
+		for(int j=0; j<cNUM; j++){
+			if(min[i][1]==j){
+				individualsum[j] += individual[i];
+		        point_counter[j]++;
 			}
+		
 		}
+		
 	}
 
 	 int same_count = 0;
-	 for(int j=0;j<cNUM; j++){
+	 for(int i=0;i<cNUM; i++){
            
  
-            if(count_Group[j] != 0){
-				if((sum[j] / count_Group[j]) == cnum[j])
+            if(point_counter[i] != 0){
+				if((individualsum[i] / point_counter[i]) == centerpoint[i])
                         same_count ++;
                
-                cnum[j] = sum[j] / count_Group[j];
+				centerpoint[i] = individualsum[i] / point_counter[i];
                 
             }
 			if(same_count == cNUM){
                 loop=false;
             }
-			cout<<"new centerpoint:"<<cnum[j]<<endl;
+			cout<<"new cneterpoint:"<<centerpoint[i]<<endl;
 	 }cout<<endl;
+	 
 	}
 
-	/*
-
+/*
 	for(int i=0; i<NUM; i++)
 	{
 		cout<<"----- "<<i<<"番目の個体 -----"<<endl;
-		cout<<"個体の数値: "<<num[i]<<endl;
-		cout<<"センターポイントの位置"<<cnum[min[i][1]]<<endl;
+		cout<<"個体の数値: "<<individual[i]<<endl;
+		cout<<"センターポイントの位置"<<centerpoint[min[i][1]]<<endl;
 		cout<<"センターポイントの距離: "<<min[i][0]<<endl;
 		cout<<"所属するセンターポイント: "<<min[i][1]<<endl;
-		ofs<<num[i]<<"\t"<<cnum[min[i][1]]<<"\t"<<min[i][0] <<"\t"<<min[i][1]<<endl;
+		ofs<<individual[i]<<"\t"<<centerpoint[min[i][1]]<<"\t"<<min[i][0] <<"\t"<<min[i][1]<<endl;
 	}
 	for(int i=0;i<cNUM;i++)
 	{
 		cout<<i<<"番目のセンターポイントに所属する個数: "<<point_counter[i]<<endl;
 		cout<<"個体の値の合計"<<sum[i]<<endl;
 	}
-
-	cout<<endl;
-
-	for(int j=0; j<cNUM; j++){
-		cout<<"新しい中心点: "<<new_centerpoint[j]<<endl;
-	}
-	*/
+*/
+	
 }
+	
+
+	
