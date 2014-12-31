@@ -11,47 +11,41 @@ using namespace std;
 #define NUM 100
 #define cNUM 3
 
+int individual[NUM], centerpoint[cNUM];
+int point_counter[cNUM]={};
+int individualsum[cNUM]={};
+int same_count=0;
+bool loop=true;
+
 int GetRandom(int min,int max)
 {
 	return min + (int)(rand()*(max-min+1.0)/(1.0+RAND_MAX));
 }
 
-int main()
-{
-	int individual[NUM], centerpoint[cNUM];
-	int distance[NUM][cNUM];
-	int min[NUM][cNUM];
-	int point_counter[cNUM]={};
-	int individualsum[cNUM]={};
-	srand((unsigned int)time(NULL));
-
-	ofstream ofs(std::to_string((unsigned int)time(NULL)) + ".csv");
-	
+void initialize(){
 	for(int i=0; i<NUM; i++){
 		individual[i]=GetRandom(0,100);
-		//cout<<"No["<<i<<"] = "<<individual[i]<<endl;
 	}
-	cout << endl;
+}
 
+void centerinitialize(){
 	for(int j=0; j<cNUM; j++){
 		centerpoint[j]=GetRandom(0,100);
 		cout<<"centerNo["<<j<<"]="<<centerpoint[j]<< endl;
-		}
+	}
+}
 
-	cout<<endl;
-
-	bool loop=true;
+void clustering(){
+	int distance[NUM][cNUM];
+	int min[NUM][cNUM];
 
 	while (loop)
 	{
 		for(int i=0; i<NUM; i++){
-			for(int j=0; j<cNUM; j++){
-				distance[i][j]=abs(individual[i]-centerpoint[j]);
-				//cout<<"result["<<i<<"]["<<j<<"]="<<distance[i][j]<<endl;	
-			}
+		for(int j=0; j<cNUM; j++){
+			distance[i][j]=abs(individual[i]-centerpoint[j]);
 		}
-
-		cout<<endl;
+	}
 
 		for(int i=0; i<NUM; i++){
 			min[i][0] = distance[i][0];
@@ -73,7 +67,6 @@ int main()
 			}
 		}
 
-		int same_count = 0;
 		for(int i=0;i<cNUM; i++){
 			if(point_counter[i] != 0){
 				if((individualsum[i] / point_counter[i]) == centerpoint[i])
@@ -85,30 +78,24 @@ int main()
 			if(same_count == cNUM){
 				loop=false;
 			}
-			cout<<"new cneterpoint:"<<centerpoint[i]<<endl;
+			cout<<"new centerpoint["<<i<<"]:"<<centerpoint[i]<<endl;
 		}
-		
 		cout<<endl;
-	}
+	}	
+}
 
-/*
-	for(int i=0; i<NUM; i++)
-	{
-		cout<<"----- "<<i<<"番目の個体 -----"<<endl;
-		cout<<"個体の数値: "<<individual[i]<<endl;
-		cout<<"センターポイントの位置"<<centerpoint[min[i][1]]<<endl;
-		cout<<"センターポイントの距離: "<<min[i][0]<<endl;
-		cout<<"所属するセンターポイント: "<<min[i][1]<<endl;
-		ofs<<individual[i]<<"\t"<<centerpoint[min[i][1]]<<"\t"<<min[i][0] <<"\t"<<min[i][1]<<endl;
-	}
-	for(int i=0;i<cNUM;i++)
-	{
-		cout<<i<<"番目のセンターポイントに所属する個数: "<<point_counter[i]<<endl;
-		cout<<"個体の値の合計"<<sum[i]<<endl;
-	}
-*/
+int main()
+{	
+	srand((unsigned int)time(NULL));
+
+	ofstream ofs(std::to_string((unsigned int)time(NULL)) + ".csv");
+	
+	initialize();
+
+	centerinitialize();
+
+	cout<<endl;
+
+	clustering();
 	
 }
-	
-
-	
