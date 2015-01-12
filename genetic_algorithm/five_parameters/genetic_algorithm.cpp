@@ -6,19 +6,11 @@
 #include <boost/date_time.hpp>
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include <boost/chrono.hpp>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-#include <boost/array.hpp>
 #include <iostream>
 #include "parameter.h"
+#include "Serial.h"
 
-using namespace boost::asio;
-
-const char *PORT = "COM3";
-io_service io;
-serial_port port(io, PORT);
-boost::array<char, 64> rbuf;
+Serial serial;
 
 unsigned long long GetTimeStamp()
 {
@@ -45,6 +37,8 @@ void Random(int min, int max, int result[][PARAMETER_NUM], int num)
 	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
 
+	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
+
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		result[i][num] = dist(gen);
@@ -63,54 +57,24 @@ int Random(int min, int max)
 
 void Initialize(int angle[][PARAMETER_NUM])
 {
-	Random(0, 180, angle, 0);
+	Random(0, 450, angle, 0);
 	Random(0, 100, angle, 1);
-	Random(0, 180, angle, 2);
+	Random(0, 450, angle, 2);
 	Random(0, 100, angle, 3);
-	Random(0, 2000, angle, 4);
-	
-	port.set_option(serial_port_base::baud_rate(9600));
-	port.set_option(serial_port_base::character_size(8));
-	port.set_option(serial_port_base::flow_control(serial_port_base::flow_control::none));
-	port.set_option(serial_port_base::parity(serial_port_base::parity::none));
-	port.set_option(serial_port_base::stop_bits(serial_port_base::stop_bits::one));
-
-	boost::thread thr_io(boost::bind(&io_service::run, &io));
-}
-
-void ReadCallBack(const boost::system::error_code& e, std::size_t size)
-{
-	std::cout.write(rbuf.data(), size);
-	port.async_read_some(buffer(rbuf), boost::bind(&ReadCallBack, _1, _2 ));
-}
-
-void WriteCallBack(const boost::system::error_code& e, std::size_t size )
-{
-	std::cout << "write :" << size << "byte[s]" << std::endl;
-}
-
-void SerialRead()
-{
-	port.async_read_some(buffer(rbuf), boost::bind(&ReadCallBack, _1, _2 ));
-}
-
-void SerialWrite(std::string buf)
-{
-	port.async_write_some(buffer(buf), boost::bind(&WriteCallBack, _1, _2));
+	Random(500, 1000, angle, 4);
 }
 
 void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
 {
+
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
 			str[i] += std::to_string(angle[i][j]);
-			if(j < PARAMETER_NUM-1)
-			{
-				str[i] += ",";
-			}
-			else
+			str[i] += ",";
+			
+			if(j == PARAMETER_NUM-1)
 			{
 				str[i] += "\n";
 			}
@@ -120,51 +84,51 @@ void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
 
 void RobotMove(std::string str[], int move_result[])
 {
-	boost::array<char, 64> rbuf_old;
+	std::string array_cpy;
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
-		while(1)
+		serial.BoostWrite("s");
+		for(int j=0; j<5; j++)
 		{
-			rbuf_old = rbuf;
-			SerialRead();
-			SerialWrite(str[i]);
-			boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-			
-			if(rbuf_old != rbuf)
-			{
-				std::cout << "rbuf_old != rbuf" << std::endl;
-				break;
-			}
+			serial.BoostWrite(str[i]);
+			boost::this_thread::sleep(boost::posix_time::milliseconds(10));
 		}
-
-		move_result[i] = atoi(rbuf.data());
-		std::cout << "move_result[" << i << "]: " << move_result[i] << std::endl;
+		std::cout << "str[" << i << "]: " << str[i] << std::endl;
+		boost::this_thread::sleep(boost::posix_time::seconds(SLEEP_TIME));
+		for(int k=0; k<100; k++)
+		{
+			serial.BoostRead();
+			boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+		}
+		array_cpy = serial.buf.data();
+		std::cout << "ReadEnc: " << array_cpy << std::endl;
+		move_result[i] = std::stoi(array_cpy);
 	}
 }
 
-void Selection(int angle[][PARAMETER_NUM], int result[][2])
+void Selection(int angle[][PARAMETER_NUM], int move_result[], int result[][2])
 {
 	int temp, angle_temp;
-	int target_abs[RANDOM_MAX][2];
+	int target[RANDOM_MAX][2];
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
-		target_abs[i][0] = std::abs(angle[i][0] - TARGET_VALUE);
-		target_abs[i][1] = i;
+		target[i][0] = move_result[i];
+		target[i][1] = i;
 	}
 
 	for(int j=0; j<RANDOM_MAX-1; j++)
 	{
 		for(int k=j+1; k<RANDOM_MAX; k++)
 		{
-			if(target_abs[j][0] > target_abs[k][0])
+			if(target[j][0] < target[k][0])
 			{
-				temp = target_abs[j][0];
-				angle_temp = target_abs[j][1];
-				target_abs[j][0] = target_abs[k][0];
-				target_abs[j][1] = target_abs[k][1];
-				target_abs[k][0] = temp;
-				target_abs[k][1] = angle_temp;
+				temp = target[j][0];
+				angle_temp = target[j][1];
+				target[j][0] = target[k][0];
+				target[j][1] = target[k][1];
+				target[k][0] = temp;
+				target[k][1] = angle_temp;
 			}
 		}
 	}
@@ -173,7 +137,7 @@ void Selection(int angle[][PARAMETER_NUM], int result[][2])
 	{
 		for(int m=0; m<2; m++)
 		{
-			result[l][m] = target_abs[l][m];
+			result[l][m] = target[l][m];
 		}
 	}
 }
@@ -290,29 +254,25 @@ int main()
 	int result[RANDOM_MAX][2];
 	int move_result[RANDOM_MAX];
 	int parent_cpy = 0;
-	std::string str[RANDOM_MAX];
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
 
 	std::ofstream ofs(GetTimeISOString() + ".csv");
 
 	Initialize(angle);
+	serial.Init();
 
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
+		std::string str[RANDOM_MAX];
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		ofs << "No." << i+1 << std::endl;
 
 		MakeSring(angle, str);
 
-		for(int i=0; i<RANDOM_MAX; i++)
-		{
-			std::cout << "str[" << i << "]: " << str[i] << std::endl;
-		}
-
 		RobotMove(str, move_result);
 
-		Selection(angle, result);
+		Selection(angle, move_result, result);
 
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
@@ -369,7 +329,7 @@ int main()
 	}
 
 	ofs << "final_result" << std::endl;
-	Selection(angle, result);
+	Selection(angle, move_result, result);
 	for(int p=0; p<PARAMETER_NUM; p++)
 	{
 		for(int m=0; m<INDIVIDUALS_NUMBER; m++)

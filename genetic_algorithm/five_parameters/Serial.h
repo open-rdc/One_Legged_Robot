@@ -12,6 +12,7 @@ using namespace boost::asio;
 class Serial
 {
 public:
+	boost::array<char, 64> buf;
 	void Init();
 	void close();
 	void AsyncBoostWrite(std::string buf);
@@ -19,7 +20,6 @@ public:
 	void BoostRead();
 
 private:
-	boost::array<char, 64> buf;
 	void ReadCallBack(const boost::system::error_code& e, std::size_t size);
 	void WriteCallBack(const boost::system::error_code& e, std::size_t size);
 };
