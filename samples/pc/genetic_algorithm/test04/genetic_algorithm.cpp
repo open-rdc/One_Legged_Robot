@@ -38,9 +38,7 @@ void Random(int min, int max, int result[RANDOM_MAX])
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		result[i] = dist(gen);
-	}
-
-	
+	}	
 }
 
 void CenterRandom(int min, int max, int centerpoint[cNUM])
@@ -123,7 +121,7 @@ void clustering(int angle[], int centerpoint[]){
 
 			if(same_count == cNUM){
 				loop=false;
-			}	
+			}
 		}
 	}
 }
@@ -131,67 +129,47 @@ void clustering(int angle[], int centerpoint[]){
 
 void Selection(int angle[], int result[][2])
 {
-	int temp, angle_temp;
+	int temp, angle_temp, ctemp,center_temp;
 	int target_abs[RANDOM_MAX][2];
-	int F=1;
-
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		target_abs[i][0] = std::abs(angle[i] - TARGET_VALUE);
 		target_abs[i][1] = i;
 	}
-	
-	while(F){
-		F=0;
-		for(int j=0; j<RANDOM_MAX-1; j++)
-	{
-		for(int k=j+1; k<RANDOM_MAX; k++)
-		{
-			if(target_abs[j][0] > target_abs[k][0])
-			{
-				temp = target_abs[j][0];
-				angle_temp = target_abs[j][1];
-				target_abs[j][0] = target_abs[k][0];
-				target_abs[j][1] = target_abs[k][1];
-				target_abs[k][0] = temp;
-				target_abs[k][1] = angle_temp;
-			}
-		}
-	}
-	}
 
 	for(int i=0; i<cNUM; i++)
 	{
-		F=1;
-			while(F){
-				F=0;
-	for(int j=0; j<RANDOM_MAX-1; j++)
-	{
-		for(int k=j+1; k<RANDOM_MAX; k++)
+	
+		for(int j=0; j<RANDOM_MAX-1; j++)
 		{
-			if(target_abs[j][0] > target_abs[k][0])
+			for(int k=j+1; k<RANDOM_MAX; k++)
 			{
-				temp = target_abs[j][0];
-				angle_temp = target_abs[j][1];
-				target_abs[j][0] = target_abs[k][0];
-				target_abs[j][1] = target_abs[k][1];
-				target_abs[k][0] = temp;
-				target_abs[k][1] = angle_temp;
+				if(target_abs[j][0] > target_abs[k][0])
+				{
+					temp = target_abs[j][0];
+				    angle_temp = target_abs[j][1];
+				    target_abs[j][0] = target_abs[k][0];
+				    target_abs[j][1] = target_abs[k][1];
+				    target_abs[k][0] = temp;
+				    target_abs[k][1] = angle_temp;
+				}
 			}
 		}
 	}
-			}
-	}
+ 
 
-
-	for(int l=0; l<RANDOM_MAX * RANKING_RATE; l++)
-	{
-		for(int m=0; m<2; m++)
+	for(int j=0; j<cNUM; j++){
+		for(int l=0; l<RANDOM_MAX * RANKING_RATE; l++)
 		{
-			result[l][m] = target_abs[l][m];
+			for(int m=0; m<2; m++)
+			{
+				result[l][m] = target_abs[l][m];
+			}
 		}
 	}
+
+	
 }
 
 unsigned long DecimalToBinary(std::bitset<32> decimal)
@@ -315,14 +293,16 @@ int main()
 	std::ofstream ofs(GetTimeISOString() + ".csv");
 	
 	Initialize(angle);
-	CenterInitialize(centerpoint);
-	clustering(angle, centerpoint);
 	
+	CenterInitialize(centerpoint);	
+
+	clustering(angle, centerpoint);
+
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		ofs << "No." << i+1 << std::endl;
-
+		
 		Selection(angle, result);
 
 		for(int j=0; j<RANDOM_MAX; j++)
