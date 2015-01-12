@@ -24,6 +24,7 @@ void Serial::ReadCallBack(const boost::system::error_code& e, std::size_t size)
 {
 	std::cout.write(buf.data(), size);
 	port.async_read_some(buffer(buf), boost::bind(&Serial::ReadCallBack, this, _1, _2));
+	io.run();
 }
 
 void Serial::WriteCallBack(const boost::system::error_code& e, std::size_t size )
@@ -45,4 +46,5 @@ void Serial::BoostWrite(std::string buf)
 void Serial::BoostRead()
 {
 	port.async_read_some(buffer(buf), boost::bind(&Serial::ReadCallBack, this, _1, _2 ));
+	io.run();
 }
