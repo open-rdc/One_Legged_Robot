@@ -6,6 +6,7 @@
 /* Copyright(c) 2014 Kohei Izumi                    */
 /*--------------------------------------------------*/
 
+#include <iostream>
 #include "mbed.h"
 #include "QEI.h"
 
@@ -15,7 +16,7 @@ QEI enc(p7, p8, NC, 624);       // encoder pin
 Serial pc(USBTX, USBRX);        // USB port
 
 #define TIME 10
-#define DEBUG                   // Debug symbol
+//#define DEBUG                   // Debug symbol
 
 /*--------------------------------------------------*/
 /* Funcyion     : mbed initialize                   */
@@ -184,7 +185,6 @@ bool SerialErrorCheck()
         buffer[i] = pc.getc();
         if(buffer[i] == '\n')
         {
-            buffer[i] = NULL;
             return true;
         }
         i++;
@@ -199,17 +199,22 @@ int main() {
  
     while(1)
     {
+        char ready = pc.getc();
+        if(ready != 's')
+        {
+            continue;
+        }
+        
         SerialErrorCheck();
         int servo1_angle = ReadSerial(); // get character(servo1 angle)
         int servo1_time = ReadSerial();  // get character(servo1 time)
         int servo2_angle = ReadSerial(); // get character(servo2 angle) 
         int servo2_time = ReadSerial();  // get character(servo2 time)
         int sleep = ReadSerial();        // get character(sleep time)
-        SerialErrorCheck();
         
+        t.start();
         while(1)
         {
-            t.start();
 #ifdef DEBUG
             pc.printf("servo1_angle: %d\n", servo1_angle);
             pc.printf("servo1_time: %d\n", servo1_time);
@@ -219,25 +224,25 @@ int main() {
             pc.printf("time %f seconds\n", t.read());
 #endif
         
-            SetTimeAndPosition(0x01, servo1_angle, servo1_time);
-            SetTimeAndPosition(0x02, servo2_angle, servo2_time);
+            SetTimeAndPosition(0x01, servo1_angle - 450, servo1_time);
+            SetTimeAndPosition(0x02, servo2_angle - 450, servo2_time);
 
-            wait_ms(sleep); // sleep(ms)
+            wait_ms(sleep + std::max(servo1_time, servo2_time)); // sleep(ms)
 
-            SetPosition(0x01, 0);
-            SetPosition(0x02, 0);
+            SetTimeAndPosition(0x01, 0, 0);
+            SetTimeAndPosition(0x02, 0, 0);
 
-            wait_ms(sleep); // sleep(ms)
+            wait_ms(sleep + std::max(servo1_time, servo2_time)); // sleep(ms)
             
             if(t.read() > TIME)
             {
+                t.stop();
                 t.reset();
                 break;
             }
         }
 
-        pc.printf("get_enc:");
-        pc.printf("%07d\n", enc.getPulses()); // send to pc of encoder pulse
+        pc.printf("%d\n", enc.getPulses()); // send to pc of encoder pulse
         enc.reset();
     }
 }
