@@ -79,6 +79,8 @@ void clustering(int angle[], int centerpoint[]){
 	int individualsum[cNUM]={};
 	int same_count = 0;
 	int cluster_anlge[RANDOM_MAX][cNUM];
+	int w;
+
 	bool loop=true;
 
 	while (loop)
@@ -123,18 +125,39 @@ void clustering(int angle[], int centerpoint[]){
 			}
 		}
 		for(int c=0; c<cNUM; ++c){
-			std::cout<<"cluster["<<c<<"]:"<<centerpoint[c]<<std::endl;
+			//std::cout<<"cluster["<<c<<"]:"<<centerpoint[c]<<std::endl;
 			for(int i=0; i<RANDOM_MAX; i++){
 				if(min[i][1]==c){
 					cluster_anlge[i][c]=angle[i];
-					std::cout<<cluster_anlge[i][c]<<std::endl;
+					//std::cout<<cluster_anlge[i][c]<<std::endl;
 				}
 			}
-			std::cout<<std::endl;
+		}
+	}	
+		
+	for(int k=0; k<cNUM; k++){
+	for(int i=0; i<RANDOM_MAX-1; i++){
+		for(int j=i+1; j<RANDOM_MAX; j++){
+			if(cluster_anlge[i][k]<cluster_anlge[j][k]){
+				w=cluster_anlge[i][k];
+				cluster_anlge[i][k]=cluster_anlge[j][k];
+				cluster_anlge[j][k]=w;
+			}
+			}
 		}
 	}
 	
+
+	for(int i=0; i<cNUM; i++){
+		std::cout<<"cluster["<<i<<"]:"<<centerpoint[i]<<std::endl;
+		for(int j=0; j<RANDOM_MAX; j++){
+			std::cout<<cluster_anlge[j][i]<<std::endl;
+		}
+	}
+
+
 }
+	
 
 /*
 void Selection(int angle[], int result[][2])
@@ -309,6 +332,9 @@ int main()
 
 
 	clustering(angle, centerpoint);
+
+	//selection(angle);
+
 /*
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
