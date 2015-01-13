@@ -123,10 +123,10 @@ void clustering(int angle[], int centerpoint[]){
 			}
 		}
 		for(int c=0; c<cNUM; ++c){
-			std::cout<<"cluster: "<<c<<std::endl;
+			std::cout<<"cluster["<<c<<"]:"<<centerpoint[c]<<std::endl;
 			for(int i=0; i<RANDOM_MAX; i++){
 				if(min[i][1]==c){
-					std::cout<<angle[i]<<std::endl;
+					std::cout<<"angle["<<i<<"]:"<<angle[i]<<std::endl;
 				}
 			}
 			std::cout<<std::endl;
@@ -299,7 +299,7 @@ int main()
 	std::bitset<32> parent[RANDOM_MAX];
 	std::bitset<32> child[RANDOM_MAX];
 
-	std::ofstream ofs(GetTimeISOString() + ".csv");
+	//std::ofstream ofs(GetTimeISOString() + ".csv");
 	
 	Initialize(angle);
 
