@@ -84,7 +84,7 @@ void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
 
 void RobotMove(std::string str[], int move_result[])
 {
-	std::string array_cpy;
+	int enc;
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		serial.BoostWrite("s");
@@ -100,9 +100,9 @@ void RobotMove(std::string str[], int move_result[])
 			serial.BoostRead();
 			boost::this_thread::sleep(boost::posix_time::milliseconds(50));
 		}
-		array_cpy = serial.buf.data();
-		std::cout << "ReadEnc: " << array_cpy << std::endl;
-		move_result[i] = std::stoi(array_cpy);
+		enc = serial.GetSerialBuf();
+		std::cout << "ReadEnc: " << enc << std::endl;
+		move_result[i] = enc;
 	}
 }
 
@@ -272,6 +272,13 @@ int main()
 
 		RobotMove(str, move_result);
 
+		ofs << "move_result" << std::endl;
+		for(int j=0; j<RANDOM_MAX; j++)
+		{
+			ofs << move_result[j] << "\t";
+		}
+		ofs << std::endl;
+
 		Selection(angle, move_result, result);
 
 		for(int j=0; j<PARAMETER_NUM; j++)
@@ -338,6 +345,8 @@ int main()
 		}
 		ofs << std::endl;
 	}
+
+	serial.close();
 
 	return 0;
 }
