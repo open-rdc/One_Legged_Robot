@@ -62,9 +62,11 @@ int Random(int min, int max)
 	return dist(gen);
 }
 
+
 void Initialize(int angle[])
 {
 	Random(0, 180, angle);
+	
 }
 
 void CenterInitialize(int centerpoint[])
@@ -78,16 +80,16 @@ void clustering(int angle[], int centerpoint[]){
 	int point_counter[cNUM]={};
 	int individualsum[cNUM]={};
 	int same_count = 0;
-	int cluster_anlge[RANDOM_MAX][cNUM];
+	int cluster_angle[RANDOM_MAX][cNUM]={0};
 	int w;
-
+	int idNum=-1;
 	bool loop=true;
 
 	while (loop)
 	{
 		for(int i=0; i<RANDOM_MAX; i++){
 			for(int j=0; j<cNUM; j++){
-				distance[i][j]=abs(angle[i]-centerpoint[j]);
+				distance[i][j]=abs(angle[i]-centerpoint[j]);	
 			}
 		}
 
@@ -124,40 +126,38 @@ void clustering(int angle[], int centerpoint[]){
 				loop=false;
 			}
 		}
-		for(int c=0; c<cNUM; ++c){
-			//std::cout<<"cluster["<<c<<"]:"<<centerpoint[c]<<std::endl;
+		for(int c=0; c<cNUM; c++){
 			for(int i=0; i<RANDOM_MAX; i++){
 				if(min[i][1]==c){
-					cluster_anlge[i][c]=angle[i];
-					//std::cout<<cluster_anlge[i][c]<<std::endl;
+					cluster_angle[i][c]=angle[i];
 				}
 			}
 		}
-	}	
-		
-	for(int k=0; k<cNUM; k++){
-	for(int i=0; i<RANDOM_MAX-1; i++){
-		for(int j=i+1; j<RANDOM_MAX; j++){
-			if(cluster_anlge[i][k]<cluster_anlge[j][k]){
-				w=cluster_anlge[i][k];
-				cluster_anlge[i][k]=cluster_anlge[j][k];
-				cluster_anlge[j][k]=w;
-			}
+	}
+
+	for(int c=0; c<cNUM; c++){
+		for(int i=0; i<RANDOM_MAX-1; i++){
+			for(int j=i+1; j<RANDOM_MAX; j++){
+				if(cluster_angle[i][c]<cluster_angle[j][c]){
+					w=cluster_angle[i][c];
+					cluster_angle[i][c]=cluster_angle[j][c];
+					cluster_angle[j][c]=w;
+				}
 			}
 		}
 	}
-	
 
 	for(int i=0; i<cNUM; i++){
 		std::cout<<"cluster["<<i<<"]:"<<centerpoint[i]<<std::endl;
 		for(int j=0; j<RANDOM_MAX; j++){
-			std::cout<<cluster_anlge[j][i]<<std::endl;
+			if(cluster_angle[j][i]!=0)
+			std::cout<<"["<<j+1<<"]:"<<cluster_angle[j][i]<<std::endl;
 		}
+		std::cout<<std::endl;
 	}
-
-
 }
-	
+
+
 
 /*
 void Selection(int angle[], int result[][2])
@@ -301,17 +301,17 @@ void Mutation(std::bitset<32> child[])
 	for(int j=0; j<cNUM; j++)
 	{
 		pSum=0;
-		for(int i=0; i<RANDOM_MAX; i++)
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		random = Random(0, 100) * 0.01;
+
+		if(random <= MUTATION_RATE)
 		{
-			random = Random(0, 100) * 0.01;
-			
-			if(random <= MUTATION_RATE)
-			{
-				mutation_pos = Random(0, MUTATION_POS);
-			    child[i].flip(mutation_pos);
-			}
+			mutation_pos = Random(0, MUTATION_POS);
+			child[i].flip(mutation_pos);
 		}
 	}
+}
 }
 */
 int main()
@@ -326,15 +326,10 @@ int main()
 	//std::ofstream ofs(GetTimeISOString() + ".csv");
 	
 	Initialize(angle);
-
 	
-	CenterInitialize(centerpoint);
-
+	CenterInitialize(centerpoint);	
 
 	clustering(angle, centerpoint);
-
-	//selection(angle);
-
 /*
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
