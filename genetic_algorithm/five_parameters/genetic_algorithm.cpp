@@ -2,66 +2,19 @@
 
 #include <fstream>
 #include <bitset>
-#include <boost/random.hpp>
-#include <boost/date_time.hpp>
-#include <boost/date_time/c_local_time_adjustor.hpp>
-#include <boost/chrono.hpp>
-#include <iostream>
-#include "parameter.h"
 #include "Serial.h"
+#include "Utility.h"
 
 Serial serial;
-
-unsigned long long GetTimeStamp()
-{
-	namespace pt = boost::posix_time;
-	namespace gg = boost::gregorian;
-
-	typedef boost::date_time::c_local_adjustor<pt::ptime> local_adj;
-
-	auto epoch = local_adj::utc_to_local(pt::ptime(gg::date(1970, 1, 1)));
-	auto diff = pt::microsec_clock::local_time() - epoch;
-
-	return diff.total_microseconds();
-}
-
-std::string GetTimeISOString()
-{
-	boost::posix_time::ptime today = boost::posix_time::second_clock::local_time();
-
-	return boost::posix_time::to_iso_string(today);
-}
-
-void Random(int min, int max, int result[][PARAMETER_NUM], int num)
-{
-	boost::random::mt19937 gen(GetTimeStamp());
-	boost::random::uniform_int_distribution<> dist(min, max);
-
-	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
-
-	for(int i=0; i<RANDOM_MAX; i++)
-	{
-		result[i][num] = dist(gen);
-	}
-}
-
-int Random(int min, int max)
-{
-	boost::random::mt19937 gen(GetTimeStamp());
-	boost::random::uniform_int_distribution<> dist(min, max);
-
-	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
-
-	return dist(gen);
-}
+Utility utility;
 
 void Initialize(int angle[][PARAMETER_NUM])
 {
-	Random(0, 450, angle, 0);
-	Random(0, 100, angle, 1);
-	Random(0, 450, angle, 2);
-	Random(0, 100, angle, 3);
-	Random(500, 1000, angle, 4);
+	utility.Random(0, 450, angle, 0);
+	utility.Random(0, 100, angle, 1);
+	utility.Random(0, 450, angle, 2);
+	utility.Random(0, 100, angle, 3);
+	utility.Random(500, 1000, angle, 4);
 }
 
 void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
@@ -184,7 +137,7 @@ std::bitset<32> SetMaskRandom()
 
 	for(size_t i=0; i<mask_bit.size(); i++)
 	{
-		bit_counter = Random(0, 1);
+		bit_counter = utility.Random(0, 1);
 
 		if(bit_counter == 0)
 		{
@@ -237,11 +190,11 @@ void Mutation(std::bitset<32> child[][PARAMETER_NUM])
 	{
 		for(int i=0; i<RANDOM_MAX; i++)
 		{
-			random = Random(0, 100) * 0.01;
+			random = utility.Random(0, 100) * 0.01;
 
 			if(random <= MUTATION_RATE)
 			{
-				mutation_pos = Random(0, MUTATION_POS);
+				mutation_pos = utility.Random(0, MUTATION_POS);
 				child[i][j].flip(mutation_pos);
 			}
 		}
@@ -256,8 +209,9 @@ int main()
 	int parent_cpy = 0;
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
+	std::string iso_string = utility.GetTimeISOString();
 
-	std::ofstream ofs(GetTimeISOString() + ".csv");
+	std::ofstream ofs(iso_string + ".csv");
 
 	Initialize(angle);
 	serial.Init();
