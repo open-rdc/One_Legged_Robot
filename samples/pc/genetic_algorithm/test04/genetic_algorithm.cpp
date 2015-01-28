@@ -133,9 +133,10 @@ void clustering(int angle[], int centerpoint[], int result[][cNUM][2]){
 			}
 		}		
 	}
-
+/*
 	for(int i=0; i<RANDOM_MAX; i++){
 		for(int j=0; j<cNUM; j++){
+			
 			target[i][j][0]=std::abs(cluster_angle[i][j]-TARGET_VALUE);
 			target[i][j][1]=i;
 		}
@@ -154,7 +155,7 @@ void clustering(int angle[], int centerpoint[], int result[][cNUM][2]){
 				}
 			}
 		}
-	}
+	}	
 
 	for(int i=0; i<cNUM; i++){
 		for(int j=0; j<RANDOM_MAX*RANKING_RATE; j++){
@@ -163,7 +164,16 @@ void clustering(int angle[], int centerpoint[], int result[][cNUM][2]){
 			}
 		}
 	}
-/*	
+
+	for(int i=0; i<cNUM; i++){
+		std::cout<<"cluster["<<i+1<<"]:"<<centerpoint[i]<<std::endl;
+		for(int j=0; j<RANDOM_MAX; j++){
+			if(cluster_angle[j][i]!=0)
+				std::cout<<"["<<j+1<<"]:"<<target[j][i][0]<<std::endl;
+		}
+		std::cout<<std::endl;
+	}
+	
 	for(int c=0; c<cNUM; c++){
 		for(int i=0; i<RANDOM_MAX-1; i++){
 			for(int j=i+1; j<RANDOM_MAX; j++){
@@ -180,57 +190,50 @@ void clustering(int angle[], int centerpoint[], int result[][cNUM][2]){
 		std::cout<<"cluster["<<i+1<<"]:"<<centerpoint[i]<<std::endl;
 		for(int j=0; j<RANDOM_MAX; j++){
 			if(cluster_angle[j][i]!=0)
-			std::cout<<"["<<j+1<<"]:"<<cluster_angle[j][i]<<std::endl;
+				std::cout<<"["<<j+1<<"]:"<<std::abs(cluster_angle[j][i]-TARGET_VALUE)<<std::endl;
 		}
 		std::cout<<std::endl;
 	}	
-	*/
+*/
 }
 
-/*
-void Selection(int angle[], int result[][2])
+
+void Selection(int angle[], int result[][cNUM][2])
 {
-	int temp, angle_temp, ctemp,center_temp;
-	int target_abs[RANDOM_MAX][2];
+	int w,s;
+	int target[RANDOM_MAX][cNUM][2]={};
 
-	for(int i=0; i<RANDOM_MAX; i++)
-	{
-		target_abs[i][0] = std::abs(angle[i] - TARGET_VALUE);
-		target_abs[i][1] = i;
+	for(int i=0; i<RANDOM_MAX; i++){
+		for(int j=0; j<cNUM; j++){
+			target[i][j][0]=std::abs(angle[i]-TARGET_VALUE);
+			target[i][j][1]=i;
+		}
 	}
-
-	for(int i=0; i<cNUM; i++)
-	{
 	
-		for(int j=0; j<RANDOM_MAX-1; j++)
-		{
-			for(int k=j+1; k<RANDOM_MAX; k++)
-			{
-				if(target_abs[j][0] > target_abs[k][0])
-				{
-					temp = target_abs[j][0];
-				    angle_temp = target_abs[j][1];
-				    target_abs[j][0] = target_abs[k][0];
-				    target_abs[j][1] = target_abs[k][1];
-				    target_abs[k][0] = temp;
-				    target_abs[k][1] = angle_temp;
+	for(int c=0; c<cNUM; c++){
+		for(int i=0; i<RANDOM_MAX-1; i++){
+			for(int j=i+1; j<RANDOM_MAX; j++){
+				if(target[i][c][0]<target[j][c][0]){
+					w=target[i][c][0];
+					s=target[i][c][1];
+					target[i][c][0]=target[j][c][0];
+					target[i][c][1]=target[j][c][1];
+					target[j][c][0]=w;
+					target[j][c][1]=s;
 				}
 			}
 		}
-	}
- 
+	}	
 
-	for(int j=0; j<cNUM; j++){
-		for(int l=0; l<RANDOM_MAX * RANKING_RATE; l++)
-		{
-			for(int m=0; m<2; m++)
-			{
-				result[l][m] = target_abs[l][m];
+	for(int i=0; i<cNUM; i++){
+		for(int j=0; j<RANDOM_MAX*RANKING_RATE; j++){
+			for(int k=0; k<2; k++){
+				result[j][i][k]=target[j][i][k];
 			}
 		}
-	}	
+	}
 }
-*/
+
 unsigned long DecimalToBinary(std::bitset<32> decimal)
 {
 	std::bitset<32> value(decimal);
@@ -351,12 +354,16 @@ int main()
 	
 	CenterInitialize(centerpoint);	
 
+	clustering(angle, centerpoint, result);
+
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		//ofs << "No." << i+1 << std::endl;
 		
 		clustering(angle, centerpoint, result);
+
+		Selection(angle, result);
 
 		for(int j=0; j<RANDOM_MAX; j++)
 		{
@@ -367,19 +374,20 @@ int main()
 			}
 			parent[j][i] = BinaryToDecimal(angle[result[parent_cpy][i][1]]);
 			parent_cpy += 1;
-		}
+		  }
 		}
 
 		//ofs << "result_angle" << "\t";
 
 		for(int i=0; i<cNUM; i++){
-		for(int k=0; k<INDIVIDUALS_NUMBER; k++)
-		{
-			std::cout << "---- No." << k+1 << " -----" << std::endl;
-			std::cout << "result_angle:" << angle[result[k][i][1]] << std::endl;
-			//ofs << angle[result[k][1]] << "\t";
-		}
+			for(int k=0; k<INDIVIDUALS_NUMBER; k++)
+			{
+				std::cout << "---- No." << k+1 << " -----" << std::endl;
+				std::cout << "result_angle:" << angle[result[k][i][1]] << std::endl;
+				//ofs << angle[result[k][1]] << "\t";
+			}
 		//ofs << std::endl;
+		}
 	
 		std::cout << "----- Crossover -----" << std::endl;
 		Crossover(parent, child);
@@ -389,16 +397,16 @@ int main()
 		for(int l=0; l<RANDOM_MAX; l++)
 		{
 		for(int k=0; k<cNUM; k++){
-			ofs << DecimalToBinary(child[l][k]) << "\t";
+			//ofs << DecimalToBinary(child[l][k]) << "\t";
 			}
 		}
-		ofs << std::endl;
+		//ofs << std::endl;
 */
 		std::cout << "----- Mutation -----" << std::endl;
 		Mutation(child);
-/*
-		//ofs << "Mutation" << "\t";
 
+		//ofs << "Mutation" << "\t";
+/*
 		for(int l=0; l<RANDOM_MAX; l++)
 		{
 			for(int i=0; i<cNUM; i++){
@@ -407,20 +415,22 @@ int main()
 		}
 		//ofs << std::endl;
 		}
-		*/
+*/		
+		
 	}
 
 	//ofs << "final_result" << "\t";
-	clustering(angle, centerpoint, result);
-	for(int m=0; m<INDIVIDUALS_NUMBER; m++)
-	{
-		for(int i=0; i<cNUM; i++){
-		std::cout << "child[" << i<< "]:" << angle[result[m][i][1]] << std::endl;
-		//ofs << angle[result[m][1][i]] << "\t";
+	Selection(angle, result);
+	for(int j=0; j<cNUM; j++){
+		std::cout<<"centerpoint["<<j<<"]:"<<centerpoint[j]<<std::endl;
+		for(int m=0; m<INDIVIDUALS_NUMBER; m++)
+		{
+			std::cout << "child[" << m<< "]:" << angle[result[m][j][1]] << std::endl;
+			//ofs << angle[result[m][1][i]] << "\t";
+		}
+		//ofs << std::endl;
+		std::cout<<std::endl;
 	}
-	//ofs << std::endl;
-	}
-	}	
-
+		
 	return 0;
 }
