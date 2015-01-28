@@ -1,6 +1,6 @@
 #include "Utility.h"
 
-unsigned long long GetTimeStamp()
+unsigned long long Utility::GetTimeStamp()
 {
 	namespace pt = boost::posix_time;
 	namespace gg = boost::gregorian;
@@ -13,14 +13,14 @@ unsigned long long GetTimeStamp()
 	return diff.total_microseconds();
 }
 
-std::string GetTimeISOString()
+std::string Utility::GetTimeISOString()
 {
 	boost::posix_time::ptime today = boost::posix_time::second_clock::local_time();
 
 	return boost::posix_time::to_iso_string(today);
 }
 
-void Random(int min, int max, int result[][PARAMETER_NUM], int num)
+void Utility::Random(int min, int max, int result[][PARAMETER_NUM], int num)
 {
 	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
@@ -33,7 +33,7 @@ void Random(int min, int max, int result[][PARAMETER_NUM], int num)
 	}
 }
 
-int Random(int min, int max)
+int Utility::Random(int min, int max)
 {
 	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
