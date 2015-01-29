@@ -1,7 +1,6 @@
 #pragma warning(disable: 4819)
 
 #include <fstream>
-#include <bitset>
 #include "Serial.h"
 #include "Utility.h"
 
@@ -103,62 +102,9 @@ void Selection(int angle[][PARAMETER_NUM], int move_result[], int result[][2])
 	}
 }
 
-unsigned long DecimalToBinary(std::bitset<32> decimal)
-{
-	std::bitset<32> value(decimal);
-	
-	return value.to_ulong();
-}
-
-std::bitset<32> BinaryToDecimal(std::bitset<32> binary)
-{
-	std::bitset<32> value(binary);
-
-	return value;
-}
-
-std::bitset<32> SetMask()
-{
-	std::bitset<32> mask_bit;
-	int bit_counter = 0;
-
-	for(size_t i=0; i<mask_bit.size(); i++)
-	{
-		if(bit_counter == 0)
-		{
-			mask_bit.set(i, 1);
-			bit_counter = 1;
-		}
-		else
-		{
-			bit_counter = 0;
-		}
-	}
-
-	return mask_bit;
-}
-
-std::bitset<32> SetMaskRandom()
-{
-	std::bitset<32> mask_bit;
-	int bit_counter = 0;
-
-	for(size_t i=0; i<mask_bit.size(); i++)
-	{
-		bit_counter = utility.Random(0, 1);
-
-		if(bit_counter == 0)
-		{
-			mask_bit.set(i, 1);
-		}
-	}
-
-	return mask_bit;
-}
-
 void Crossover(std::bitset<32> parent[][PARAMETER_NUM], std::bitset<32> child[][PARAMETER_NUM])
 {
-	std::bitset<32> mask = SetMask();
+	std::bitset<32> mask = utility.GetMask();
 	int counter = 0;
 
 	for(int k=0; k<PARAMETER_NUM; k++)
@@ -168,7 +114,7 @@ void Crossover(std::bitset<32> parent[][PARAMETER_NUM], std::bitset<32> child[][
 			counter += 2;
 			if(counter == INDIVIDUALS_NUMBER)
 			{
-				mask = SetMaskRandom();
+				mask = utility.GetMaskRandom();
 				counter = 0;
 			}
 
@@ -251,7 +197,7 @@ int main()
 				{
 					parent_cpy = 0;
 				}
-				parent[k][j] = BinaryToDecimal(angle[result[parent_cpy][1]][j]);
+				parent[k][j] = utility.BinaryToDecimal(angle[result[parent_cpy][1]][j]);
 				parent_cpy += 1;
 			}
 		}
@@ -276,7 +222,7 @@ int main()
 		{
 			for(int l=0; l<RANDOM_MAX; l++)
 			{
-				ofs << DecimalToBinary(child[l][m]) << "\t";
+				ofs << utility.DecimalToBinary(child[l][m]) << "\t";
 			}
 			ofs << std::endl;
 		}
@@ -290,7 +236,7 @@ int main()
 		{
 			for(int l=0; l<RANDOM_MAX; l++)
 			{
-				angle[l][o] = DecimalToBinary(child[l][o]);
+				angle[l][o] = utility.DecimalToBinary(child[l][o]);
 				ofs  << angle[l][o] << "\t";
 			}
 			ofs << std::endl;

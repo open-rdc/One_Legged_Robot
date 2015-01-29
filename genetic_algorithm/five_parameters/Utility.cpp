@@ -47,3 +47,64 @@ int Utility::GetRandom(int random_num, int parameter_num)
 {
 	return result[random_num][parameter_num];
 }
+
+unsigned long Utility::DecimalToBinary(std::bitset<32> decimal)
+{
+	std::bitset<32> value(decimal);
+	
+	return value.to_ulong();
+}
+
+std::bitset<32> Utility::BinaryToDecimal(std::bitset<32> binary)
+{
+	std::bitset<32> value(binary);
+
+	return value;
+}
+
+void Utility::SetMask()
+{
+	int bit_counter = 0;
+
+	for(size_t i=0; i<mask.size(); i++)
+	{
+		if(bit_counter == 0)
+		{
+			mask.set(i, 1);
+			bit_counter = 1;
+		}
+		else
+		{
+			bit_counter = 0;
+		}
+	}
+}
+
+void Utility::SetMaskRandom()
+{
+	int bit_counter = 0;
+
+	for(size_t i=0; i<mask_random.size(); i++)
+	{
+		bit_counter = Random(0, 1);
+
+		if(bit_counter == 0)
+		{
+			mask_random.set(i, 1);
+		}
+	}
+}
+
+std::bitset<32> Utility::GetMask()
+{
+	SetMask();
+
+	return mask;
+}
+
+std::bitset<32> Utility::GetMaskRandom()
+{
+	SetMaskRandom();
+
+	return mask_random;
+}
