@@ -163,9 +163,8 @@ int main()
 	int parent_cpy = 0;
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
-	std::string iso_string = utility.GetTimeISOString();
 
-	std::ofstream ofs(iso_string + ".csv");
+	std::ofstream ofs(utility.GetTimeISOString() + ".csv");
 
 	Initialize(angle);
 	serial.Init();
