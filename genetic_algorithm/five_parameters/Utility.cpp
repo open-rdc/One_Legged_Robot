@@ -20,7 +20,7 @@ std::string Utility::GetTimeISOString()
 	return boost::posix_time::to_iso_string(today);
 }
 
-void Utility::Random(int min, int max, int result[][PARAMETER_NUM], int num)
+void Utility::Random(int min, int max, int num)
 {
 	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
@@ -41,4 +41,9 @@ int Utility::Random(int min, int max)
 	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
 
 	return dist(gen);
+}
+
+int Utility::GetRandom(int random_num, int parameter_num)
+{
+	return result[random_num][parameter_num];
 }

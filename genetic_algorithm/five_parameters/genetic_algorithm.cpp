@@ -10,11 +10,19 @@ Utility utility;
 
 void Initialize(int angle[][PARAMETER_NUM])
 {
-	utility.Random(0, 450, angle, 0);
-	utility.Random(0, 100, angle, 1);
-	utility.Random(0, 450, angle, 2);
-	utility.Random(0, 100, angle, 3);
-	utility.Random(500, 1000, angle, 4);
+	utility.Random(0, 450, 0);
+	utility.Random(0, 100, 1);
+	utility.Random(0, 450, 2);
+	utility.Random(0, 100, 3);
+	utility.Random(500, 1000, 4);
+
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		for(int j=0; j<PARAMETER_NUM; j++)
+		{
+			angle[i][j] = utility.GetRandom(i, j);
+		}
+	}
 }
 
 void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
