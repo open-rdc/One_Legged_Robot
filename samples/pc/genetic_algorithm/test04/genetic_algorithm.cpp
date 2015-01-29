@@ -73,9 +73,9 @@ void CenterInitialize(int centerpoint[])
 	CenterRandom(0, 180, centerpoint);
 }
 
-void clustering(int angle[], int centerpoint[], int result[][cNUM][2]){
+void clustering(int angle[], int centerpoint[], int min[][cNUM]){
 	int distance[RANDOM_MAX][cNUM];
-	int min[RANDOM_MAX][cNUM];
+	//int min[RANDOM_MAX][cNUM];
 	int point_counter[cNUM]={};
 	int individualsum[cNUM]={};
 	int same_count = 0;
@@ -198,14 +198,15 @@ void clustering(int angle[], int centerpoint[], int result[][cNUM][2]){
 }
 
 
-void Selection(int angle[], int result[][cNUM][2])
+void Selection(int angle[], int result[][cNUM][2],int min[][cNUM])
 {
 	int w,s;
 	int target[RANDOM_MAX][cNUM][2]={};
 
 	for(int i=0; i<RANDOM_MAX; i++){
 		for(int j=0; j<cNUM; j++){
-			target[i][j][0]=std::abs(angle[i]-TARGET_VALUE);
+			if(min[i][1]==j)
+			target[i][j][0]=std::abs(angle[j]-TARGET_VALUE);
 			target[i][j][1]=i;
 		}
 	}
@@ -223,7 +224,7 @@ void Selection(int angle[], int result[][cNUM][2])
 				}
 			}
 		}
-	}	
+	}		
 
 	for(int i=0; i<cNUM; i++){
 		for(int j=0; j<RANDOM_MAX*RANKING_RATE; j++){
@@ -344,6 +345,7 @@ int main()
 	int angle[RANDOM_MAX];
 	int centerpoint[cNUM];
 	int result[RANDOM_MAX][cNUM][2];
+	int min[RANDOM_MAX][cNUM];
 	int parent_cpy = 0;
 	std::bitset<32> parent[RANDOM_MAX][cNUM];
 	std::bitset<32> child[RANDOM_MAX][cNUM];
@@ -353,17 +355,18 @@ int main()
 	Initialize(angle);
 	
 	CenterInitialize(centerpoint);	
+	
+	//clustering(angle, centerpoint, min);
 
-	clustering(angle, centerpoint, result);
-
+	
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		//ofs << "No." << i+1 << std::endl;
 		
-		clustering(angle, centerpoint, result);
+		clustering(angle, centerpoint, min);
 
-		Selection(angle, result);
+		Selection(angle, result, min);
 
 		for(int j=0; j<RANDOM_MAX; j++)
 		{
@@ -404,9 +407,9 @@ int main()
 */
 		std::cout << "----- Mutation -----" << std::endl;
 		Mutation(child);
-
-		//ofs << "Mutation" << "\t";
 /*
+		//ofs << "Mutation" << "\t";
+
 		for(int l=0; l<RANDOM_MAX; l++)
 		{
 			for(int i=0; i<cNUM; i++){
@@ -415,22 +418,23 @@ int main()
 		}
 		//ofs << std::endl;
 		}
-*/		
+*/	
 		
 	}
 
 	//ofs << "final_result" << "\t";
-	Selection(angle, result);
+	Selection(angle, result, min);
 	for(int j=0; j<cNUM; j++){
 		std::cout<<"centerpoint["<<j<<"]:"<<centerpoint[j]<<std::endl;
 		for(int m=0; m<INDIVIDUALS_NUMBER; m++)
 		{
-			std::cout << "child[" << m<< "]:" << angle[result[m][j][1]] << std::endl;
+			if(min[m][1]==j)
+				std::cout << "child[" << m<< "]:" << angle[result[m][j][1]] << std::endl;
 			//ofs << angle[result[m][1][i]] << "\t";
 		}
 		//ofs << std::endl;
 		std::cout<<std::endl;
 	}
-		
+	
 	return 0;
 }
