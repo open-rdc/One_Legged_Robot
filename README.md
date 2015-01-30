@@ -3,6 +3,7 @@
 ### 一脚ロボット用プログラム
 * mbed用のプログラムはmbed\mbed.cppになります。
 * pc用の遺伝的アルゴリズムはgenetic_algorithm\five_parametersになります。
+* 動作の様子はhttp://youtu.be/_d31E7fVSTY
 
 # mbed(LPC1768)
 * PCからシリアルで角度を受信し、TTL半二重通信でサーボモータに角度情報を送信する
