@@ -225,7 +225,7 @@ std::bitset<32> SetMaskRandom()
 	return mask_bit;
 }
 
-void Crossover(std::bitset<32> parent[][cNUM], std::bitset<32> child[][cNUM])
+void Crossover(std::bitset<32> parent[][cNUM], std::bitset<32> child[][cNUM], int min[][cNUM])
 {
 	std::bitset<32> mask = SetMask();
 	int counter = 0;
@@ -233,50 +233,59 @@ void Crossover(std::bitset<32> parent[][cNUM], std::bitset<32> child[][cNUM])
 	for(int k=0; k<cNUM; k++){
 		for(int i=0; i<RANDOM_MAX; i+=2)
 		{
-			counter += 2;
-			if(counter == INDIVIDUALS_NUMBER)
-			{
-				mask = SetMaskRandom();
-				counter = 0;
-			}
-			for(size_t j=0; j<parent[i][k].size(); j++)
-			{
-				if(mask.test(j) == 0)
+			if(min[i][1]==k){
+				counter += 2;
+				if(counter == INDIVIDUALS_NUMBER)
 				{
-					child[i][k].set(j, parent[i][k].test(j));
-					child[i+1][k].set(j, parent[i+1][k].test(j));
+					mask = SetMaskRandom();
+					counter = 0;
 				}
-				else
+				
+				for(size_t j=0; j<parent[i][k].size(); j++)
 				{
-					child[i][k].set(j, parent[i+1][k].test(j));
-					child[i+1][k].set(j, parent[i][k].test(j));
+					if(mask.test(j) == 0)
+					{
+						child[i][k].set(j, parent[i][k].test(j));
+						child[i+1][k].set(j, parent[i+1][k].test(j));
+					}
+					else
+					{
+						child[i][k].set(j, parent[i+1][k].test(j));
+						child[i+1][k].set(j, parent[i][k].test(j));
+					}
 				}
-				std::cout<<"paren["<<i<<"]["<<k<<"]:"<<parent[i][k]<<std::endl;
-				std::cout<<"paren["<<i+1<<"]["<<k<<"]:"<<parent[i+1][k]<<std::endl;
-				std::cout<<"mask   ["<<i<<"] :"<<mask<<std::endl;
-				std::cout<<"child["<<i<<"]["<<k<<"]:"<<child[i][k]<<std::endl;
-				std::cout<<"child["<<i+1<<"]["<<k<<"]:"<<child[i+1][k]<<std::endl;
+				/*
+				std::cout<<"parent["<<i<<"]["<<k<<"]:"<<parent[i][k]<<std::endl;
+				std::cout<<"parent["<<i+1<<"]["<<k<<"]:"<<parent[i+1][k]<<std::endl;
+				std::cout<<"mask    ["<<i<<"] :"<<mask<<std::endl;
+				std::cout<<"child ["<<i<<"]["<<k<<"]:"<<child[i][k]<<std::endl;
+				std::cout<<"child ["<<i+1<<"]["<<k<<"]:"<<child[i+1][k]<<std::endl;
 				std::cout<<std::endl;
+				*/
 			}
 		}
 	}
 }
 
-void Mutation(std::bitset<32> child[][cNUM]) 
+void Mutation(std::bitset<32> child[][cNUM], int min[][cNUM]) 
 {
 	double random;
 	int mutation_pos;
 	
-	for(int i=0; i<RANDOM_MAX; i++)
+	for(int k=0; k<cNUM; k++)
 	{
-		random = Random(0, 100) * 0.01;
-		
-		if(random <= MUTATION_RATE)
+		for(int i=0; i<RANDOM_MAX; i++)
 		{
-			for(int k=0; k<cNUM; k++)
+			if(min[i][1]==k)
 			{
-				mutation_pos = Random(0, MUTATION_POS);
-				child[i][k].flip(mutation_pos);
+				random = Random(0, 100) * 0.01;
+				
+				if(random <= MUTATION_RATE)
+				{
+					mutation_pos = Random(0, MUTATION_POS);
+					child[i][k].flip(mutation_pos);
+				}
+				//std::cout<<"child["<<i<<"]["<<k<<"]:"<<child[i][k]<<std::endl;
 			}
 		}
 	}
@@ -310,29 +319,34 @@ int main()
 		for(int j=0; j<RANDOM_MAX; j++)
 		{
 		  for(int i=0; i<cNUM; i++){ 
-			if(parent_cpy == INDIVIDUALS_NUMBER)
-			{
-				parent_cpy = 0;
-			}
-			parent[j][i] = BinaryToDecimal(angle[result[parent_cpy][i][1]]);
-			parent_cpy += 1;
+			  if(min[j][1]==i){
+				  if(parent_cpy == INDIVIDUALS_NUMBER)
+				  {
+					  parent_cpy = 0;
+				  }
+				  parent[j][i] = BinaryToDecimal(angle[result[parent_cpy][i][1]]);
+				  parent_cpy += 1;
+			  }
 		  }
 		}
 
 		//ofs << "result_angle" << "\t";
 
-		for(int i=0; i<cNUM; i++){ //クラスタの追加
+		for(int i=0; i<cNUM; i++){ 
+			std::cout<<"centerpoint["<<i<<"]:"<<centerpoint[i]<<std::endl;
 			for(int k=0; k<INDIVIDUALS_NUMBER; k++)
 			{
+				if(min[k][1]==i)
 				//std::cout << "---- No." << k+1 << " -----" << std::endl;
-				//std::cout << "result_angle:" << angle[result[k][i][1]] << std::endl;
+				std::cout << "result_angle:" << angle[result[k][i][1]] << std::endl;
 				//ofs << angle[result[k][1]] << "\t";
 			}
+			std::cout<<std::endl;
 		//ofs << std::endl;
 		}
 	
 		std::cout << "----- Crossover -----" << std::endl;
-		Crossover(parent, child);
+		Crossover(parent, child, min);
 
 		//ofs << "Crossover" << "\t";
 /*
@@ -345,7 +359,7 @@ int main()
 		ofs << std::endl;
 */
 		std::cout << "----- Mutation -----" << std::endl;
-		Mutation(child);
+		Mutation(child, min);
 
 /*		ofs << "Mutation" << "\t";
 
@@ -362,10 +376,10 @@ int main()
 	}
 
 	//ofs << "final_result" << "\t";
-/*	
+	
 	Selection(angle, result, min);
 	for(int j=0; j<cNUM; j++){
-		std::cout<<"centerpoint["<<j<<"]:"<<centerpoint[j]<<std::endl;//中心点の出力
+		std::cout<<"centerpoint["<<j<<"]:"<<centerpoint[j]<<std::endl;
 		for(int m=0; m<INDIVIDUALS_NUMBER; m++)
 		{
 			if(min[m][1]==j)
@@ -375,6 +389,6 @@ int main()
 		//ofs << std::endl;
 		std::cout<<std::endl;
 	}
-*/
+
 	return 0;
 }
