@@ -230,15 +230,15 @@ void Crossover(std::bitset<32> parent[][cNUM], std::bitset<32> child[][cNUM])
 	std::bitset<32> mask = SetMask();
 	int counter = 0;
 	
-	for(int i=0; i<RANDOM_MAX; i+=2)
-	{
-		counter += 2;
-		if(counter == INDIVIDUALS_NUMBER)
+	for(int k=0; k<cNUM; k++){
+		for(int i=0; i<RANDOM_MAX; i+=2)
 		{
-			mask = SetMaskRandom();
-			counter = 0;
-		}
-		for(int k=0; k<cNUM; k++){
+			counter += 2;
+			if(counter == INDIVIDUALS_NUMBER)
+			{
+				mask = SetMaskRandom();
+				counter = 0;
+			}
 			for(size_t j=0; j<parent[i][k].size(); j++)
 			{
 				if(mask.test(j) == 0)
