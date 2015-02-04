@@ -75,7 +75,7 @@ void CenterInitialize(int centerpoint[])
 
 void clustering(int angle[], int centerpoint[], int min[][cNUM])
 {
-	int distance[RANDOM_MAX][cNUM];
+	int distance[RANDOM_MAX][cNUM]={};
 	int point_counter[cNUM]={};
 	int individualsum[cNUM]={};
 	int same_count = 0;
@@ -132,27 +132,40 @@ void Selection(int result[][cNUM][2], int min[][cNUM], int angle[])
 
 	for(int i=0; i<RANDOM_MAX; i++){
 		for(int j=0; j<cNUM; j++){
-			if(min[i][1]==j)
-			target[i][j][0]=std::abs(angle[i]-TARGET_VALUE);
-			target[i][j][1]=i;
+			if(min[i][1]==j){
+				target[i][j][0]=std::abs(angle[i]-TARGET_VALUE);
+				target[i][j][1]=i;
+			}
 		}
 	}
 	
 	for(int c=0; c<cNUM; c++){  
 		for(int i=0; i<RANDOM_MAX-1; i++){
 			for(int j=i+1; j<RANDOM_MAX; j++){
-				if(target[i][c][0]<target[j][c][0]){
-					w=target[i][c][0];
-					s=target[i][c][1];
-					target[i][c][0]=target[j][c][0];
-					target[i][c][1]=target[j][c][1];
-					target[j][c][0]=w;
-					target[j][c][1]=s;
+				if(min[j][1]==c){
+					if(target[i][c][0]>target[j][c][0]){
+						w=target[i][c][0];
+						s=target[i][c][1];
+						target[i][c][0]=target[j][c][0];
+						target[i][c][1]=target[j][c][1];
+						target[j][c][0]=w;
+						target[j][c][1]=s;
+					}
 				}
 			}
 		}
-	}		
+	}
+	
 
+/*
+	for(int i=0; i<RANDOM_MAX; i++){
+		for(int j=0; j<cNUM; j++){
+			if(min[i][1]==j){
+				std::cout<<target[i][j][0]<<std::endl;
+			}
+		}
+	}
+*/
 	for(int i=0; i<cNUM; i++){
 		for(int j=0; j<RANDOM_MAX*RANKING_RATE; j++){
 			for(int k=0; k<2; k++){
@@ -295,8 +308,8 @@ int main()
 	
 	Initialize(angle);
 	
-	CenterInitialize(centerpoint);	
-	
+	CenterInitialize(centerpoint);
+
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		std::cout << "LOOP_COUNT:" << i << std::endl;
@@ -339,15 +352,7 @@ int main()
 		Crossover(parent, child, min);
 
 		//ofs << "Crossover" << "\t";
-/*
-		for(int l=0; l<RANDOM_MAX; l++)
-		{
-		for(int k=0; k<cNUM; k++){
-			ofs << DecimalToBinary(child[l][k]) << "\t";
-			}
-		}
-		ofs << std::endl;
-*/
+
 		std::cout << "----- Mutation -----" << std::endl;
 		Mutation(child, min);
 
@@ -378,6 +383,5 @@ int main()
 		//ofs << std::endl;
 		std::cout<<std::endl;
 	}
-
 	return 0;
 }
