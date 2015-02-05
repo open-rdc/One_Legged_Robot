@@ -7,7 +7,7 @@
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include <boost/chrono.hpp>
 #include <boost/thread.hpp>
-#include "Parameter.h"
+#include "parameter.h"
 
 class Utility
 {

@@ -17,10 +17,54 @@ void GA::Initialize()
 	}
 }
 
-void GA::Selection(int move_result[])
+void GA::MakeSring()
+{
+	ResetStr();
+
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		for(int j=0; j<PARAMETER_NUM; j++)
+		{
+			str[i] += std::to_string(angle[i][j]);
+			str[i] += ",";
+			
+			if(j == PARAMETER_NUM-1)
+			{
+				str[i] += "\n";
+			}
+		}
+	}
+}
+
+void GA::RobotMove()
+{
+	int enc;
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		serial.BoostWrite("s");
+		for(int j=0; j<5; j++)
+		{
+			serial.BoostWrite(str[i]);
+			boost::this_thread::sleep(boost::posix_time::milliseconds(10));
+		}
+		std::cout << "str[" << i << "]: " << str[i] << std::endl;
+		boost::this_thread::sleep(boost::posix_time::seconds(SLEEP_TIME));
+		for(int k=0; k<100; k++)
+		{
+			serial.BoostRead();
+			boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+		}
+		enc = serial.GetSerialBuf();
+		std::cout << "ReadEnc: " << enc << std::endl;
+		move_result[i] = enc;
+	}
+}
+
+void GA::Selection()
 {
 	int temp, angle_temp;
 	int target[RANDOM_MAX][2];
+	int parent_cpy = 0;
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
@@ -44,11 +88,24 @@ void GA::Selection(int move_result[])
 		}
 	}
 
-	for(int l=0; l<RANDOM_MAX * RANKING_RATE; l++)
+	for(int l=0; l<INDIVIDUALS_NUMBER; l++)
 	{
 		for(int m=0; m<2; m++)
 		{
 			result[l][m] = target[l][m];
+		}
+	}
+
+	for(int n=0; n<PARAMETER_NUM; n++)
+	{
+		for(int o=0; o<RANDOM_MAX; o++)
+		{
+			if(parent_cpy == INDIVIDUALS_NUMBER)
+			{
+				parent_cpy = 0;
+			}
+			parent[o][n] = utility.BinaryToDecimal(angle[result[parent_cpy][1]][n]);
+			parent_cpy += 1;
 		}
 	}
 }
@@ -104,15 +161,42 @@ void GA::Mutation()
 			}
 		}
 	}
+
+	for(int k=0; k<PARAMETER_NUM; k++)
+	{
+		for(int l=0; l<RANDOM_MAX; l++)
+		{
+			angle[l][k] = utility.DecimalToBinary(child[l][k]);
+		}
+	}
 }
 
-int GA::GetAngle(int random_num, int parameter_num)
+void GA::ResetStr()
 {
-	return angle[random_num][parameter_num];
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		str[i] = "";
+	}
 }
 
 int main()
 {
-	std::cout << "main" << std::endl;
+	Serial serial;
+	GA ga;
+	ga.Initialize();
+	serial.Init();
+
+	for(int i=0; i<LOOP_COUNT; i++)
+	{
+		ga.MakeSring();
+		ga.RobotMove();
+		
+		ga.Selection();
+		ga.Crossover();
+		ga.Mutation();
+	}
+
+	serial.close();
+
 	return 0;
 }
