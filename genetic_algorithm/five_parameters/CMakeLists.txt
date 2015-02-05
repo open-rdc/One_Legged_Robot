@@ -25,9 +25,9 @@ link_directories(
 )
 
 set(GA_SRCS
-genetic_algorithm.cpp	Serial.cpp	Utility.cpp
+GeneticAlgorithm.cpp	OneLeggedRobot.cpp	Serial.cpp	Utility.cpp
 
-Serial.h	parameter.h	Utility.h
+GeneticAlgorithm.h	OneLeggedRobot.h	Serial.h	parameter.h	Utility.h
 )
 
 add_executable(GeneticAlgorithm
