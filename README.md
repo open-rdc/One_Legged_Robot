@@ -3,6 +3,7 @@
 ### 一脚ロボット用プログラム
 * mbed用のプログラムはmbed\mbed.cppになります。
 * pc用の遺伝的アルゴリズムはgenetic_algorithm\five_parametersになります。
+* Release v1.0は卒業論文執筆時に使ったものです。
 * 学習の様子はhttp://youtu.be/_d31E7fVSTY
 
 # mbed(LPC1768)
