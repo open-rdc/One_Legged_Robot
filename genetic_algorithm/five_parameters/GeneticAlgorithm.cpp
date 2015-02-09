@@ -2,6 +2,10 @@
 
 void GA::Initialize()
 {
+	std::cout << "----- Initialize -----" << std::endl;
+	ofs.open(utility.GetTimeISOString() + ".csv");
+	ofs << "Initialize" << std::endl;
+
 	utility.Random(0, 450, 0);
 	utility.Random(0, 100, 1);
 	utility.Random(0, 450, 2);
@@ -13,8 +17,10 @@ void GA::Initialize()
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
 			angle[i][j] = utility.GetRandom(i, j);
+			ofs << angle[i][j] << "\t";
 		}
 	}
+	ofs << std::endl;
 }
 
 void GA::MakeSring()
@@ -39,6 +45,8 @@ void GA::MakeSring()
 void GA::RobotMove()
 {
 	int enc;
+	ofs << "move_result" << std::endl;
+
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		serial.BoostWrite("s");
@@ -57,7 +65,9 @@ void GA::RobotMove()
 		enc = serial.GetSerialBuf();
 		std::cout << "ReadEnc: " << enc << std::endl;
 		move_result[i] = enc;
+		ofs << move_result[i] << "\t";
 	}
+	ofs << std::endl;
 }
 
 void GA::Selection()
@@ -65,6 +75,9 @@ void GA::Selection()
 	int temp, angle_temp;
 	int target[RANDOM_MAX][2];
 	int parent_cpy = 0;
+
+	std::cout << "----- Selection -----" << std::endl;
+	ofs << "Selection" << std::endl;
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
@@ -105,15 +118,19 @@ void GA::Selection()
 				parent_cpy = 0;
 			}
 			parent[o][n] = utility.BinaryToDecimal(angle[result[parent_cpy][1]][n]);
+			ofs << angle[result[parent_cpy][1]][n] << "\t";
 			parent_cpy += 1;
 		}
 	}
+	ofs << std::endl;
 }
 
 void GA::Crossover()
 {
 	std::bitset<32> mask = utility.GetMask();
 	int counter = 0;
+	std::cout << "----- Crossover -----" << std::endl;
+	ofs << "Crossover" << std::endl;
 
 	for(int k=0; k<PARAMETER_NUM; k++)
 	{
@@ -139,14 +156,19 @@ void GA::Crossover()
 					child[i+1][k].set(j, parent[i][k].test(j));
 				}
 			}
+			ofs << utility.DecimalToBinary(child[i][k]) << "\t";
+			ofs << utility.DecimalToBinary(child[i+1][k]) << "\t";
 		}
 	}
+	ofs << std::endl;
 }
 
 void GA::Mutation()
 {
 	double random;
 	int mutation_pos;
+	std::cout << "----- Mutation -----" << std::endl;
+	ofs << "Mutation" << std::endl;
 
 	for(int j=0; j<PARAMETER_NUM; j++)
 	{
@@ -167,8 +189,10 @@ void GA::Mutation()
 		for(int l=0; l<RANDOM_MAX; l++)
 		{
 			angle[l][k] = utility.DecimalToBinary(child[l][k]);
+			ofs << angle[l][k] << "\t";
 		}
 	}
+	ofs << std::endl;
 }
 
 void GA::ResetStr()

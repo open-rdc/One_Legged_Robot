@@ -12,7 +12,6 @@
 class Utility
 {
 public:
-	unsigned long long GetTimeStamp();
 	std::string GetTimeISOString();
 	void Random(int min, int max, int num);
 	int Random(int min, int max);
@@ -27,6 +26,7 @@ private:
 	std::bitset<32> mask;
 	std::bitset<32> mask_random;
 
+	unsigned long long GetTimeStamp();
 	void SetMask();
 	void SetMaskRandom();
 };

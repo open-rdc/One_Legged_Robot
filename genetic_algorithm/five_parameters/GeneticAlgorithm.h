@@ -24,6 +24,7 @@ private:
 	int move_result[RANDOM_MAX];
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
+	std::ofstream ofs;
 
 	void ResetStr();
 };
