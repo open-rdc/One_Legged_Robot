@@ -17,7 +17,9 @@
 
 # PC(Windows/Linux)
 ### 通信
-* Serialクラスがboostのシリアル通信クラスです。
+* Serialクラスがboostのシリアル通信クラスです
+* Utilityクラスは乱数取得やbitsetの便利関数です
+* GAクラスはGAの計算などです
 * mbedに対して角度とサーボ移動時間とsleepの時間を送信する。
 * mbedからエンコーダの値を受信する。
 * CMakeでビルドしてください。
