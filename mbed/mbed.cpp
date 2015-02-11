@@ -224,8 +224,8 @@ int main() {
             pc.printf("time %f seconds\n", t.read());
 #endif
         
-            SetTimeAndPosition(0x01, servo1_angle - 450, servo1_time);
-            SetTimeAndPosition(0x02, servo2_angle - 450, servo2_time);
+            SetTimeAndPosition(0x01, servo1_angle, servo1_time);
+            SetTimeAndPosition(0x02, servo2_angle, servo2_time);
 
             wait_ms(sleep + std::max(servo1_time, servo2_time)); // sleep(ms)
 
