@@ -3,6 +3,7 @@
 *.lo
 *.o
 *.obj
+*.sln
 
 # Compiled Dynamic libraries
 *.so
@@ -23,3 +24,6 @@
 #editor
 *~
 *.swp
+
+#directory
+build/
