@@ -31,8 +31,15 @@ void GA::MakeSring()
 	{
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
-			str[i] += std::to_string(angle[i][j]);
-			str[i] += ",";
+			if(j == 0 || j == 2)
+			{
+				str[i] += std::to_string(angle[i][j] - ZERO_POINT);
+			}
+			else
+			{
+				str[i] += std::to_string(angle[i][j]);
+			}
+				str[i] += ",";
 			
 			if(j == PARAMETER_NUM-1)
 			{
@@ -55,7 +62,7 @@ void GA::RobotMove()
 			serial.BoostWrite(str[i]);
 			boost::this_thread::sleep(boost::posix_time::milliseconds(10));
 		}
-		std::cout << "str[" << i << "]: " << str[i] << std::endl;
+		std::cout << "str[" << i << "]: " << str[i];
 		boost::this_thread::sleep(boost::posix_time::seconds(SLEEP_TIME));
 		for(int k=0; k<100; k++)
 		{
@@ -63,7 +70,7 @@ void GA::RobotMove()
 			boost::this_thread::sleep(boost::posix_time::milliseconds(50));
 		}
 		enc = serial.GetSerialBuf();
-		std::cout << "ReadEnc: " << enc << std::endl;
+		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
 		move_result[i] = enc;
 		ofs << move_result[i] << "\t";
 	}
@@ -212,6 +219,8 @@ int main()
 
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
+		std::cout << "LOOP_COUNT: " << i << std::endl;
+
 		ga.MakeSring();
 		ga.RobotMove();
 		
