@@ -219,7 +219,7 @@ int main()
 
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
-		std::cout << "LOOP_COUNT: " << i << std::endl;
+		std::cout << "LOOP_COUNT: " << i+1 << std::endl;
 
 		ga.MakeSring();
 		ga.RobotMove();
