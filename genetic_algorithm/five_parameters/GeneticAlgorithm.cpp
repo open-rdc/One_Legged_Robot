@@ -31,8 +31,15 @@ void GA::MakeSring()
 	{
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
-			str[i] += std::to_string(angle[i][j]);
-			str[i] += ",";
+			if(j == 0 || j == 2)
+			{
+				str[i] += std::to_string(angle[i][j] - ZERO_POINT);
+			}
+			else
+			{
+				str[i] += std::to_string(angle[i][j]);
+			}
+				str[i] += ",";
 			
 			if(j == PARAMETER_NUM-1)
 			{
