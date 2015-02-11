@@ -1,5 +1,9 @@
 ﻿One Legged Robot
 ================
+### 一脚ロボット
+* CADデータも公開しています
+* open-rdc/One_Legged_Robot_Hardwareにあります
+
 ### 一脚ロボット用プログラム
 * mbed用のプログラムはmbed\mbed.cppになります。
 * pc用の遺伝的アルゴリズムはgenetic_algorithm\five_parametersになります。
