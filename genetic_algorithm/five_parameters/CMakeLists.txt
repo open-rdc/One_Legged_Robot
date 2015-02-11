@@ -8,10 +8,18 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost COMPONENTS system thread filesystem)
+find_package(Boost COMPONENTS system thread filesystem date_time)
 
-add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+IF(WIN32)
+	add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+ENDIF(WIN32)
 
+IF(UNIX)
+	add_definitions(
+		"-std=c++11"
+		${Boost_LIB_DIAGNOSTIC_DEFINITIONS}
+	)
+ENDIF(UNIX)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
