@@ -1,18 +1,18 @@
 #include "kmeansfiveparamater.h"
 
 
-kmeans::kmeans(void)
+Kmeans::Kmeans(void)
 {
 	DataInit();
 	RandomClusterInit();
 }
 
-int kmeans::GetRandom(int min,int max)
+int Kmeans::GetRandom(int min,int max)
 {
 	return min + (int)(rand()*(max-min+1.0)/(1.0+RAND_MAX));
 }
 
-void kmeans::DataInit()
+void Kmeans::DataInit()
 {
 	for(int i=0;i<NUM;i++)
 	{
@@ -36,7 +36,7 @@ void kmeans::DataInit()
 	loop = true;
 }
 
-void kmeans::RandomClusterInit(void)
+void Kmeans::RandomClusterInit(void)
 {
 	for(int i=0; i<cNUM; i++)
     {
@@ -45,7 +45,7 @@ void kmeans::RandomClusterInit(void)
 }
 
 
-void kmeans::CenterInit(void)
+void Kmeans::CenterInit(void)
 {
 	for(int i=0;i<cNUM; i++)
 	{
@@ -58,7 +58,7 @@ void kmeans::CenterInit(void)
     }
 }
 
-void kmeans::Distance(void)
+void Kmeans::Distance(void)
 {
 	for(int i=0;i<NUM; i++){
 		for(int j=0;j<cNUM; j++){
@@ -73,7 +73,7 @@ void kmeans::Distance(void)
     }
 }
 
-void kmeans::GetCenter(void)
+void Kmeans::GetCenter(void)
 {
 	for(int i=0;i<NUM; i++){
         min = distance[0][i];
@@ -94,7 +94,7 @@ void kmeans::GetCenter(void)
     }
 }
 
-void kmeans::ChangeCluster(void)
+void Kmeans::ChangeCluster(void)
 {
 	int same_count = 0;
 		for(int i=0;i<cNUM; i++){
@@ -129,7 +129,7 @@ void kmeans::ChangeCluster(void)
     }cout<<endl;
 }
 
-void kmeans::Clustering(void)
+void Kmeans::Clustering(void)
 {
 	while(loop)
 	{
@@ -140,7 +140,7 @@ void kmeans::Clustering(void)
 	}
 }
 
-void kmeans::GetCluster(int c[cNUM][pNUM])
+void Kmeans::GetCluster(int c[cNUM][pNUM])
 {
 	for(int i=0;i<cNUM;i++)
 	{

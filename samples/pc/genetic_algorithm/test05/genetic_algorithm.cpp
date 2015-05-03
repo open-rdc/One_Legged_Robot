@@ -12,8 +12,8 @@
 #include "kmeansfiveparamater.h"
 
 Serial serial;
-kmeans kmeans;
 
+Kmeans kmeans;
 
 unsigned long long GetTimeStamp()
 {
@@ -58,10 +58,6 @@ int Random(int min, int max)
 	return dist(gen);
 }
 
-void Initialize(int angle[cNUM][PARAMETER_NUM])
-{
-	kmeans.GetCluster(angle);
-}
 
 void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
 {
@@ -258,7 +254,6 @@ int main()
 
 	std::ofstream ofs(GetTimeISOString() + ".csv");
 
-	Initialize(angle);
 	serial.Init();
 
 	for(int i=0; i<LOOP_COUNT; i++)
@@ -266,6 +261,9 @@ int main()
 		std::string str[cNUM];
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		ofs << "No." << i+1 << std::endl;
+
+		kmeans.Clustering();
+		kmeans.GetCluster(angle);
 
 		MakeSring(angle, str);
 

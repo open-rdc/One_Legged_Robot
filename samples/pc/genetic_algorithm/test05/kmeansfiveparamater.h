@@ -26,12 +26,12 @@ enum
 	w
 };
 
-class kmeans
+class Kmeans
 {
 public:
-	kmeans(void);
+	Kmeans(void);
 	void Clustering(void);				//クラスタリング
-	void GetCluster(double c[cNUM][pNUM]);			//クラスタを取得
+	void GetCluster(int c[cNUM][pNUM]);			//クラスタを取得
 
 private:
 	int GetRandom(int min, int max);	//乱数を生成
