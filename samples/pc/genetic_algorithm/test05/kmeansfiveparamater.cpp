@@ -40,7 +40,7 @@ void Kmeans::RandomClusterInit(void)
 {
 	for(int i=0; i<cNUM; i++)
     {
-		cluster[i] = i;
+		center[i] = i;
     }
 }
 
@@ -63,11 +63,11 @@ void Kmeans::Distance(void)
 	for(int i=0;i<NUM; i++){
 		for(int j=0;j<cNUM; j++){
 			double tmp_distance = sqrt ( 
-				pow( pos[cluster[j]][a1]	- individual[i][a1], 2) +
-				pow( pos[cluster[j]][t1]	- individual[i][t1], 2) + 
-				pow( pos[cluster[j]][a2]	- individual[i][a2], 2) +
-				pow( pos[cluster[j]][t2]	- individual[i][t2], 2) + 
-				pow( pos[cluster[j]][w]		- individual[i][w], 2));
+				pow( pos[center[j]][a1]	- individual[i][a1], 2) +
+				pow( pos[center[j]][t1]	- individual[i][t1], 2) + 
+				pow( pos[center[j]][a2]	- individual[i][a2], 2) +
+				pow( pos[center[j]][t2]	- individual[i][t2], 2) + 
+				pow( pos[center[j]][w]		- individual[i][w], 2));
 			distance[j][i] = tmp_distance;
          }
     }
@@ -85,12 +85,15 @@ void Kmeans::GetCenter(void)
                 min_j	= j;
             }
         }
-		centerpoint[ min_j ][a1]	+= individual[i][a1];
-		centerpoint[ min_j ][t1]	+= individual[i][t1];
-		centerpoint[ min_j ][a2]	+= individual[i][a2];
-		centerpoint[ min_j ][t2]	+= individual[i][t2];
-		centerpoint[ min_j ][w]		+= individual[i][w];
-        count_Group[min_j]++;
+		if(count_Group[min_j]<hNUM){
+			centerpoint[ min_j ][a1]	+= individual[i][a1];
+			centerpoint[ min_j ][t1]	+= individual[i][t1];
+			centerpoint[ min_j ][a2]	+= individual[i][a2];
+			centerpoint[ min_j ][t2]	+= individual[i][t2];
+			centerpoint[ min_j ][w]		+= individual[i][w];
+			cluster[min_j][(int)count_Group[min_j]] = i;
+			count_Group[min_j]++;
+		}
     }
 }
 
@@ -101,29 +104,29 @@ void Kmeans::ChangeCluster(void)
            
  
             if(count_Group[i] != 0){
-				if((centerpoint[i][a1]	/ count_Group[i]) == pos[cluster[i]][a1] 
-                && (centerpoint[i][t1]	/ count_Group[i]) == pos[cluster[i]][t1]
-				&& (centerpoint[i][a2]	/ count_Group[i]) == pos[cluster[i]][a2]
-				&& (centerpoint[i][t2]	/ count_Group[i]) == pos[cluster[i]][t2]
-				&& (centerpoint[i][w]	/ count_Group[i]) == pos[cluster[i]][w])
+				if((centerpoint[i][a1]	/ count_Group[i]) == pos[center[i]][a1] 
+                && (centerpoint[i][t1]	/ count_Group[i]) == pos[center[i]][t1]
+				&& (centerpoint[i][a2]	/ count_Group[i]) == pos[center[i]][a2]
+				&& (centerpoint[i][t2]	/ count_Group[i]) == pos[center[i]][t2]
+				&& (centerpoint[i][w]	/ count_Group[i]) == pos[center[i]][w])
                         same_count ++;
                
-				pos[cluster[i]][a1] = centerpoint[i][a1]	/ count_Group[i];
-				pos[cluster[i]][t1] = centerpoint[i][t1]	/ count_Group[i];
-				pos[cluster[i]][a2] = centerpoint[i][a2]	/ count_Group[i];
-				pos[cluster[i]][t2] = centerpoint[i][t2]	/ count_Group[i];
-				pos[cluster[i]][w]	= centerpoint[i][w]		/ count_Group[i];
+				pos[center[i]][a1] = centerpoint[i][a1]	/ count_Group[i];
+				pos[center[i]][t1] = centerpoint[i][t1]	/ count_Group[i];
+				pos[center[i]][a2] = centerpoint[i][a2]	/ count_Group[i];
+				pos[center[i]][t2] = centerpoint[i][t2]	/ count_Group[i];
+				pos[center[i]][w]	= centerpoint[i][w]		/ count_Group[i];
             }
 			if(same_count == cNUM){
                 loop=false;
         }
 
 		cout	<<fixed<<setprecision(2);
-		cout	<<"("<<pos[cluster[i]][a1]
-				<<","<<pos[cluster[i]][t1]
-				<<","<<pos[cluster[i]][a2]
-				<<","<<pos[cluster[i]][t2]
-				<<","<<pos[cluster[i]][w]<<") "
+		cout	<<"("<<pos[center[i]][a1]
+				<<","<<pos[center[i]][t1]
+				<<","<<pos[center[i]][a2]
+				<<","<<pos[center[i]][t2]
+				<<","<<pos[center[i]][w]<<") "
 		<<endl;
 			   
     }cout<<endl;
@@ -140,13 +143,24 @@ void Kmeans::Clustering(void)
 	}
 }
 
-void Kmeans::GetCluster(int c[cNUM][pNUM])
+void Kmeans::GetCenterPos(int c[cNUM][pNUM])
 {
 	for(int i=0;i<cNUM;i++)
 	{
 		for(int j=0;j<pNUM;j++)
 		{
-			c[i][j] = (int)pos[cluster[i]][j];
+			c[i][j] = (int)pos[center[i]][j];
+		}
+	}
+}
+
+void Kmeans::GetCluster(int c[hNUM][pNUM],int clusterNum)
+{
+	for(int i=0;i<hNUM;i++)
+	{
+		for(int j=0;j<pNUM;j++)
+		{
+			c[i][j] = (int)pos[cluster[clusterNum][i]][j];
 		}
 	}
 }

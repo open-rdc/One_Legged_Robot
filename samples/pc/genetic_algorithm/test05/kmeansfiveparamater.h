@@ -31,7 +31,8 @@ class Kmeans
 public:
 	Kmeans(void);
 	void Clustering(void);				//クラスタリング
-	void GetCluster(int c[cNUM][pNUM]);			//クラスタを取得
+	void GetCenterPos(int c[cNUM][pNUM]);			//クラスタの中心点のパラメータを取得
+	void GetCluster(int [hNUM][pNUM],int clusterNum);
 
 private:
 	int GetRandom(int min, int max);	//乱数を生成
@@ -45,7 +46,8 @@ private:
 	
 //	static bool InitFlg;				//初期化状態
 	double pos[NUM][pNUM];		//パラメータ
-	int cluster[cNUM];		//クラスタを保存
+	int center[cNUM];		//クラスタを保存
+	int cluster[cNUM][hNUM];
 	double individual[NUM][pNUM];			//
 	double distance[cNUM][NUM];	//
 	double centerpoint[cNUM][pNUM];			//中心点

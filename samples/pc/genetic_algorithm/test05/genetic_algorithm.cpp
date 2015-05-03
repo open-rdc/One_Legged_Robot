@@ -42,7 +42,7 @@ void Random(int min, int max, int result[][PARAMETER_NUM], int num)
 
 	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
 
-	for(int i=0; i<cNUM; i++)
+	for(int i=0; i<hNUM; i++)
 	{
 		result[i][num] = dist(gen);
 	}
@@ -62,7 +62,7 @@ int Random(int min, int max)
 void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
 {
 
-	for(int i=0; i<cNUM; i++)
+	for(int i=0; i<hNUM; i++)
 	{
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
@@ -80,7 +80,7 @@ void MakeSring(int angle[][PARAMETER_NUM], std::string str[])
 void RobotMove(std::string str[], int move_result[])
 {
 	std::string array_cpy;
-	for(int i=0; i<cNUM; i++)
+	for(int i=0; i<hNUM; i++)
 	{
 		serial.BoostWrite("s");
 		for(int j=0; j<5; j++)
@@ -104,17 +104,17 @@ void RobotMove(std::string str[], int move_result[])
 void Selection(int angle[][PARAMETER_NUM], int move_result[], int result[][2])
 {
 	int temp, angle_temp;
-	int target[cNUM][2];
+	int target[hNUM][2];
 
-	for(int i=0; i<cNUM; i++)
+	for(int i=0; i<hNUM; i++)
 	{
 		target[i][0] = move_result[i];
 		target[i][1] = i;
 	}
 
-	for(int j=0; j<cNUM-1; j++)
+	for(int j=0; j<hNUM-1; j++)
 	{
-		for(int k=j+1; k<cNUM; k++)
+		for(int k=j+1; k<hNUM; k++)
 		{
 			if(target[j][0] < target[k][0])
 			{
@@ -128,7 +128,7 @@ void Selection(int angle[][PARAMETER_NUM], int move_result[], int result[][2])
 		}
 	}
 
-	for(int l=0; l<cNUM * RANKING_RATE; l++)
+	for(int l=0; l<hNUM * RANKING_RATE; l++)
 	{
 		for(int m=0; m<2; m++)
 		{
@@ -197,7 +197,7 @@ void Crossover(std::bitset<32> parent[][PARAMETER_NUM], std::bitset<32> child[][
 
 	for(int k=0; k<PARAMETER_NUM; k++)
 	{
-		for(int i=0; i<cNUM; i+=2)
+		for(int i=0; i<hNUM; i+=2)
 		{	
 			counter += 2;
 			if(counter == INDIVIDUALS_NUMBER)
@@ -230,7 +230,7 @@ void Mutation(std::bitset<32> child[][PARAMETER_NUM])
 
 	for(int j=0; j<PARAMETER_NUM; j++)
 	{
-		for(int i=0; i<cNUM; i++)
+		for(int i=0; i<hNUM; i++)
 		{
 			random = Random(0, 100) * 0.01;
 
@@ -245,12 +245,12 @@ void Mutation(std::bitset<32> child[][PARAMETER_NUM])
 
 int main()
 {
-	int angle[cNUM][PARAMETER_NUM];
-	int result[cNUM][2];
-	int move_result[cNUM];
+	int angle[hNUM][PARAMETER_NUM];
+	int result[hNUM][2];
+	int move_result[hNUM];
 	int parent_cpy = 0;
-	std::bitset<32> parent[cNUM][PARAMETER_NUM];
-	std::bitset<32> child[cNUM][PARAMETER_NUM];
+	std::bitset<32> parent[hNUM][PARAMETER_NUM];
+	std::bitset<32> child[hNUM][PARAMETER_NUM];
 
 	std::ofstream ofs(GetTimeISOString() + ".csv");
 
@@ -258,70 +258,74 @@ int main()
 
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
-		std::string str[cNUM];
+		std::string str[hNUM];
 		std::cout << "LOOP_COUNT:" << i << std::endl;
 		ofs << "No." << i+1 << std::endl;
 
 		kmeans.Clustering();
-		kmeans.GetCluster(angle);
+		for(int ClusterCount=0;ClusterCount<cNUM;ClusterCount++){
 
-		MakeSring(angle, str);
+			cout << "ClusterNumber:" << ClusterCount+1 << endl;
+			kmeans.GetCluster(angle,ClusterCount);
 
-		RobotMove(str, move_result);
+			MakeSring(angle, str);
 
-		Selection(angle, move_result, result);
+			RobotMove(str, move_result);
 
-		for(int j=0; j<PARAMETER_NUM; j++)
-		{
-			for(int k=0; k<cNUM; k++)
+			Selection(angle, move_result, result);
+
+			for(int j=0; j<PARAMETER_NUM; j++)
 			{
-				if(parent_cpy == INDIVIDUALS_NUMBER)
+				for(int k=0; k<hNUM; k++)
 				{
-					parent_cpy = 0;
+					if(parent_cpy == INDIVIDUALS_NUMBER)
+					{
+						parent_cpy = 0;
+					}
+					parent[k][j] = BinaryToDecimal(angle[result[parent_cpy][1]][j]);
+					parent_cpy += 1;
 				}
-				parent[k][j] = BinaryToDecimal(angle[result[parent_cpy][1]][j]);
-				parent_cpy += 1;
 			}
-		}
 
-		ofs << "result_angle" << std::endl;
+			ofs << "result_angle" << std::endl;
 
-		for(int j=0; j<PARAMETER_NUM; j++)
-		{
-			for(int k=0; k<INDIVIDUALS_NUMBER; k++)
+			for(int j=0; j<PARAMETER_NUM; j++)
 			{
-				ofs << angle[result[k][1]][j] << "\t";
+				for(int k=0; k<INDIVIDUALS_NUMBER; k++)
+				{
+					ofs << angle[result[k][1]][j] << "\t";
+				}
+				ofs << std::endl;
 			}
-			ofs << std::endl;
-		}
 
-		std::cout << "----- Crossover -----" << std::endl;
-		ofs << "Crossover" << std::endl;
+			std::cout << "----- Crossover -----" << std::endl;
+			ofs << "Crossover" << std::endl;
 
-		Crossover(parent, child);
+			Crossover(parent, child);
 
-		for(int m=0; m<PARAMETER_NUM; m++)
-		{
-			for(int l=0; l<cNUM; l++)
+			for(int m=0; m<PARAMETER_NUM; m++)
 			{
-				ofs << DecimalToBinary(child[l][m]) << "\t";
+				for(int l=0; l<hNUM; l++)
+				{
+					ofs << DecimalToBinary(child[l][m]) << "\t";
+				}
+				ofs << std::endl;
 			}
-			ofs << std::endl;
-		}
 
-		std::cout << "----- Mutation -----" << std::endl;
-		ofs << "Mutation" << std::endl;
+			std::cout << "----- Mutation -----" << std::endl;
+			ofs << "Mutation" << std::endl;
 
-		Mutation(child);
+			Mutation(child);
 
-		for(int o=0; o<PARAMETER_NUM; o++)
-		{
-			for(int l=0; l<cNUM; l++)
+			for(int o=0; o<PARAMETER_NUM; o++)
 			{
-				angle[l][o] = DecimalToBinary(child[l][o]);
-				ofs  << angle[l][o] << "\t";
+				for(int l=0; l<hNUM; l++)
+				{
+					angle[l][o] = DecimalToBinary(child[l][o]);
+					ofs  << angle[l][o] << "\t";
+				}
+				ofs << std::endl;
 			}
-			ofs << std::endl;
 		}
 	}
 
