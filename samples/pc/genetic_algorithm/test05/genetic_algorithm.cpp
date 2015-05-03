@@ -15,6 +15,9 @@ Serial serial;
 
 Kmeans kmeans;
 
+int Value_of_evaluation[2];
+int cluster_evaluation[cNUM];
+
 unsigned long long GetTimeStamp()
 {
 	namespace pt = boost::posix_time;
@@ -125,6 +128,8 @@ void Selection(int angle[][PARAMETER_NUM], int move_result[], int result[][2])
 				target[k][0] = temp;
 				target[k][1] = angle_temp;
 			}
+			Value_of_evaluation[0] = target[j][0];
+			Value_of_evaluation[1] = target[j][1];
 		}
 	}
 
@@ -243,6 +248,29 @@ void Mutation(std::bitset<32> child[][PARAMETER_NUM])
 	}
 }
 
+void Cluster_Evaluation(void)
+{
+	int bestValue = 0;
+	int bestCluster;
+	for(int i=0;i<cNUM-1;i++)
+	{
+		for(int j=i+1;j<cNUM;j++)
+		{
+			if(cluster_evaluation[i] < cluster_evaluation[j])
+			{
+				bestValue = cluster_evaluation[j];
+				bestCluster = j;
+			}else
+			{
+				bestValue = cluster_evaluation[i];
+				bestCluster = i;
+			}
+		}
+	}
+	cout << "Best cluster:" << bestCluster	<< endl;
+	cout << "Best value:"	<< bestValue	<< endl;
+}
+
 int main()
 {
 	int angle[hNUM][PARAMETER_NUM];
@@ -326,7 +354,13 @@ int main()
 				}
 				ofs << std::endl;
 			}
+
+			cout << "best evaluation value:"	<< Value_of_evaluation[0] << endl;
+			cout << "num of paramater:"			<< Value_of_evaluation[1] << endl;
+
+			cluster_evaluation[ClusterCount] = Value_of_evaluation[0];
 		}
+
 	}
 
 	ofs << "final_result" << std::endl;
