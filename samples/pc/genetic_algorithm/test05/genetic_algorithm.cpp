@@ -108,12 +108,14 @@ void Selection(int angle[][PARAMETER_NUM], int move_result[], int result[][2])
 {
 	int temp, angle_temp;
 	int target[hNUM][2];
-
+	cout << endl;
 	for(int i=0; i<hNUM; i++)
 	{
 		target[i][0] = move_result[i];
 		target[i][1] = i;
+		cout << "Move result[" << i << "]:" << move_result[i] << endl;
 	}
+	cout << endl;
 
 	for(int j=0; j<hNUM-1; j++)
 	{
@@ -360,7 +362,7 @@ int main()
 
 			cluster_evaluation[ClusterCount] = Value_of_evaluation[0];
 		}
-
+		Cluster_Evaluation();
 	}
 
 	ofs << "final_result" << std::endl;

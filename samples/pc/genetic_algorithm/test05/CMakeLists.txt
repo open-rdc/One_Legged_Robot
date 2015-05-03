@@ -28,9 +28,6 @@ set(GA_SRCS
 genetic_algorithm.cpp	Serial.cpp
 
 Serial.h	parameter.h
-)
-
-set(Kmeans_Clustering
 kmeansfiveparamater.cpp
 kmeansfiveparamater.h
 )
@@ -39,9 +36,6 @@ add_executable(GeneticAlgorithm
 	${GA_SRCS}
 )
 
-add_executable(Kmeans_Clustering
-	${Kmeans_Clustering}
-)
 
 target_link_libraries(GeneticAlgorithm
 	${Boost_LIBRARIES}
