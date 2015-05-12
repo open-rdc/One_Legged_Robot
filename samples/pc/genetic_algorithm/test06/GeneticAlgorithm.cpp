@@ -90,7 +90,7 @@ void GA::RobotMove()
 //	ofs << std::endl;
 }
 
-void GA::Selection(int c,int val)
+void GA::Selection(int c)
 {
 	int temp, angle_temp;
 	int target[CLUST_PARAM_NUM][2];
@@ -118,7 +118,7 @@ void GA::Selection(int c,int val)
 				target[k][0] = temp;
 				target[k][1] = angle_temp;
 			}
-			val = target[j][0];
+			EvalValue[c] = target[j][0];
 		}
 	}
 
@@ -217,15 +217,15 @@ void GA::Mutation()
 //	ofs << std::endl;
 }
 
-void GA::DisplayEvaluatedValue(int val[CLUSTER_NUM])
+void GA::DisplayEvaluatedValue()
 {
-	int bestValue = val[0];
-	int bestCluster	= 0;
+	int bestValue = EvalValue[0];
+	int bestCluster	= 1;
 	for(int i=0;i<CLUSTER_NUM-1;i++)
 	{
-		if(bestValue <= val[i+1])
+		if(bestValue < EvalValue[i+1])
 		{
-			bestValue = val[i+1];
+			bestValue = EvalValue[i+1];
 			bestCluster = i+1;
 		}
 	}
@@ -246,6 +246,14 @@ void GA::Clustering()
 	kmeans.Clustering();
 }
 
+void GA::InitEvalValue()
+{
+	for(int i=0;i<CLUSTER_NUM;i++)
+	{
+		EvalValue[i] = 0;
+	}
+}
+
 int main()
 {
 	Serial serial;
@@ -255,21 +263,20 @@ int main()
 
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
-		int EvalValue[CLUSTER_NUM];
-		int evalue;
+		
 		ga.Clustering();
 		std::cout << "LOOP_COUNT: " << i+1 << std::endl;
 		for(int c=0;c<CLUSTER_NUM;c++){
 			cout << "Cluster Count:" << c+1 << endl;
+			ga.InitEvalValue();
 			ga.MakeSring(c);
 			ga.RobotMove();
 		
-			ga.Selection(c,evalue);
-			EvalValue[c] = evalue;
+			ga.Selection(c);
 			ga.Crossover();
 			ga.Mutation();
 		}
-		ga.DisplayEvaluatedValue(EvalValue);
+		ga.DisplayEvaluatedValue();
 	}
 
 	serial.close();

@@ -10,13 +10,14 @@ class GA
 {
 public:
 	void Initialize();
-	void Selection(int c,int val);
+	void Selection(int c);
 	void Crossover();
 	void Mutation();
 	void MakeSring(int c);
 	void RobotMove();
-	void DisplayEvaluatedValue(int val[CLUSTER_NUM]);
+	void DisplayEvaluatedValue();
 	void Clustering(void);
+	void InitEvalValue(void);
 
 private:
 	Utility utility;
@@ -29,6 +30,7 @@ private:
 	std::bitset<32> parent[CLUST_PARAM_NUM][PARAMETER_NUM];
 	std::bitset<32> child[CLUST_PARAM_NUM][PARAMETER_NUM];
 	std::ofstream ofs;
+	int EvalValue[CLUSTER_NUM];
 
 	void ResetStr();
 };
