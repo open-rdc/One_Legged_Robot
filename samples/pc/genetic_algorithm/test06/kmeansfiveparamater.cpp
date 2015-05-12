@@ -227,3 +227,14 @@ void Kmeans::DisplayParameter()
 	}
 	cout << endl;
 }
+
+void Kmeans::ChangePos(int c[CLUST_PARAM_NUM][PARAMETER_NUM],int clusterNum)
+{
+	for(int i=0;i<CLUST_PARAM_NUM;i++)
+	{
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			pos[cluster[clusterNum][i]][j] = (float)c[i][j];
+		}
+	}
+}

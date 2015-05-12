@@ -254,6 +254,11 @@ void GA::InitEvalValue()
 	}
 }
 
+void GA::ReturnParam(int c)
+{
+	kmeans.ChangePos(angle,c);
+}
+
 int main()
 {
 	Serial serial;
@@ -275,6 +280,7 @@ int main()
 			ga.Selection(c);
 			ga.Crossover();
 			ga.Mutation();
+			ga.ReturnParam(c);
 		}
 		ga.DisplayEvaluatedValue();
 	}

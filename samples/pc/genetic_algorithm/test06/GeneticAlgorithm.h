@@ -18,6 +18,7 @@ public:
 	void DisplayEvaluatedValue();
 	void Clustering(void);
 	void InitEvalValue(void);
+	void ReturnParam(int c);
 
 private:
 	Utility utility;

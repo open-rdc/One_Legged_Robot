@@ -30,6 +30,7 @@ public:
 	void GetCenterPos(int c[CLUSTER_NUM][PARAMETER_NUM]);			//クラスタの中心点のパラメータを取得
 	void GetCluster(int c[CLUST_PARAM_NUM][PARAMETER_NUM],int clusterNum);
 	void Init(void);
+	void ChangePos(int c[CLUST_PARAM_NUM][PARAMETER_NUM],int clusterNum);
 
 private:
 	int GetRandom(int min, int max);	//乱数を生成				//初期化
