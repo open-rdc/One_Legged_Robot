@@ -256,6 +256,7 @@ int main()
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		int EvalValue[CLUSTER_NUM];
+		int evalue;
 		ga.Clustering();
 		std::cout << "LOOP_COUNT: " << i+1 << std::endl;
 		for(int c=0;c<CLUSTER_NUM;c++){
@@ -263,7 +264,8 @@ int main()
 			ga.MakeSring(c);
 			ga.RobotMove();
 		
-			ga.Selection(c,EvalValue[c]);
+			ga.Selection(c,evalue);
+			EvalValue[c] = evalue;
 			ga.Crossover();
 			ga.Mutation();
 		}

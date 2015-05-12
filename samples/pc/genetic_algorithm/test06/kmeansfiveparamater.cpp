@@ -9,7 +9,7 @@ Kmeans::Kmeans(void)
 
 void Kmeans::Init(void)
 {
-	srand((unsigned int)NULL);
+	srand((unsigned int)time(NULL));
 	DataInit();
 	RandomClusterInit();
 }
@@ -187,7 +187,7 @@ void Kmeans::DisplayClusters()
 		cout << endl;
 		for(int j=0;j<CLUST_PARAM_NUM;j++)
 		{
-			cout << "No." << j+1 << "(" << ;
+			cout << "No." << j+1 << "("  ;
 			for(int k=0;k<PARAMETER_NUM;k++)
 			{
 				cout << " " << (int)pos[cluster[i][j]][k] << " ";
