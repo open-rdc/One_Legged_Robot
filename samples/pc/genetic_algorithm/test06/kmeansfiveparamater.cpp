@@ -144,9 +144,20 @@ void Kmeans::Clustering(void)
 	while(loop)
 	{
 		CenterInit();
+
+		DisplayParameter();
+		
 		Distance();
+		
+		DisplayParameter();
+
 		GetCenter();
+		
+		DisplayParameter();
+
 		ChangeCluster();
+
+		DisplayParameter();
 	}
 	DisplayClusters();
 }
@@ -195,6 +206,20 @@ void Kmeans::DisplayClusters()
 			cout << ")" << endl;
 		}
 		cout << endl;
+	}
+	cout << endl;
+}
+
+void Kmeans::DisplayParameter()
+{
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		cout << "No." << i+1 << "(";
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			cout << " " << pos[i][j] << " ";
+		}
+		cout << ")" << endl;
 	}
 	cout << endl;
 }

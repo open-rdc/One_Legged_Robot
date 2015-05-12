@@ -40,6 +40,7 @@ private:
 	void GetCenter(void);				//中心点を取得
 	void ChangeCluster(void);			//クラスタを切り替え
 	void DisplayClusters(void);			//完成したクラスターを表示
+	void DisplayParameter(void);
 	
 //	static bool InitFlg;				//初期化状態
 	double pos[RANDOM_MAX][PARAMETER_NUM];		//パラメータ
