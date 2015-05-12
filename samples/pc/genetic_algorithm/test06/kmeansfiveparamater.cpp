@@ -48,6 +48,10 @@ void Kmeans::RandomClusterInit(void)
 	for(int i=0; i<CLUSTER_NUM; i++)
     {
 		center[i] = i;
+		for(int j=0;j<CLUST_PARAM_NUM;j++)
+		{
+			cluster[i][j] = j + (3 * i);
+		}
     }
 }
 
