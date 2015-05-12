@@ -148,20 +148,12 @@ void Kmeans::Clustering(void)
 	while(loop)
 	{
 		CenterInit();
-
-		DisplayParameter();
 		
 		Distance();
-		
-		DisplayParameter();
 
 		GetCenter();
-		
-		DisplayParameter();
 
 		ChangeCluster();
-
-		DisplayParameter();
 	}
 	DisplayClusters();
 }
