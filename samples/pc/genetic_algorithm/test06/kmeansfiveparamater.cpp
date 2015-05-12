@@ -9,6 +9,7 @@ Kmeans::Kmeans(void)
 
 void Kmeans::Init(void)
 {
+	srand((unsigned int)NULL);
 	DataInit();
 	RandomClusterInit();
 }
@@ -147,6 +148,7 @@ void Kmeans::Clustering(void)
 		GetCenter();
 		ChangeCluster();
 	}
+	DisplayClusters();
 }
 
 void Kmeans::GetCenterPos(int c[CLUSTER_NUM][PARAMETER_NUM])
@@ -169,4 +171,30 @@ void Kmeans::GetCluster(int c[CLUST_PARAM_NUM][PARAMETER_NUM],int clusterNum)
 			c[i][j] = (int)pos[cluster[clusterNum][i]][j];
 		}
 	}
+}
+
+void Kmeans::DisplayClusters()
+{
+	for(int i=0;i<CLUSTER_NUM;i++)
+	{
+		cout << "Disp Cluster Num:" << i+1 << endl;
+		cout << "Center Point (" ; 
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			cout << " " << (int)pos[center[i]][j] << " ";
+		}
+		cout << ")" << endl;
+		cout << endl;
+		for(int j=0;j<CLUST_PARAM_NUM;j++)
+		{
+			cout << "No." << j+1 << "(" << ;
+			for(int k=0;k<PARAMETER_NUM;k++)
+			{
+				cout << " " << (int)pos[cluster[i][j]][k] << " ";
+			}
+			cout << ")" << endl;
+		}
+		cout << endl;
+	}
+	cout << endl;
 }

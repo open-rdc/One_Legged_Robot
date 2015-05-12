@@ -39,6 +39,7 @@ private:
 	void Distance(void);				//距離を計算
 	void GetCenter(void);				//中心点を取得
 	void ChangeCluster(void);			//クラスタを切り替え
+	void DisplayClusters(void);			//完成したクラスターを表示
 	
 //	static bool InitFlg;				//初期化状態
 	double pos[RANDOM_MAX][PARAMETER_NUM];		//パラメータ
