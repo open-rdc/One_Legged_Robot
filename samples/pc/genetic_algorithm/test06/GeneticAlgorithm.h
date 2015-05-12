@@ -15,7 +15,7 @@ public:
 	void Mutation();
 	void MakeSring(int c);
 	void RobotMove();
-	void DisplayEvaluatedValue(int* val);
+	void DisplayEvaluatedValue(int val[CLUSTER_NUM]);
 	void Clustering(void);
 
 private:
