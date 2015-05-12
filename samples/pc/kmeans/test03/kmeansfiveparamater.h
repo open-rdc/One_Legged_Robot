@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define NUM 100
+#define NUM 10
 #define cNUM 3
 #define hNUM NUM/cNUM
 #define pNUM 5

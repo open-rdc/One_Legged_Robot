@@ -127,6 +127,7 @@ void kmeans::ChangeCluster(void)
 
 void kmeans::Clustering(void)
 {
+	srand((unsigned int)NULL);
 	DataInit();
 	RandomClusterInit();
 	while(loop)
