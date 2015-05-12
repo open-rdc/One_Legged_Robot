@@ -220,12 +220,12 @@ void GA::Mutation()
 void GA::DisplayEvaluatedValue()
 {
 	int bestValue = EvalValue[0];
-	int bestCluster	= 0;
-	for(int i=0;i<CLUSTER_NUM-1;i++)
+	int bestCluster	= 1;
+	for(int i=1;i<CLUSTER_NUM;i++)
 	{
-		if(bestValue < EvalValue[i+1])
+		if(bestValue < EvalValue[i])
 		{
-			bestValue = EvalValue[i+1];
+			bestValue = EvalValue[i];
 			bestCluster = i+1;
 		}
 	}
@@ -278,8 +278,8 @@ int main()
 		}
 		ga.DisplayEvaluatedValue();
 	}
-
+	cout << "final debug 1" << endl;
 	serial.close();
-
+	cout << "final debug 2" << endl;
 	return 0;
 }
