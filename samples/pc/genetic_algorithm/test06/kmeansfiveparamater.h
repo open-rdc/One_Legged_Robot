@@ -29,10 +29,10 @@ public:
 	void Clustering(void);				//クラスタリング
 	void GetCenterPos(int c[CLUSTER_NUM][PARAMETER_NUM]);			//クラスタの中心点のパラメータを取得
 	void GetCluster(int c[CLUST_PARAM_NUM][PARAMETER_NUM],int clusterNum);
+	void Init(void);
 
 private:
-	int GetRandom(int min, int max);	//乱数を生成
-	void Init(void);					//初期化
+	int GetRandom(int min, int max);	//乱数を生成				//初期化
 	void DataInit(void);				//パラメータ初期化
 	void RandomClusterInit(void);		//クラスタ初期化
 	void CenterInit(void);				//クラスタ中心点を設定
@@ -53,7 +53,5 @@ private:
 	bool loop;							//繰返し用フラグ
 
 };
-
-Kmeans* kmeans = new Kmeans(); 
 
 #endif //K_MEANS_FIVE_PARAMATER_H

@@ -4,6 +4,11 @@
 
 Kmeans::Kmeans(void)
 {
+	Init();
+}
+
+void Kmeans::Init(void)
+{
 	DataInit();
 	RandomClusterInit();
 }

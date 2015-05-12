@@ -4,6 +4,7 @@
 #include "parameter.h"
 #include "Utility.h"
 #include "Serial.h"
+#include "kmeansfiveparamater.h"
 
 class GA
 {
@@ -15,10 +16,12 @@ public:
 	void MakeSring(int c);
 	void RobotMove();
 	void DisplayEvaluatedValue(int* val);
+	void Clustering(void);
 
 private:
 	Utility utility;
 	Serial serial;
+	Kmeans kmeans;
 	int angle[CLUST_PARAM_NUM][PARAMETER_NUM];
 	int result[CLUST_PARAM_NUM][2];
 	std::string str[CLUST_PARAM_NUM];

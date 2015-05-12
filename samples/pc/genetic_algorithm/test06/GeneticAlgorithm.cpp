@@ -27,7 +27,7 @@ void GA::Initialize()
 void GA::MakeSring(int c)
 {
 	ResetStr();
-	kmeans->GetCluster(angle,c);
+	kmeans.GetCluster(angle,c);
 
 	for(int i=0; i<CLUST_PARAM_NUM; i++)
 	{
@@ -107,7 +107,7 @@ void GA::Selection(int c,int val)
 				target[k][0] = temp;
 				target[k][1] = angle_temp;
 			}
-
+			val = target[j][0];
 		}
 	}
 
@@ -226,6 +226,11 @@ void GA::ResetStr()
 	}
 }
 
+void GA::Clustering()
+{
+	kmeans.Clustering();
+}
+
 int main()
 {
 	Serial serial;
@@ -235,7 +240,7 @@ int main()
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		int EvalValue[CLUSTER_NUM];
-		kmeans->Clustering();
+		ga.Clustering();
 		std::cout << "LOOP_COUNT: " << i+1 << std::endl;
 		for(int c=0;c<CLUSTER_NUM;c++){
 			ga.MakeSring(c);
