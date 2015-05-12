@@ -220,7 +220,7 @@ void GA::Mutation()
 void GA::DisplayEvaluatedValue()
 {
 	int bestValue = EvalValue[0];
-	int bestCluster	= 1;
+	int bestCluster	= 0;
 	for(int i=0;i<CLUSTER_NUM-1;i++)
 	{
 		if(bestValue < EvalValue[i+1])
@@ -266,9 +266,9 @@ int main()
 		
 		ga.Clustering();
 		std::cout << "LOOP_COUNT: " << i+1 << std::endl;
+		ga.InitEvalValue();
 		for(int c=0;c<CLUSTER_NUM;c++){
 			cout << "Cluster Count:" << c+1 << endl;
-			ga.InitEvalValue();
 			ga.MakeSring(c);
 			ga.RobotMove();
 		
