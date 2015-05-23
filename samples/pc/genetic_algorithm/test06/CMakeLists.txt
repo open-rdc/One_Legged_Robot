@@ -33,9 +33,9 @@ link_directories(
 )
 
 set(GA_SRCS
-GeneticAlgorithm.cpp	Serial.cpp	Utility.cpp	kmeansfiveparamater.cpp
+GeneticAlgorithm.cpp	Serial.cpp	Utility.cpp	kmeansfiveparamater.cpp	
 
-GeneticAlgorithm.h	Serial.h	parameter.h	Utility.h	kmeansfiveparamater.h
+GeneticAlgorithm.h	Serial.h	parameter.h	Utility.h	kmeansfiveparamater.h	
 )
 
 add_executable(GeneticAlgorithm

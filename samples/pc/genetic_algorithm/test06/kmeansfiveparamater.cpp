@@ -12,6 +12,7 @@ void Kmeans::Init(void)
 	srand((unsigned int)time(NULL));
 	DataInit();
 	RandomClusterInit();
+	ofs = ofstream("Result.csv");
 }
 
 int Kmeans::GetRandom(int min,int max)
@@ -185,25 +186,39 @@ void Kmeans::DisplayClusters()
 	for(int i=0;i<CLUSTER_NUM;i++)
 	{
 		cout << "Disp Cluster Num:" << i+1 << endl;
-		cout << "Center Point (" ; 
+		cout << "Center Point (" ;
+
+		ofs << "Disp Cluster Num:" << i+1 << endl;
+		ofs << "Center Point " << " ";
+
 		for(int j=0;j<PARAMETER_NUM;j++)
 		{
 			cout << " " << (int)pos[center[i]][j] << " ";
+			ofs << (int)pos[center[i]][j];
+
+			if(j<PARAMETER_NUM-1) ofs << ",";
+			else ofs << endl << endl;
 		}
-		cout << ")" << endl;
-		cout << endl;
+		cout << ")" << endl << endl;
 		for(int j=0;j<CLUST_PARAM_NUM;j++)
 		{
 			cout << "No." << j+1 << "("  ;
+			ofs << "No." << j+1 << " ";
 			for(int k=0;k<PARAMETER_NUM;k++)
 			{
 				cout << " " << (int)pos[cluster[i][j]][k] << " ";
+				ofs << (int)pos[cluster[i][j]][k];
+
+				if(k<PARAMETER_NUM-1) ofs << ",";
+				else ofs << endl;
 			}
 			cout << ")" << endl;
 		}
 		cout << endl;
+		ofs << endl;
 	}
 	cout << endl;
+	ofs << endl;
 }
 
 void Kmeans::DisplayParameter()

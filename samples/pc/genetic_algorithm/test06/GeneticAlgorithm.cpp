@@ -24,6 +24,7 @@ void GA::Initialize()
 	}
 	ofs << std::endl;
 	*/
+	ofs = ofstream("EvaluateResult.csv");
 	kmeans.Init();
 }
 
@@ -85,9 +86,9 @@ void GA::RobotMove()
 		enc = serial.GetSerialBuf();
 		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
 		move_result[i] = enc;
-//		ofs << move_result[i] << "\t";
+		ofs << move_result[i];
 	}
-//	ofs << std::endl;
+	ofs << endl;
 }
 
 void GA::Selection(int c)
@@ -97,7 +98,6 @@ void GA::Selection(int c)
 	int parent_cpy = 0;
 
 	std::cout << "----- Selection -----" << std::endl;
-//	ofs << "Selection" << std::endl;
 
 	for(int i=0; i<CLUST_PARAM_NUM; i++)
 	{
@@ -139,11 +139,9 @@ void GA::Selection(int c)
 				parent_cpy = 0;
 			}
 			parent[o][n] = utility.BinaryToDecimal(angle[result[parent_cpy][1]][n]);
-//			ofs << angle[result[parent_cpy][1]][n] << "\t";
 			parent_cpy += 1;
 		}
 	}
-//	ofs << std::endl;
 }
 
 void GA::Crossover()
@@ -151,7 +149,6 @@ void GA::Crossover()
 	std::bitset<32> mask = utility.GetMask();
 	int counter = 0;
 	std::cout << "----- Crossover -----" << std::endl;
-//	ofs << "Crossover" << std::endl;
 
 	for(int k=0; k<PARAMETER_NUM; k++)
 	{
@@ -177,12 +174,9 @@ void GA::Crossover()
 					child[i+1][k].set(j, parent[i][k].test(j));
 				}
 			}
-//			ofs << utility.DecimalToBinary(child[i][k]) << "\t";
-//			ofs << utility.DecimalToBinary(child[i+1][k]) << "\t";
 			cout << "Debug Log" << endl;
 		}
 	}
-//	ofs << std::endl;
 }
 
 void GA::Mutation()
@@ -190,7 +184,6 @@ void GA::Mutation()
 	double random;
 	int mutation_pos;
 	std::cout << "----- Mutation -----" << std::endl;
-//	ofs << "Mutation" << std::endl;
 
 	for(int j=0; j<PARAMETER_NUM; j++)
 	{
@@ -211,10 +204,8 @@ void GA::Mutation()
 		for(int l=0; l<CLUST_PARAM_NUM; l++)
 		{
 			angle[l][k] = utility.DecimalToBinary(child[l][k]);
-//			ofs << angle[l][k] << "\t";
 		}
 	}
-//	ofs << std::endl;
 }
 
 void GA::DisplayEvaluatedValue()
@@ -263,14 +254,13 @@ int main()
 {
 	Serial serial;
 	GA ga;
-//	ga.Initialize();
 	serial.Init();
 
 	for(int i=0; i<LOOP_COUNT; i++)
 	{
 		
 		ga.Clustering();
-		std::cout << "LOOP_COUNT: " << i+1 << std::endl;
+		std::cout << "LOOP_COUNT: " << i+1 << std::endl; 
 		ga.InitEvalValue();
 		for(int c=0;c<CLUSTER_NUM;c++){
 			cout << "Cluster Count:" << c+1 << endl;

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iomanip>
 #include "parameter.h"
+#include "FileManager.h"
 
 
 using namespace std;
@@ -54,6 +55,8 @@ private:
 	double min;							//
 	int min_j;							//
 	bool loop;							//繰返し用フラグ
+//	FileManager fmp;						//再利用目的データ
+	ofstream ofs;
 
 };
 
