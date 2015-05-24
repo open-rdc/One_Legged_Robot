@@ -41,7 +41,6 @@ void GA::MakeSring(int c)
 		}
 	cout << ")" << endl;
 
-	cout << "Make String" << endl; 
 	}
 	for(int i=0; i<CLUST_PARAM_NUM; i++)
 	{
@@ -68,16 +67,17 @@ void GA::MakeSring(int c)
 void GA::RobotMove()
 {
 	cout << "Robot Move" << endl;
-	ofs << endl;
 	int enc;
 	for(int i=0; i<CLUST_PARAM_NUM; i++)
 	{
+		cout << "step1" << endl;
 		serial.BoostWrite("s");
 		for(int j=0; j<5; j++)
 		{
 			serial.BoostWrite(str[i]);
 			boost::this_thread::sleep(boost::posix_time::milliseconds(10));
 		}
+		cout << "step2" << endl;
 		std::cout << "str[" << i << "]: " << str[i];
 		boost::this_thread::sleep(boost::posix_time::seconds(SLEEP_TIME));
 		for(int k=0; k<100; k++)
@@ -85,14 +85,16 @@ void GA::RobotMove()
 			serial.BoostRead();
 			boost::this_thread::sleep(boost::posix_time::milliseconds(50));
 		}
+		cout << "step3" << endl;
 		enc = serial.GetSerialBuf();
 		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
+		cout << "step4" << endl;
 		move_result[i] = enc;
 		cout << "output start" << endl;
 		ofs << "," << enc;
 		cout << "output finish" << endl; 
 	}
-	ofs << endl;
+	ofs << endl << endl;
 }
 
 void GA::Selection(int c)
