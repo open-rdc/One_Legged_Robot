@@ -40,6 +40,8 @@ void GA::MakeSring(int c)
 			cout << " " << angle[j][i] << " ";
 		}
 	cout << ")" << endl;
+
+	cout << "Make String" << endl; 
 	}
 	for(int i=0; i<CLUST_PARAM_NUM; i++)
 	{
@@ -65,6 +67,7 @@ void GA::MakeSring(int c)
 
 void GA::RobotMove()
 {
+	cout << "Robot Move" << endl;
 	ofs << endl;
 	int enc;
 	for(int i=0; i<CLUST_PARAM_NUM; i++)
@@ -272,6 +275,7 @@ int main()
 			ga.Crossover();
 			ga.Mutation();
 			ga.ReturnParam(c);
+			cout << "Finish Cluster" << endl << endl;
 		}
 		ga.DisplayEvaluatedValue();
 	}
