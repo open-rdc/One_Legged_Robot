@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <iomanip>
 #include "parameter.h"
-#include "FileManager.h"
+//#include "FileManager.h"
 
 
 using namespace std;

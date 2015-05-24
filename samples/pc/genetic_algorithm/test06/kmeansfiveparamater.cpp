@@ -189,16 +189,15 @@ void Kmeans::DisplayClusters()
 		cout << "Center Point (" ;
 
 		ofs << "Disp Cluster Num:" << i+1 << endl;
-		ofs << "Center Point " << " ";
+		ofs << "Center Point ";
 
 		for(int j=0;j<PARAMETER_NUM;j++)
 		{
+			ofs << ",";
 			cout << " " << (int)pos[center[i]][j] << " ";
 			ofs << (int)pos[center[i]][j];
-
-			if(j<PARAMETER_NUM-1) ofs << ",";
-			else ofs << endl << endl;
 		}
+		ofs << endl << endl;
 		cout << ")" << endl << endl;
 		for(int j=0;j<CLUST_PARAM_NUM;j++)
 		{
