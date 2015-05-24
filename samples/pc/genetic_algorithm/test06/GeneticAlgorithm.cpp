@@ -65,6 +65,7 @@ void GA::MakeSring(int c)
 
 void GA::RobotMove()
 {
+	ofs << endl;
 	int enc;
 	for(int i=0; i<CLUST_PARAM_NUM; i++)
 	{
@@ -84,12 +85,9 @@ void GA::RobotMove()
 		enc = serial.GetSerialBuf();
 		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
 		move_result[i] = enc;
-		try{
-			ofs << "," << enc;
-		}
-		catch(char* str){
-			cout << str << endl;
-		}
+		cout << "output start" << endl;
+		ofs << "," << enc;
+		cout << "output finish" << endl; 
 	}
 	ofs << endl;
 }
