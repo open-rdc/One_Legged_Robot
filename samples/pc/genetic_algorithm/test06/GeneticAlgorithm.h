@@ -5,6 +5,7 @@
 #include "Utility.h"
 #include "Serial.h"
 #include "kmeansfiveparamater.h"
+#include "FileManager.h"
 
 class GA
 {
@@ -32,6 +33,7 @@ private:
 	std::bitset<32> child[CLUST_PARAM_NUM][PARAMETER_NUM];
 	std::ofstream ofs;
 	int EvalValue[CLUSTER_NUM];
+	FileManager fm;
 
 	void ResetStr();
 };

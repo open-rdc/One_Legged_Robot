@@ -24,7 +24,7 @@ void GA::Initialize()
 	}
 	ofs << std::endl;
 	*/
-	ofs = ofstream("EvaluateResult.csv");
+	fm.OpenOutputFile("EvaluateResult.csv");
 	kmeans.Init();
 }
 
@@ -86,10 +86,11 @@ void GA::RobotMove()
 		enc = serial.GetSerialBuf();
 		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
 		move_result[i] = enc;
-		ofs << "," << enc;
+		fm.PutData(",");
+		fm.PutData(enc);
 		cout << "output finish" << endl; 
 	}
-	ofs << endl;
+	fm.PutEndline();
 }
 
 void GA::Selection(int c)
