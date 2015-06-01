@@ -8,8 +8,8 @@ using namespace std;
 class FileManager
 {
 public:
-	FileManager(void);
-	~FileManager(void);
+//	FileManager(void);
+//	~FileManager(void);
 
 	bool OpenInputFile(char* str);
 	int GetData(void);
@@ -22,7 +22,6 @@ public:
 	void PutEndline(void);
 	void CloseOutputFile(void);
 
-private:
 	ifstream ifs;
 	ofstream ofs;
 };

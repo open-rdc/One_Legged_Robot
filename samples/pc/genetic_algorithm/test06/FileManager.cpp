@@ -1,7 +1,7 @@
 #include "FileManager.h"
 
 
-FileManager::FileManager(void)
+/*FileManager::FileManager(void)
 {
 }
 
@@ -9,7 +9,7 @@ FileManager::FileManager(void)
 FileManager::~FileManager(void)
 {
 }
-
+*/
 bool FileManager::OpenInputFile(char* str)
 {
 	ifs = ifstream(str);

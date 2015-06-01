@@ -206,11 +206,11 @@ void Kmeans::DisplayClusters()
 			for(int k=0;k<PARAMETER_NUM;k++)
 			{
 				cout << " " << (int)pos[cluster[i][j]][k] << " ";
-				ofs << (int)pos[cluster[i][j]][k];
+				ofs << "," << (int)pos[cluster[i][j]][k];
 
-				if(k<PARAMETER_NUM-1) ofs << ",";
-				else ofs << endl;
+				
 			}
+			ofs << endl;
 			cout << ")" << endl;
 		}
 		cout << endl;
@@ -240,7 +240,7 @@ void Kmeans::ChangePos(int c[CLUST_PARAM_NUM][PARAMETER_NUM],int clusterNum)
 	{
 		for(int j=0;j<PARAMETER_NUM;j++)
 		{
-			pos[cluster[clusterNum][i]][j] = (float)c[i][j];
+			pos[cluster[clusterNum][i]][j] = (double)c[i][j];
 		}
 	}
 }

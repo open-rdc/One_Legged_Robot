@@ -1,5 +1,4 @@
 #include "GeneticAlgorithm.h"
-#include "kmeansfiveparamater.h"
 
 void GA::Initialize()
 {
@@ -26,12 +25,24 @@ void GA::Initialize()
 	*/
 	fm.OpenOutputFile("EvaluateResult.csv");
 	kmeans.Init();
+	for(int i=0;i<CLUSTER_NUM;i++)
+	{
+		fm.PutData("ClusterNo.");
+		fm.PutData(i+1);
+		fm.PutData(" Parameter");
+		for(int j=0;j<CLUST_PARAM_NUM;j++)
+		{
+			fm.PutData(",");
+			fm.PutData("No.");
+			fm.PutData(j+1);
+		}
+		fm.PutData(",");
+	}
 }
 
-void GA::MakeSring(int c)
+void GA::MakeSring()
 {
-	ResetStr();
-	kmeans.GetCluster(angle,c);
+	
 	
 	for(int j=0;j<CLUST_PARAM_NUM;j++){
 	cout << "angle(";
@@ -90,7 +101,6 @@ void GA::RobotMove()
 		fm.PutData(enc);
 		cout << "output finish" << endl; 
 	}
-	fm.PutEndline();
 }
 
 void GA::Selection(int c)
@@ -98,6 +108,7 @@ void GA::Selection(int c)
 	int temp, angle_temp;
 	int target[CLUST_PARAM_NUM][2];
 	int parent_cpy = 0;
+	EvalValue[c] = 0;
 
 	std::cout << "----- Selection -----" << std::endl;
 
@@ -113,6 +124,7 @@ void GA::Selection(int c)
 		{
 			if(target[j][0] < target[k][0])
 			{
+				EvalValue[c] = target[k][0];
 				temp = target[j][0];
 				angle_temp = target[j][1];
 				target[j][0] = target[k][0];
@@ -120,7 +132,6 @@ void GA::Selection(int c)
 				target[k][0] = temp;
 				target[k][1] = angle_temp;
 			}
-			EvalValue[c] = target[j][0];
 		}
 	}
 
@@ -208,6 +219,7 @@ void GA::Mutation()
 			angle[l][k] = utility.DecimalToBinary(child[l][k]);
 		}
 	}
+	fm.PutEndline();
 }
 
 void GA::DisplayEvaluatedValue()
@@ -247,39 +259,44 @@ void GA::InitEvalValue()
 	}
 }
 
-void GA::ReturnParam(int c)
-{
-	kmeans.ChangePos(angle,c);
-}
 
-int main()
+void GA::GAProcessing()
 {
-	Serial serial;
-	GA ga;
 	serial.Init();
-	ga.Initialize();
-
-	for(int i=0; i<LOOP_COUNT; i++)
+	Initialize();
+	for(int i=0;i<LOOP_COUNT;i++)
 	{
-		
-		ga.Clustering();
+		Clustering();
 		std::cout << "LOOP_COUNT: " << i+1 << std::endl; 
-		ga.InitEvalValue();
+		fm.PutData("Loop Count:");
+		fm.PutData(i+1);
+		InitEvalValue();
 		for(int c=0;c<CLUSTER_NUM;c++){
 			cout << "Cluster Count:" << c+1 << endl;
-			ga.MakeSring(c);
-			ga.RobotMove();
-		
-			ga.Selection(c);
-			ga.Crossover();
-			ga.Mutation();
-			ga.ReturnParam(c);
+			ResetStr();
+			kmeans.GetCluster(angle,c);
+			fm.PutData(" Cluster No:");
+			fm.PutData(c+1);
+			MakeSring();
+			RobotMove();
+			Selection(c);
+			Crossover();
+			Mutation();
+			kmeans.ChangePos(angle,c);
+			fm.PutData(",");
 			cout << "Finish Cluster" << endl << endl;
 		}
-		ga.DisplayEvaluatedValue();
+		DisplayEvaluatedValue();
+		fm.PutEndline();
 	}
 	cout << "final debug 1" << endl;
 	serial.close();
 	cout << "final debug 2" << endl;
+}
+
+int main()
+{
+	GA ga;
+	ga.GAProcessing();
 	return 0;
 }

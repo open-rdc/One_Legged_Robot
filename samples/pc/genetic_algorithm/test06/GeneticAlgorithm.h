@@ -14,12 +14,12 @@ public:
 	void Selection(int c);
 	void Crossover();
 	void Mutation();
-	void MakeSring(int c);
+	void MakeSring();
 	void RobotMove();
 	void DisplayEvaluatedValue();
 	void Clustering(void);
 	void InitEvalValue(void);
-	void ReturnParam(int c);
+	void GAProcessing(void);
 
 private:
 	Utility utility;
@@ -31,9 +31,11 @@ private:
 	int move_result[CLUST_PARAM_NUM];
 	std::bitset<32> parent[CLUST_PARAM_NUM][PARAMETER_NUM];
 	std::bitset<32> child[CLUST_PARAM_NUM][PARAMETER_NUM];
-	std::ofstream ofs;
 	int EvalValue[CLUSTER_NUM];
 	FileManager fm;
+	FileManager fmc1;
+	FileManager fmc2;
+	FileManager fmc3;
 
 	void ResetStr();
 };
