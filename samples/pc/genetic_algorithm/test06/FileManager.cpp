@@ -1,7 +1,7 @@
 #include "FileManager.h"
 
 
-/*FileManager::FileManager(void)
+FileManager::FileManager(void)
 {
 }
 
@@ -9,13 +9,20 @@
 FileManager::~FileManager(void)
 {
 }
-*/
-bool FileManager::OpenInputFile(char* str)
+
+bool FileManager::OpenInputFile(char* name)
 {
-	ifs = ifstream(str);
+	ifs = ifstream(name);
 	if(!ifs)
 	{
+		OpenOutputFile (name);
+		CloseOutputFile();
 		cout << "ファイルが存在しないため、終了しました。" << endl;
+		return false;
+	}
+	else if(ifs.fail())
+	{
+		cout << "読み取りに失敗しました。" << endl;
 		return false;
 	}
 	return true;
@@ -23,10 +30,9 @@ bool FileManager::OpenInputFile(char* str)
 
 int FileManager::GetData(void)
 {
-	std::string _ret = "null";
+	std::string _ret;
 	if(!ifs.eof()){
-		ifs >> _ret;
-		if(_ret == "null"){return 0;}
+		getline(ifs,_ret,',');
 		int ret = std::stoi(_ret);
 		return ret;
 	}
@@ -37,9 +43,9 @@ void FileManager::CloseInputFile(void)
 	ifs.close();
 }
 
-void FileManager::OpenOutputFile(char* str)
+void FileManager::OpenOutputFile(char* name)
 {
-	ofs = ofstream(str);
+	ofs = ofstream(name);
 }
 
 void FileManager::PutData(int val)
@@ -64,10 +70,10 @@ void FileManager::PutEndline()
 
 void FileManager::DisplayAllData()
 {
-	while(ifs.eof())
+	while(!ifs.eof())
 	{
 		std::string str;
-		ifs >> str;
-		cout << str;
+		getline(ifs,str,',');
+		cout << str << ' ';
 	}
 }

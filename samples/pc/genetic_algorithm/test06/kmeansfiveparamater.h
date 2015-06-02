@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <iomanip>
 #include "parameter.h"
-//#include "FileManager.h"
+#include "FileManager.h"
 
 
 using namespace std;
@@ -43,6 +43,8 @@ private:
 	void ChangeCluster(void);			//クラスタを切り替え
 	void DisplayClusters(void);			//完成したクラスターを表示
 	void DisplayParameter(void);
+	void SaveParameter(void);
+	bool LoadFile(void);
 	
 //	static bool InitFlg;				//初期化状態
 	double pos[RANDOM_MAX][PARAMETER_NUM];		//パラメータ
@@ -55,7 +57,7 @@ private:
 	double min;							//
 	int min_j;							//
 	bool loop;							//繰返し用フラグ
-//	FileManager fmp;						//再利用目的データ
+	FileManager fmp;						//再利用目的データ
 	ofstream ofs;
 
 };

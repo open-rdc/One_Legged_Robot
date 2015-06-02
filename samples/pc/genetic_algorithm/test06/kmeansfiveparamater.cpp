@@ -20,26 +20,49 @@ int Kmeans::GetRandom(int min,int max)
 	return min + (int)(rand()*(max-min+1.0)/(1.0+RAND_MAX));
 }
 
-void Kmeans::DataInit()
+bool Kmeans::LoadFile()
 {
+	if(!fmp.OpenInputFile("Parameter.csv"))
+	{
+		return false;
+	}
+
 	for(int i=0;i<RANDOM_MAX;i++)
 	{
-		pos[i][a1]	 = GetRandom(0,450);
-		pos[i][t1]	 = GetRandom(0,100);
-		pos[i][a2]	 = GetRandom(0,450);
-		pos[i][t2]	 = GetRandom(0,100);
-		pos[i][w]	 = GetRandom(500,1000);
-		cout	<<"("<<pos[i][a1]
-				<<","<<pos[i][t1]
-				<<","<<pos[i][a2]
-				<<","<<pos[i][t2]
-				<<","<<pos[i][w]<<") "
-		<<endl;
 		for(int j=0;j<PARAMETER_NUM;j++)
 		{
+			pos[i][j] = fmp.GetData();
 			individual[i][j] = pos[i][j];
 		}
-    }
+	}
+
+	fmp.CloseInputFile();
+	return true;
+}
+
+void Kmeans::DataInit()
+{
+	if(LoadFile())
+	{
+		for(int i=0;i<RANDOM_MAX;i++)
+		{
+			pos[i][a1]	 = GetRandom(0,450);
+			pos[i][t1]	 = GetRandom(0,100);
+			pos[i][a2]	 = GetRandom(0,450);
+			pos[i][t2]	 = GetRandom(0,100);
+			pos[i][w]	 = GetRandom(500,1000);
+			cout	<<"("<<pos[i][a1]
+					<<","<<pos[i][t1]
+					<<","<<pos[i][a2]
+					<<","<<pos[i][t2]
+					<<","<<pos[i][w]<<") "
+			<<endl;
+			for(int j=0;j<PARAMETER_NUM;j++)
+			{
+				individual[i][j] = pos[i][j];
+			}
+		}
+	}
 	cout<<endl;
 	loop = true;
 }
@@ -144,6 +167,21 @@ void Kmeans::ChangeCluster(void)
     }cout<<endl;
 }
 
+void Kmeans::SaveParameter()
+{
+	fmp.OpenOutputFile("Parameter.csv");
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			fmp.PutData(pos[i][j]);
+			fmp.PutData(',');
+		}
+		fmp.PutEndline();
+	}
+	fmp.CloseOutputFile();
+}
+
 void Kmeans::Clustering(void)
 {
 	while(loop)
@@ -157,6 +195,7 @@ void Kmeans::Clustering(void)
 		ChangeCluster();
 	}
 	DisplayClusters();
+	SaveParameter();
 }
 
 void Kmeans::GetCenterPos(int c[CLUSTER_NUM][PARAMETER_NUM])
