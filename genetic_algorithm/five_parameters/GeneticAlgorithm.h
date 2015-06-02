@@ -4,6 +4,7 @@
 #include "parameter.h"
 #include "Utility.h"
 #include "Serial.h"
+#include "FileManager.h"
 
 class GA
 {
@@ -14,6 +15,7 @@ public:
 	void Mutation();
 	void MakeSring();
 	void RobotMove();
+	void SaveParameter();
 
 private:
 	Utility utility;
@@ -27,5 +29,7 @@ private:
 	std::ofstream ofs;
 
 	void ResetStr();
+	FileManager fm;
+	bool LoadFile();
 };
 #endif
