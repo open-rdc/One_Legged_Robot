@@ -50,7 +50,7 @@ void FileManager::OpenOutputFile(char* name)
 
 void FileManager::PutData(int val)
 {
-	ofs << val;
+	ofs << val << ',';
 }
 
 void FileManager::PutData(std::string  str)

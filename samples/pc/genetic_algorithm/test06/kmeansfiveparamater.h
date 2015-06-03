@@ -45,6 +45,7 @@ private:
 	void DisplayParameter(void);
 	void SaveParameter(void);
 	bool LoadFile(void);
+	bool LoadInitFile(void);
 	
 //	static bool InitFlg;				//‰Šú‰»ó‘Ô
 	double pos[RANDOM_MAX][PARAMETER_NUM];		//ƒpƒ‰ƒ[ƒ^

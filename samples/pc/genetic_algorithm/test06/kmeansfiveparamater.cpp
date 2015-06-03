@@ -40,27 +40,53 @@ bool Kmeans::LoadFile()
 	return true;
 }
 
+bool Kmeans::LoadInitFile()
+{
+	if(!fmp.OpenInputFile("RandomParameter.csv"))
+	{
+		return false;
+	}
+
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			pos[i][j] = fmp.GetData();
+			individual[i][j] = pos[i][j];
+		}
+	}
+
+	fmp.CloseInputFile();
+	return true;
+}
+
 void Kmeans::DataInit()
 {
-	if(LoadFile())
+	if(!LoadFile())
 	{
-		for(int i=0;i<RANDOM_MAX;i++)
+		if(!LoadInitFile())
 		{
-			pos[i][a1]	 = GetRandom(0,450);
-			pos[i][t1]	 = GetRandom(0,100);
-			pos[i][a2]	 = GetRandom(0,450);
-			pos[i][t2]	 = GetRandom(0,100);
-			pos[i][w]	 = GetRandom(500,1000);
-			cout	<<"("<<pos[i][a1]
-					<<","<<pos[i][t1]
-					<<","<<pos[i][a2]
-					<<","<<pos[i][t2]
-					<<","<<pos[i][w]<<") "
-			<<endl;
-			for(int j=0;j<PARAMETER_NUM;j++)
+			fmp.OpenOutputFile("RandomParameter.csv");
+			for(int i=0;i<RANDOM_MAX;i++)
 			{
-				individual[i][j] = pos[i][j];
+				pos[i][a1]	 = GetRandom(0,450);
+				pos[i][t1]	 = GetRandom(0,100);
+				pos[i][a2]	 = GetRandom(0,450);
+				pos[i][t2]	 = GetRandom(0,100);
+				pos[i][w]	 = GetRandom(500,1000);
+				cout	<<"("<<pos[i][a1]
+						<<","<<pos[i][t1]
+						<<","<<pos[i][a2]
+						<<","<<pos[i][t2]
+						<<","<<pos[i][w]<<") "
+				<<endl;
+				for(int j=0;j<PARAMETER_NUM;j++)
+				{
+					individual[i][j] = pos[i][j];
+					fmp.PutData(pos[i][j]);
+				}
 			}
+			fmp.CloseOutputFile();
 		}
 	}
 	cout<<endl;
