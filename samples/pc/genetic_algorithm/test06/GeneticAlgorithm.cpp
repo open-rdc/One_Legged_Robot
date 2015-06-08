@@ -29,14 +29,11 @@ void GA::Initialize()
 	{
 		fm.PutData("ClusterNo.");
 		fm.PutData(i+1);
-		fm.PutData(" Parameter");
+		fm.PutData(" ParameterNo.");
 		for(int j=0;j<CLUST_PARAM_NUM;j++)
 		{
-			fm.PutData(",");
-			fm.PutData("No.");
 			fm.PutData(j+1);
 		}
-		fm.PutData(",");
 	}
 }
 
@@ -97,7 +94,6 @@ void GA::RobotMove()
 		enc = serial.GetSerialBuf();
 		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
 		move_result[i] = enc;
-		fm.PutData(",");
 		fm.PutData(enc);
 		cout << "output finish" << endl; 
 	}
@@ -277,13 +273,13 @@ void GA::GAProcessing()
 			kmeans.GetCluster(angle,c);
 			fm.PutData(" Cluster No:");
 			fm.PutData(c+1);
+			fm.PutData("Values");
 			MakeSring();
 			RobotMove();
 			Selection(c);
 			Crossover();
 			Mutation();
 			kmeans.ChangePos(angle,c);
-			fm.PutData(",");
 			cout << "Finish Cluster" << endl << endl;
 		}
 		DisplayEvaluatedValue();
@@ -291,6 +287,7 @@ void GA::GAProcessing()
 	}
 	cout << "final debug 1" << endl;
 	serial.close();
+	fm.CloseOutputFile();
 	cout << "final debug 2" << endl;
 }
 
