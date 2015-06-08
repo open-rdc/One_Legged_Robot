@@ -42,6 +42,7 @@ void GA::Initialize()
 				ofs << angle[i][j] << "\t";
 			}
 		}
+		SaveParameter();
 	}
 
 	
@@ -248,6 +249,7 @@ void GA::SaveParameter()
 	}
 	fm.CloseOutputFile();
 }
+
 
 int main()
 {
