@@ -20,32 +20,54 @@ bool GA::LoadFile()
 	return true;
 }
 
+bool GA::LoadInitFile()
+{
+	if(!fm.OpenInputFile("RandomParameter.csv"))
+	{
+		return false;
+	}
+
+	for(int i=0; i<RANDOM_MAX; i++)
+	{
+		for(int j=0; j<PARAMETER_NUM; j++)
+		{
+			angle[i][j] = fm.GetData();
+			ofs << angle[i][j] << "\t";
+		}
+	}
+
+	fm.CloseInputFile();
+	return true;
+}
+
 void GA::Initialize()
 {
 	if(!LoadFile())
 	{
-		std::cout << "----- Initialize -----" << std::endl;
-		ofs.open(utility.GetTimeISOString() + ".csv");
-		ofs << "Initialize" << std::endl;
-
-		utility.Random(0, 450, 0);
-		utility.Random(0, 100, 1);
-		utility.Random(0, 450, 2);
-		utility.Random(0, 100, 3);
-		utility.Random(500, 1000, 4);
-
-		for(int i=0; i<RANDOM_MAX; i++)
+		if(!LoadInitFile())
 		{
-			for(int j=0; j<PARAMETER_NUM; j++)
+			std::cout << "----- Initialize -----" << std::endl;
+			ofs.open(utility.GetTimeISOString() + ".csv");
+			ofs << "Initialize" << std::endl;
+
+			utility.Random(0, 450, 0);
+			utility.Random(0, 100, 1);
+			utility.Random(0, 450, 2);
+			utility.Random(0, 100, 3);
+			utility.Random(500, 1000, 4);
+
+			for(int i=0; i<RANDOM_MAX; i++)
 			{
-				angle[i][j] = utility.GetRandom(i, j);
-				ofs << angle[i][j] << "\t";
+				for(int j=0; j<PARAMETER_NUM; j++)
+				{
+					angle[i][j] = utility.GetRandom(i, j);
+					ofs << angle[i][j] << "\t";
+				}
 			}
 		}
-		SaveParameter();
 	}
 
-	
+	SaveParameter();
 	ofs << std::endl;
 }
 

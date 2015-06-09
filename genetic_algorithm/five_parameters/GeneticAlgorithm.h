@@ -31,5 +31,6 @@ private:
 	void ResetStr();
 	FileManager fm;
 	bool LoadFile();
+	bool LoadInitFile();
 };
 #endif
