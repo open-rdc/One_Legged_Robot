@@ -141,10 +141,12 @@ void Kmeans::GetCenter(void)
         min_j = 0;
  
 		for(int j=1;j<CLUSTER_NUM; j++){
-            if(min > distance[j][i]){
-                min		= distance[j][i];
-                min_j	= j;
-            }
+            if(count_Group[j] < CLUST_PARAM_NUM){
+				if(min > distance[j][i]){
+					min		= distance[j][i];
+					min_j	= j;
+				}
+			}
         }
 		if(count_Group[min_j]<CLUST_PARAM_NUM){
 			centerpoint[ min_j ][a1]	+= individual[i][a1];
