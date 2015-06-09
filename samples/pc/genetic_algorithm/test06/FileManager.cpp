@@ -15,8 +15,6 @@ bool FileManager::OpenInputFile(char* name)
 	ifs = ifstream(name);
 	if(!ifs)
 	{
-		OpenOutputFile (name);
-		CloseOutputFile();
 		cout << "ファイルが存在しないため、終了しました。" << endl;
 		return false;
 	}

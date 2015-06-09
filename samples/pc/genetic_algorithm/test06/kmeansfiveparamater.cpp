@@ -201,7 +201,6 @@ void Kmeans::SaveParameter()
 		for(int j=0;j<PARAMETER_NUM;j++)
 		{
 			fmp.PutData(pos[i][j]);
-			fmp.PutData(',');
 		}
 		fmp.PutEndline();
 	}
