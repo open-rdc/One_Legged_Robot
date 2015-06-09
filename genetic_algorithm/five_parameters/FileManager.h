@@ -26,4 +26,5 @@ public:
 private:
 	ifstream ifs;
 	ofstream ofs;
+	int stoi(std::string str);
 };

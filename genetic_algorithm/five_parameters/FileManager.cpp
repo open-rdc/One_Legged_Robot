@@ -15,8 +15,6 @@ bool FileManager::OpenInputFile(char* name)
 	ifs = ifstream(name);
 	if(!ifs)
 	{
-		OpenOutputFile (name);
-		CloseOutputFile();
 		cout << "ファイルが存在しないため、終了しました。" << endl;
 		return false;
 	}
@@ -33,7 +31,7 @@ int FileManager::GetData(void)
 	std::string _ret;
 	if(!ifs.eof()){
 		getline(ifs,_ret,',');
-		int ret = std::stoi(_ret);
+		int ret = stoi(_ret);
 		return ret;
 	}
 }
@@ -76,4 +74,13 @@ void FileManager::DisplayAllData()
 		getline(ifs,str,',');
 		cout << str << ' ';
 	}
+}
+
+int FileManager::stoi(std::string str)
+{
+	int ret;
+	std::stringstream ss;
+	ss << str;
+	ss >> ret;
+	return ret;
 }
