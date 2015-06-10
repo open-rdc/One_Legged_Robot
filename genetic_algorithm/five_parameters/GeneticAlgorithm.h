@@ -16,6 +16,7 @@ public:
 	void MakeSring();
 	void RobotMove();
 	void SaveParameter();
+	int loopNo;
 
 private:
 	Utility utility;

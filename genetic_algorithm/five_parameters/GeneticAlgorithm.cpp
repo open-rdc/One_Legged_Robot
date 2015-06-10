@@ -68,6 +68,13 @@ void GA::Initialize()
 	}
 
 	SaveParameter();
+	fm.OpenOutputFile("EvaluateValue.csv");
+	fm.PutData("ParameterNo:");
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		fm.PutData(i+1);
+	}
+	fm.PutEndline();
 	ofs << std::endl;
 }
 
@@ -101,7 +108,10 @@ void GA::RobotMove()
 {
 	int enc;
 	ofs << "move_result" << std::endl;
-
+	fm.PutData("Loop Count:");
+	fm.PutData(loopNo+1);
+	fm.PutEndline();
+	fm.PutData(" ");
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
 		serial.BoostWrite("s");
@@ -120,8 +130,10 @@ void GA::RobotMove()
 		enc = serial.GetSerialBuf();
 		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
 		move_result[i] = enc;
+		fm.PutData(enc);
 		ofs << move_result[i] << "\t";
 	}
+	fm.PutEndline();
 	ofs << std::endl;
 }
 
@@ -280,9 +292,9 @@ int main()
 	ga.Initialize();
 	serial.Init();
 
-	for(int i=0; i<LOOP_COUNT; i++)
+	for(ga.loopNo=0; ga.loopNo<LOOP_COUNT; ga.loopNo++)
 	{
-		std::cout << "LOOP_COUNT: " << i+1 << std::endl;
+		std::cout << "LOOP_COUNT: " << ga.loopNo+1 << std::endl;
 
 		ga.MakeSring();
 		ga.RobotMove();
