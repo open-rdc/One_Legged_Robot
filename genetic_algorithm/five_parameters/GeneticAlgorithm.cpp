@@ -302,6 +302,7 @@ int main()
 		ga.Selection();
 		ga.Crossover();
 		ga.Mutation();
+		ga.SaveParameter();
 	}
 
 	serial.close();
