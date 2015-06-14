@@ -67,6 +67,7 @@ void GA::Initialize()
 		}
 	}
 
+	SaveRandomParameter();
 	SaveParameter();
 	fm.OpenOutputFile("EvaluateValue.csv");
 	fm.PutData("ParameterNo:");
@@ -284,6 +285,19 @@ void GA::SaveParameter()
 	fm.CloseOutputFile();
 }
 
+void GA::SaveRandomParameter()
+{
+	fm.OpenOutputFile("RandomParameter.csv");
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			fm.PutData(angle[i][j]);
+		}
+		fm.PutEndline();
+	}
+	fm.CloseOutputFile();
+}
 
 int main()
 {

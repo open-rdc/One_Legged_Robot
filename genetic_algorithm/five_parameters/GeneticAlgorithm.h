@@ -16,6 +16,7 @@ public:
 	void MakeSring();
 	void RobotMove();
 	void SaveParameter();
+	void SaveRandomParameter();
 	int loopNo;
 
 private:
