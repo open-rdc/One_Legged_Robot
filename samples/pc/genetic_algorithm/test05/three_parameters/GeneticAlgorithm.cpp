@@ -52,9 +52,9 @@ void GA::Initialize()
 
 			utility.Random(0, 450, 0);
 //			utility.Random(0, 100, 1);
-			utility.Random(0, 450, 2);
+			utility.Random(0, 450, 1);
 //			utility.Random(0, 100, 3);
-			utility.Random(500, 1000, 4);
+			utility.Random(500, 1000, 2);
 
 			for(int i=0; i<RANDOM_MAX; i++)
 			{
