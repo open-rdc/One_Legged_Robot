@@ -87,7 +87,7 @@ void GA::MakeSring()
 	{
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
-			if(j == 0 || j == 2)
+			if(j != PARAMETER_NUM-1)
 			{
 				str[i] += std::to_string(angle[i][j] - ZERO_POINT);
 			}
