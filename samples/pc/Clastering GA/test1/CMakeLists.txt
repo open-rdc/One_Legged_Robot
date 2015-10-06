@@ -33,7 +33,7 @@ link_directories(
 )
 
 set(GA_SRCS
-GeneticAlgorithm.cpp	Serial.cpp	Utility.cpp	kmeansfiveparamater.cpp	FileManager.cpp
+GeneticAlgorithm.cpp	Serial.cpp	Utility.cpp	kmeansthreeparamater.cpp	FileManager.cpp
 
 GeneticAlgorithm.h	Serial.h	parameter.h	Utility.h	kmeansthreeparamater.h	FileManager.h
 )
