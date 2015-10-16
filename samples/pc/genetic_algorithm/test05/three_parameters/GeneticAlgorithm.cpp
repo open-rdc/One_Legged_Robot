@@ -69,6 +69,7 @@ void GA::Initialize()
 
 	SaveRandomParameter();
 	SaveParameter();
+	fmg.OpenOutputFile("GenerationParameter.csv");
 	fm.OpenOutputFile("EvaluateValue.csv");
 	fm.PutData("ParameterNo:");
 	for(int i=0;i<RANDOM_MAX;i++)
@@ -299,6 +300,19 @@ void GA::SaveRandomParameter()
 	fm.CloseOutputFile();
 }
 
+void GA::SaveGenerationParameter(){
+	fmg.PutData("LoopCount:");
+	fmg.PutData(loopNo+1);
+	fmg.PutEndline();
+	for(int i=0;i<RANDOM_MAX;i++){
+		for(int j=0;j<PARAMETER_NUM;j++){
+			fmg.PutData(angle[i][j]);
+		}
+		fmg.PutEndline();
+	}
+	fmg.PutEndline();
+}
+
 int main()
 {
 	Serial serial;
@@ -309,6 +323,8 @@ int main()
 	for(ga.loopNo=0; ga.loopNo<LOOP_COUNT; ga.loopNo++)
 	{
 		std::cout << "LOOP_COUNT: " << ga.loopNo+1 << std::endl;
+
+		ga.SaveGenerationParameter();
 
 		ga.MakeSring();
 		ga.RobotMove();

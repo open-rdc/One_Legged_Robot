@@ -17,6 +17,7 @@ public:
 	void RobotMove();
 	void SaveParameter();
 	void SaveRandomParameter();
+	void SaveGenerationParameter();
 	int loopNo;
 
 private:
@@ -32,6 +33,7 @@ private:
 
 	void ResetStr();
 	FileManager fm;
+	FileManager fmg;
 	bool LoadFile();
 	bool LoadInitFile();
 };
