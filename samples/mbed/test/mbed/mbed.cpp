@@ -29,6 +29,43 @@ void Init(void){
     REDE = 0;                   // RS485 Transmit disable
 }
 
+
+/*--------------------------------------------------*/
+/* Funcyion     : Set servo torque max value        */
+/* NAME         : MaxTorque                         */
+/* Argument     : ID (Servo ID)                     */
+/*              : data (Torque enable)              */
+/* Return value : ---                               */
+/*--------------------------------------------------*/
+void MaxTorque (unsigned char ID, unsigned char data){
+    unsigned char TxData[9];    // TransmitByteData [9byte]
+    unsigned char CheckSum = 0; // CheckSum calculation
+    
+    TxData[0] = 0xFA;           // Header
+    TxData[1] = 0xAF;           // Header
+    TxData[2] = ID;             // ID
+    TxData[3] = 0x00;           // Flags
+    TxData[4] = 0x23;           // Address
+    TxData[5] = 0x01;           // Length
+    TxData[6] = 0x01;           // Count
+    TxData[7] = data;           // Data
+    
+    // CheckSum calculation
+    for(int i=2; i<=7; i++){
+        CheckSum = CheckSum ^ TxData[i];                // XOR from ID to Data
+    }
+    
+    TxData[8] = CheckSum;       // Sum
+    
+    // Send Packet 
+    REDE = 1;                   // RS485 Transmit Enable
+    for(int i=0; i<=8; i++){
+        device.putc(TxData[i]);
+    }
+    wait_us(250);               // Wait for transmission
+    REDE = 0;                   // RS485 Transmitt disable
+}
+
 /*--------------------------------------------------*/
 /* Funcyion     : Servo torque enable               */
 /* NAME         : Torque                            */
@@ -194,6 +231,8 @@ int main() {
     Init();                     // initialize
     Torque(0x01, 0x01);         // ID = 1(0x01) , torque = OFF (0x00)
     Torque(0x02, 0x01);
+	MaxTorque(0x01,0x32);
+	MaxTorque(0x02,0x32);
  
     while(1)
     {
