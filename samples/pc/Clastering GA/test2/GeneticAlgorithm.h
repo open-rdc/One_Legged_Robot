@@ -10,6 +10,8 @@
 class GA
 {
 public:
+	int LoadingClusterNum;
+
 	void Initialize();
 	void Selection();
 	void Crossover();
@@ -32,7 +34,6 @@ private:
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
 	int EvalValue[CLUSTER_NUM];
-	int LoadingClusterNum;
 	FileManager fm;
 
 

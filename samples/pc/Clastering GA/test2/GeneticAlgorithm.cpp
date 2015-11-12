@@ -4,23 +4,12 @@ void GA::Initialize()
 {
 	fm.OpenOutputFile("EvaluateResult.csv");
 	kmeans.Init();
-	for(int i=0;i<CLUSTER_NUM;i++)
-	{
-		fm.PutData("ClusterNo.");
-		fm.PutData(i+1);
-		fm.PutData(" ParameterNo.");
-		for(int j=0;j<CLUST_PARAM_NUM[i];j++)
-		{
-			fm.PutData(j+1);
-		}
-	}
 }
 
 void GA::MakeSring()
 {
 	
-	
-	for(int j=0;j<CLUST_PARAM_NUM[LoadingClusterNum];j++){
+	for(int j=0;j<kmeans.ClusterParameter[LoadingClusterNum];j++){
 	cout << "angle(";
 		for(int i=0;i<PARAMETER_NUM;i++)
 		{
@@ -29,7 +18,7 @@ void GA::MakeSring()
 	cout << ")" << endl;
 
 	}
-	for(int i=0; i<CLUST_PARAM_NUM[LoadingClusterNum]; i++)
+	for(int i=0; i<kmeans.ClusterParameter[LoadingClusterNum]; i++)
 	{
 		for(int j=0; j<PARAMETER_NUM; j++)
 		{
@@ -55,7 +44,7 @@ void GA::RobotMove()
 {
 	cout << "Robot Move" << endl;
 	int enc;
-	for(int i=0; i<CLUST_PARAM_NUM[LoadingClusterNum]; i++)
+	for(int i=0; i<kmeans.ClusterParameter[LoadingClusterNum]; i++)
 	{
 		serial.BoostWrite("s");
 		for(int j=0; j<5; j++)
@@ -87,15 +76,15 @@ void GA::Selection()
 
 	std::cout << "----- Selection -----" << std::endl;
 
-	for(int i=0; i<CLUST_PARAM_NUM[LoadingClusterNum]; i++)
+	for(int i=0; i<kmeans.ClusterParameter[LoadingClusterNum]; i++)
 	{
 		target[i][0] = move_result[i];
 		target[i][1] = i;
 	}
 
-	for(int j=0; j<CLUST_PARAM_NUM[LoadingClusterNum]-1; j++)
+	for(int j=0; j<kmeans.ClusterParameter[LoadingClusterNum]-1; j++)
 	{
-		for(int k=j+1; k<CLUST_PARAM_NUM[LoadingClusterNum]; k++)
+		for(int k=j+1; k<kmeans.ClusterParameter[LoadingClusterNum]; k++)
 		{
 			if(target[j][0] < target[k][0])
 			{
@@ -111,7 +100,7 @@ void GA::Selection()
 		}
 	}
 
-	INDIVIDUALS_NUMBER = CLUST_PARAM_NUM[LoadingClusterNum] * RANKING_RATE;
+	INDIVIDUALS_NUMBER = kmeans.ClusterParameter[LoadingClusterNum] * RANKING_RATE;
 
 	for(int l=0; l<INDIVIDUALS_NUMBER; l++)
 	{
@@ -123,7 +112,7 @@ void GA::Selection()
 
 	for(int n=0; n<PARAMETER_NUM; n++)
 	{
-		for(int o=0; o<CLUST_PARAM_NUM[LoadingClusterNum]; o++)
+		for(int o=0; o<kmeans.ClusterParameter[LoadingClusterNum]; o++)
 		{
 			if(parent_cpy == INDIVIDUALS_NUMBER)
 			{
@@ -143,7 +132,7 @@ void GA::Crossover()
 
 	for(int k=0; k<PARAMETER_NUM; k++)
 	{
-		for(int i=0; i<CLUST_PARAM_NUM[LoadingClusterNum]; i+=2)
+		for(int i=0; i<kmeans.ClusterParameter[LoadingClusterNum]; i+=2)
 		{	
 			counter += 2;
 			if(counter == INDIVIDUALS_NUMBER)
@@ -178,7 +167,7 @@ void GA::Mutation()
 
 	for(int j=0; j<PARAMETER_NUM; j++)
 	{
-		for(int i=0; i<CLUST_PARAM_NUM[LoadingClusterNum]; i++)
+		for(int i=0; i<kmeans.ClusterParameter[LoadingClusterNum]; i++)
 		{
 			random = utility.Random(0, 100) * 0.01;
 
@@ -192,7 +181,7 @@ void GA::Mutation()
 
 	for(int k=0; k<PARAMETER_NUM; k++)
 	{
-		for(int l=0; l<CLUST_PARAM_NUM[LoadingClusterNum]; l++)
+		for(int l=0; l<kmeans.ClusterParameter[LoadingClusterNum]; l++)
 		{
 			angle[l][k] = utility.DecimalToBinary(child[l][k]);
 		}
@@ -218,7 +207,7 @@ void GA::DisplayEvaluatedValue()
 
 void GA::ResetStr()
 {
-	for(int i=0; i<CLUST_PARAM_NUM[LoadingClusterNum]; i++)
+	for(int i=0; i<kmeans.ClusterParameter[LoadingClusterNum]; i++)
 	{
 		str[i] = "";
 	}

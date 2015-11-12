@@ -32,6 +32,8 @@ public:
 	void ChangePos(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
 	void ChangeCenterPoint(int CenterPointNum,int clusterNum);
 
+	int ClusterParameter[CLUSTER_NUM];
+
 private:
 	int GetRandom(int min, int max);	//—”‚ğ¶¬				//‰Šú‰»
 	void DataInit(void);				//ƒpƒ‰ƒ[ƒ^‰Šú‰»

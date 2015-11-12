@@ -110,7 +110,7 @@ void Kmeans::CenterInit(void)
 		centerpoint[i][a2]	 = 0;
 		centerpoint[i][w]	 = 0;
         count_Group[i]		 = 0;
-		CLUST_PARAM_NUM[i]	 = 0;
+		ClusterParameter[i]	 = 0;
     }
 }
 
@@ -143,7 +143,7 @@ void Kmeans::GetCenter(void)
 		centerpoint[ min_j ][a2]	+= individual[i][a2];
 		centerpoint[ min_j ][w]		+= individual[i][w];
 		cluster[min_j][(int)count_Group[min_j]] = i;
-		CLUST_PARAM_NUM[min_j]++;
+		ClusterParameter[min_j]++;
 		count_Group[min_j]++;
     }
 
@@ -151,16 +151,16 @@ void Kmeans::GetCenter(void)
 	int flg_num = 0;
 
 	for(int i=0;i<CLUSTER_NUM;i++){
-		if(CLUST_PARAM_NUM[i]%2 == 1){
+		if(ClusterParameter[i]%2 == 1){
 			if(flg){
-				CLUST_PARAM_NUM[i]++;
-				cluster[i][CLUST_PARAM_NUM[i]] = cluster[flg_num][CLUST_PARAM_NUM[flg_num]+1];
-				cluster[flg_num][CLUST_PARAM_NUM[flg_num]+1] = NULL;
+				ClusterParameter[i]++;
+				cluster[i][ClusterParameter[i]] = cluster[flg_num][ClusterParameter[flg_num]+1];
+				cluster[flg_num][ClusterParameter[flg_num]+1] = NULL;
 				flg_num = 0;
 				flg = false;
 			}else{
 				flg_num = i;
-				CLUST_PARAM_NUM[i]--;
+				ClusterParameter[i]--;
 				flg = true;
 			}
 		}
@@ -240,7 +240,7 @@ void Kmeans::GetCenterPos(int c[CLUSTER_NUM][PARAMETER_NUM])
 
 void Kmeans::GetCluster(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum)
 {
-	for(int i=0;i<CLUST_PARAM_NUM[clusterNum];i++)
+	for(int i=0;i<ClusterParameter[clusterNum];i++)
 	{
 		for(int j=0;j<PARAMETER_NUM;j++)
 		{
@@ -267,7 +267,7 @@ void Kmeans::DisplayClusters()
 		}
 		ofs << endl << endl;
 		cout << ")" << endl << endl;
-		for(int j=0;j<CLUST_PARAM_NUM[i];j++)
+		for(int j=0;j<ClusterParameter[i];j++)
 		{
 			cout << "No." << j+1 << "("  ;
 			ofs << "No." << j+1 << " ";
@@ -304,7 +304,7 @@ void Kmeans::DisplayParameter()
 
 void Kmeans::ChangePos(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum)
 {
-	for(int i=0;i<CLUST_PARAM_NUM[clusterNum];i++)
+	for(int i=0;i<ClusterParameter[clusterNum];i++)
 	{
 		for(int j=0;j<PARAMETER_NUM;j++)
 		{
