@@ -5,6 +5,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/array.hpp>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 using namespace boost::asio;

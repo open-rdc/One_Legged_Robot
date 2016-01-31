@@ -1,6 +1,6 @@
+#include <math.h>
 #include "kmeansthreeparamater.h"
 #include "parameter.h"
-
 
 Kmeans::Kmeans(void)
 {
@@ -12,7 +12,7 @@ void Kmeans::Init(void)
 	srand((unsigned int)time(NULL));
 	DataInit();
 	RandomClusterInit();
-	ofs = ofstream("Result.csv");
+	ofs.open("Result.csv", std::ios::out);
 }
 
 int Kmeans::GetRandom(int min,int max)

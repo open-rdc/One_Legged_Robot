@@ -50,7 +50,7 @@ void Serial::BoostRead()
 
 int Serial::GetSerialBuf()
 {
-	int buf2i = std::stoi(buf.data());
+	int buf2i = boost::lexical_cast<int>(buf.data());
 
 	return buf2i;
 }

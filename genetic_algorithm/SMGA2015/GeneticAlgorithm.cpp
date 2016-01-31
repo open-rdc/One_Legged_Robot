@@ -1,5 +1,10 @@
 #include "GeneticAlgorithm.h"
 
+template <typename T> std::string tostr(const T& t)
+{
+    std::ostringstream os; os<<t; return os.str();
+}
+
 void GA::Initialize()
 {
 	fm.OpenOutputFile("EvaluateResult.csv");
@@ -24,11 +29,11 @@ void GA::MakeSring()
 		{
 			if(j != 2)
 			{
-				str[i] += std::to_string(angle[i][j] - ZERO_POINT);
+				str[i] += tostr(angle[i][j] - ZERO_POINT);
 			}
 			else
 			{
-				str[i] += std::to_string(angle[i][j]);
+				str[i] += tostr(angle[i][j]);
 			}
 				str[i] += ",";
 			
