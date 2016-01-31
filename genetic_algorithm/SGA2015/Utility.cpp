@@ -7,8 +7,8 @@ unsigned long long Utility::GetTimeStamp()
 
 	typedef boost::date_time::c_local_adjustor<pt::ptime> local_adj;
 
-	auto epoch = local_adj::utc_to_local(pt::ptime(gg::date(1970, 1, 1)));
-	auto diff = pt::microsec_clock::local_time() - epoch;
+	pt::ptime epoch = local_adj::utc_to_local(pt::ptime(gg::date(1970, 1, 1)));
+	pt::time_duration diff = pt::microsec_clock::local_time() - epoch;
 
 	return diff.total_microseconds();
 }

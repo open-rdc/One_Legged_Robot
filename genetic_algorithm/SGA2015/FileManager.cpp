@@ -12,7 +12,7 @@ FileManager::~FileManager(void)
 
 bool FileManager::OpenInputFile(char* name)
 {
-	ifs = ifstream(name);
+	ifs.open(name, std::ios::in);
 	if(!ifs)
 	{
 		cout << "ファイルが存在しないため、終了しました。" << endl;
@@ -35,6 +35,7 @@ int FileManager::GetData(void)
 		int ret = stoi(_ret);
 		return ret;
 	}
+	return 0;
 }
 
 void FileManager::CloseInputFile(void)
@@ -44,7 +45,7 @@ void FileManager::CloseInputFile(void)
 
 void FileManager::OpenOutputFile(char* name)
 {
-	ofs = ofstream(name);
+	ofs.open(name, std::ios::out);
 }
 
 void FileManager::PutData(int val)

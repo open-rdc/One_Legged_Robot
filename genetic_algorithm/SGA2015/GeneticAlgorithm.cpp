@@ -1,5 +1,10 @@
 #include "GeneticAlgorithm.h"
 
+template <typename T> std::string tostr(const T& t)
+{
+    std::ostringstream os; os<<t; return os.str();
+}
+
 bool GA::LoadFile()
 {
 	if(!fm.OpenInputFile("Parameter.csv"))
@@ -47,7 +52,7 @@ void GA::Initialize()
 		if(!LoadInitFile())
 		{
 			std::cout << "----- Initialize -----" << std::endl;
-			ofs.open(utility.GetTimeISOString() + ".csv");
+			ofs.open((utility.GetTimeISOString() + ".csv").c_str());
 			ofs << "Initialize" << std::endl;
 
 			utility.Random(0, 450, 0);
@@ -90,11 +95,11 @@ void GA::MakeSring()
 		{
 			if(j != 2)
 			{
-				str[i] += std::to_string(angle[i][j] - ZERO_POINT);
+				str[i] += tostr(angle[i][j] - ZERO_POINT);
 			}
 			else
 			{
-				str[i] += std::to_string(angle[i][j]);
+				str[i] += tostr(angle[i][j]);
 			}
 				str[i] += ",";
 			
