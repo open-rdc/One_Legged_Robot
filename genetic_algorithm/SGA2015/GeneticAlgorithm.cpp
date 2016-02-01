@@ -5,11 +5,18 @@ template <typename T> std::string tostr(const T& t)
     std::ostringstream os; os<<t; return os.str();
 }
 
-bool GA::LoadFile()
+/*
+ * @brief 初期値の読み出し
+ * 個体の初期値の読み出し
+ */
+bool GA::LoadInitFile()
 {
 	if(!fm.OpenInputFile("Parameter.csv"))
 	{
-		return false;
+		if(!fm.OpenInputFile("RandomParameter.csv"))		// どちらが使用されている？
+		{
+			return false;
+		}
 	}
 
 	for(int i=0; i<RANDOM_MAX; i++)
@@ -25,49 +32,26 @@ bool GA::LoadFile()
 	return true;
 }
 
-bool GA::LoadInitFile()
-{
-	if(!fm.OpenInputFile("RandomParameter.csv"))
-	{
-		return false;
-	}
-
-	for(int i=0; i<RANDOM_MAX; i++)
-	{
-		for(int j=0; j<PARAMETER_NUM; j++)
-		{
-			angle[i][j] = fm.GetData();
-			ofs << angle[i][j] << "\t";
-		}
-	}
-
-	fm.CloseInputFile();
-	return true;
-}
-
+/*!
+ * @brief 初期化
+ */
 void GA::Initialize()
 {
-	if(!LoadFile())
+	if(!LoadInitFile())
 	{
-		if(!LoadInitFile())
+		std::cout << "----- Initialize -----" << std::endl;
+		ofs.open((utility.GetTimeISOString() + ".csv").c_str());
+		ofs << "Initialize" << std::endl;
+
+		utility.Random(0, 450, 0);
+		utility.Random(0, 450, 1);
+
+		for(int i=0; i<RANDOM_MAX; i++)
 		{
-			std::cout << "----- Initialize -----" << std::endl;
-			ofs.open((utility.GetTimeISOString() + ".csv").c_str());
-			ofs << "Initialize" << std::endl;
-
-			utility.Random(0, 450, 0);
-//			utility.Random(0, 100, 1);
-			utility.Random(0, 450, 1);
-//			utility.Random(0, 100, 3);
-//			utility.Random(500, 1000, 2);
-
-			for(int i=0; i<RANDOM_MAX; i++)
+			for(int j=0; j<PARAMETER_NUM; j++)
 			{
-				for(int j=0; j<PARAMETER_NUM; j++)
-				{
-					angle[i][j] = utility.GetRandom(i, j);
-					ofs << angle[i][j] << "\t";
-				}
+				angle[i][j] = utility.GetRandom(i, j);
+				ofs << angle[i][j] << "\t";
 			}
 		}
 	}
@@ -85,6 +69,9 @@ void GA::Initialize()
 	ofs << std::endl;
 }
 
+/*!
+ * @brief 角度を文字に変換
+ */
 void GA::MakeSring()
 {
 	ResetStr();
@@ -101,7 +88,7 @@ void GA::MakeSring()
 			{
 				str[i] += tostr(angle[i][j]);
 			}
-				str[i] += ",";
+			str[i] += ",";
 			
 			if(j == PARAMETER_NUM-1)
 			{
@@ -111,6 +98,9 @@ void GA::MakeSring()
 	}
 }
 
+/*!
+ * @brief １世代分ロボットにパラメータを送り，結果をmove_resultに入れる．
+ */
 void GA::RobotMove()
 {
 	int enc;
@@ -144,6 +134,9 @@ void GA::RobotMove()
 	ofs << std::endl;
 }
 
+/*!
+ * @brief 選択
+ */
 void GA::Selection()
 {
 	int temp, angle_temp;
@@ -159,6 +152,7 @@ void GA::Selection()
 		target[i][1] = i;
 	}
 
+	// ソート
 	for(int j=0; j<RANDOM_MAX-1; j++)
 	{
 		for(int k=j+1; k<RANDOM_MAX; k++)
@@ -175,6 +169,7 @@ void GA::Selection()
 		}
 	}
 
+	// 選択
 	for(int l=0; l<INDIVIDUALS_NUMBER; l++)
 	{
 		for(int m=0; m<2; m++)
@@ -183,6 +178,7 @@ void GA::Selection()
 		}
 	}
 
+	// 選択した個体を繰り返しバイナリにして全体の個体にセット
 	for(int n=0; n<PARAMETER_NUM; n++)
 	{
 		for(int o=0; o<RANDOM_MAX; o++)
@@ -199,6 +195,12 @@ void GA::Selection()
 	ofs << std::endl;
 }
 
+/*
+ * @brief 交叉
+ * 2015 隣の個体と交叉，エリート保存戦略なし
+ * 林原　エリート保存戦略，ランダムに交叉
+ */
+
 void GA::Crossover()
 {
 	std::bitset<32> mask = utility.GetMask();
@@ -206,32 +208,27 @@ void GA::Crossover()
 	std::cout << "----- Crossover -----" << std::endl;
 	ofs << "Crossover" << std::endl;
 
-	for(int k=0; k<PARAMETER_NUM; k++)
+	for(int i = INDIVIDUALS_NUMBER; i < RANDOM_MAX; i++)
 	{
-		for(int i=0; i<RANDOM_MAX; i+=2)
-		{	
-			counter += 2;
-			if(counter == INDIVIDUALS_NUMBER)
-			{
-				mask = utility.GetMaskRandom();
-				counter = 0;
-			}
-
-			for(size_t j=0; j<parent[i][k].size(); j++)
+		mask = utility.GetMaskRandom();
+		int selected_no = utility.Random(0, INDIVIDUALS_NUMBER - 1);
+		for(int k = 0; k < PARAMETER_NUM; k++)
+		{
+			for(size_t j = 0; j < parent[i][k].size(); j++)
 			{
 				if(mask.test(j) == 0)
 				{
-					child[i][k].set(j, parent[i][k].test(j));
-					child[i+1][k].set(j, parent[i+1][k].test(j));
+					child[i          ][k].set(j, parent[i          ][k].test(j));
+					child[selected_no][k].set(j, parent[selected_no][k].test(j));
 				}
 				else
 				{
-					child[i][k].set(j, parent[i+1][k].test(j));
-					child[i+1][k].set(j, parent[i][k].test(j));
+					child[i          ][k].set(j, parent[selected_no][k].test(j));
+					child[selected_no][k].set(j, parent[i          ][k].test(j));
 				}
 			}
-			ofs << utility.DecimalToBinary(child[i][k]) << "\t";
-			ofs << utility.DecimalToBinary(child[i+1][k]) << "\t";
+			ofs << utility.DecimalToBinary(child[i          ][k]) << "\t";
+			ofs << utility.DecimalToBinary(child[selected_no][k]) << "\t";
 		}
 	}
 	ofs << std::endl;
@@ -277,6 +274,9 @@ void GA::ResetStr()
 	}
 }
 
+/*
+ * @brief 初期化ファイルの保存
+ */
 void GA::SaveParameter()
 {
 	fm.OpenOutputFile("Parameter.csv");
@@ -291,6 +291,9 @@ void GA::SaveParameter()
 	fm.CloseOutputFile();
 }
 
+/*
+ * @brief 初期化ファイルの保存
+ */
 void GA::SaveRandomParameter()
 {
 	fm.OpenOutputFile("RandomParameter.csv");
