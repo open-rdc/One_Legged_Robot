@@ -62,6 +62,9 @@ std::bitset<32> Utility::BinaryToDecimal(std::bitset<32> binary)
 	return value;
 }
 
+/*!
+ * @brief マスクを作成(0101010101)
+ */
 void Utility::SetMask()
 {
 	int bit_counter = 0;
@@ -80,6 +83,9 @@ void Utility::SetMask()
 	}
 }
 
+/*!
+ * @brief 一様交叉用のマスクを作成
+ */
 void Utility::SetMaskRandom()
 {
 	int bit_counter = 0;

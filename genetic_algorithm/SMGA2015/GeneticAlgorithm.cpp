@@ -231,7 +231,9 @@ void GA::InitEvalValue()
 	}
 }
 
-
+/*
+ * @brief メインプロセス
+ */
 void GA::GAProcessing()
 {
 	serial.Init();

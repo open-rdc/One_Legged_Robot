@@ -1,5 +1,5 @@
 #include <math.h>
-#include "kmeansthreeparamater.h"
+#include "kmeans.h"
 #include "parameter.h"
 
 Kmeans::Kmeans(void)
@@ -71,7 +71,6 @@ void Kmeans::DataInit()
 			{
 				pos[i][a1]	 = GetRandom(0,450);
 				pos[i][a2]	 = GetRandom(0,450);
-//				pos[i][w]	 = GetRandom(500,1000);
 				cout	<<"("<<pos[i][a1]
 						<<","<<pos[i][a2]
 /*						<<","<<pos[i][w]*/<<") "
