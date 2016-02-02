@@ -5,15 +5,26 @@ template <typename T> std::string tostr(const T& t)
     std::ostringstream os; os<<t; return os.str();
 }
 
+GA::GA(): utility(), serial(), fm(), fmg(), ofs()
+{
+	serial.Init();
+}
+
+GA::~GA()
+{
+	serial.close();
+}
+
+
 /*
  * @brief 初期値の読み出し
  * 個体の初期値の読み出し
  */
 bool GA::LoadInitFile()
 {
-	if(!fm.OpenInputFile("Parameter.csv"))
+	if(!fm.OpenInputFile("RandomParameter.csv"))		// どちらが使用されている？
 	{
-		if(!fm.OpenInputFile("RandomParameter.csv"))		// どちらが使用されている？
+		if(!fm.OpenInputFile("Parameter.csv"))
 		{
 			return false;
 		}
@@ -323,10 +334,8 @@ void GA::SaveGenerationParameter(){
 
 int main()
 {
-	Serial serial;
 	GA ga;
 	ga.Initialize();
-	serial.Init();
 
 	for(ga.loopNo=0; ga.loopNo<LOOP_COUNT; ga.loopNo++)
 	{
@@ -342,7 +351,6 @@ int main()
 		ga.Mutation();
 	}
 	ga.SaveParameter();
-	serial.close();
 
 	return 0;
 }

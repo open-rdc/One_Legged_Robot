@@ -9,6 +9,8 @@
 class GA
 {
 public:
+	GA();
+	~GA();
 	void Initialize();
 	void Selection();
 	void Crossover();
