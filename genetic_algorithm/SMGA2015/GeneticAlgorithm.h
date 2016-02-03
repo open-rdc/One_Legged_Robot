@@ -4,14 +4,18 @@
 #include "parameter.h"
 #include "Utility.h"
 #include "Serial.h"
-#include "kmeansthreeparamater.h"
+#include "kmeans.h"
 #include "FileManager.h"
 
 class GA
 {
 public:
 	int LoadingClusterNum;
-
+	int GetRandom(int min,int max);
+	bool LoadInitFile();
+	bool LoadFile();
+	void SaveParameter(void);
+	void DataInit();
 	void Initialize();
 	void Selection();
 	void Crossover();
@@ -36,7 +40,12 @@ private:
 	int EvalValue[CLUSTER_NUM];
 	FileManager fm;
 
-
 	void ResetStr();
+
+	double pos[RANDOM_MAX][PARAMETER_NUM];		//パラメータ
+	double individual[RANDOM_MAX][PARAMETER_NUM];			//
+	FileManager fmp;						//再利用目的データ
+	ofstream ofs;
+	bool loop;							//繰返し用フラグ
 };
 #endif

@@ -5,10 +5,101 @@ template <typename T> std::string tostr(const T& t)
     std::ostringstream os; os<<t; return os.str();
 }
 
+int GA::GetRandom(int min,int max)
+{
+	return min + (int)(rand()*(max-min+1.0)/(1.0+RAND_MAX));
+}
+
+bool GA::LoadInitFile()
+{
+	if(!fmp.OpenInputFile("RandomParameter.csv"))
+	{
+		return false;
+	}
+
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			pos[i][j] = fmp.GetData();
+			individual[i][j] = pos[i][j];
+		}
+	}
+
+	fmp.CloseInputFile();
+	return true;
+}
+
+bool GA::LoadFile()
+{
+	if(!fmp.OpenInputFile("Parameter.csv"))
+	{
+		return false;
+	}
+
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			pos[i][j] = fmp.GetData();
+			individual[i][j] = pos[i][j];
+		}
+	}
+
+	fmp.CloseInputFile();
+	return true;
+}
+
+void GA::DataInit()
+{
+	if(!LoadFile())
+	{
+		if(!LoadInitFile())
+		{
+			fmp.OpenOutputFile("RandomParameter.csv");
+			for(int i=0;i<RANDOM_MAX;i++)
+			{
+				pos[i][a1]	 = GetRandom(0,450);
+				pos[i][a2]	 = GetRandom(0,450);
+				cout	<<"("<<pos[i][a1]
+						<<","<<pos[i][a2]
+/*						<<","<<pos[i][w]*/<<") "
+				<<endl;
+				for(int j=0;j<PARAMETER_NUM;j++)
+				{
+					individual[i][j] = pos[i][j];
+					fmp.PutData(pos[i][j]);
+				}
+			}
+			fmp.CloseOutputFile();
+		}
+	}
+	cout<<endl;
+	loop = true;
+}
+
 void GA::Initialize()
 {
 	fm.OpenOutputFile("EvaluateResult.csv");
-	kmeans.Init();
+	srand((unsigned int)time(NULL));
+	DataInit();
+	ofs.open("Result.csv", std::ios::out);
+
+//	kmeans.Init();
+}
+
+void GA::SaveParameter()
+{
+	fmp.OpenOutputFile("Parameter.csv");
+	for(int i=0;i<RANDOM_MAX;i++)
+	{
+		for(int j=0;j<PARAMETER_NUM;j++)
+		{
+			fmp.PutData(pos[i][j]);
+		}
+		fmp.PutEndline();
+	}
+	fmp.CloseOutputFile();
 }
 
 void GA::MakeSring()
@@ -221,6 +312,7 @@ void GA::ResetStr()
 void GA::Clustering()
 {
 	kmeans.Clustering();
+	SaveParameter();
 }
 
 void GA::InitEvalValue()
@@ -257,7 +349,7 @@ void GA::GAProcessing()
 			Selection();
 			Crossover();
 			Mutation();
-			kmeans.ChangePos(angle,LoadingClusterNum);
+//			kmeans.ChangePos(angle,LoadingClusterNum);
 			cout << "Finish Cluster" << endl << endl;
 		}
 //		DisplayEvaluatedValue();

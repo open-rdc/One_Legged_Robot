@@ -1,5 +1,5 @@
-#ifndef K_MEANS_THREE_PARAMATER_H
-#define K_MEANS_THREE_PARAMATER_H
+#ifndef K_MEANS__H
+#define K_MEANS__H
 
 #include <iostream>
 #include <stdlib.h>
@@ -8,6 +8,7 @@
 #include <time.h>
 #include <algorithm>
 #include <iomanip>
+#include <vector>
 #include "parameter.h"
 #include "FileManager.h"
 
@@ -24,27 +25,12 @@ enum
 class Kmeans
 {
 public:
-	Kmeans(void);
-	void Clustering(void);				//クラスタリング
-	void GetCenterPos(int c[CLUSTER_NUM][PARAMETER_NUM]);			//クラスタの中心点のパラメータを取得
-	void GetCluster(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
-	void Init(void);
-	void ChangePos(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
-	void ChangeCenterPoint(int CenterPointNum,int clusterNum);
 
+//	void ChangePos(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
+//	void ChangeCenterPoint(int CenterPointNum,int clusterNum);
 	int ClusterParameter[CLUSTER_NUM];
 
 private:
-	int GetRandom(int min, int max);	//乱数を生成				//初期化
-	void DataInit(void);				//パラメータ初期化
-	void RandomClusterInit(void);		//クラスタ初期化
-	void CenterInit(void);				//クラスタ中心点を設定
-	void Distance(void);				//距離を計算
-	void GetCenter(void);				//中心点を取得
-	void ChangeCluster(void);			//クラスタを切り替え
-	void DisplayClusters(void);			//完成したクラスターを表示
-	void DisplayParameter(void);
-	void SaveParameter(void);
 	bool LoadFile(void);
 	bool LoadInitFile(void);
 	
@@ -62,6 +48,26 @@ private:
 	FileManager fmp;						//再利用目的データ
 	ofstream ofs;
 
+public:
+	Kmeans(void);
+	void Init(int data_no, int cluseter_no, int parameter_no);
+	bool SetData(vector<double> data);
+	void Clustering(void);				//クラスタリング
+	void GetCluster(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
+
+private:
+	void ReClustering(void);				//中心点を取得
+	double GetDistance(vector<double>a, vector<double>b);	//距離を計算
+	vector<double> GetVector(vector<double> a, int id);
+	void DisplayClusters(void);			//完成したクラスターを表示
+	void DisplayParameter(void);
+
+	int data_no;				// データ数 
+	int cluster_no;				// クラスタ数
+	int parameter_no;			// パラメータ数（次元）
+	vector<double> data;		// データ(double型とする)
+	vector<double> id;			// データが属するクラスタ番号
+	vector<double> center2;		// 重心の値
 };
 
-#endif //K_MEANS_THREE_PARAMATER_H
+#endif //K_MEANS_H
