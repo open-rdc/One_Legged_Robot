@@ -1,8 +1,12 @@
 #include "Serial.h"
 
 const char *PORT = "COM3";
-io_service io;
-serial_port port(io, PORT);
+
+Serial::Serial():
+	io(), port(io, PORT), buf()
+{
+	buf.fill(0);
+}
 
 void Serial::Init()
 {	
@@ -50,7 +54,12 @@ void Serial::BoostRead()
 
 int Serial::GetSerialBuf()
 {
-	int buf2i = boost::lexical_cast<int>(buf.data());
+	std::string str = buf.data();
+	if (str.size() == 0) return 0;
+
+	str.erase(--str.end());
+	int buf2i = boost::lexical_cast<int>(str);
+	buf.fill(0);
 
 	return buf2i;
 }
