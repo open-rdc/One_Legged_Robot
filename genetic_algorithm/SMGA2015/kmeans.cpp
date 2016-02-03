@@ -1,6 +1,5 @@
 #include <math.h>
 #include "kmeans.h"
-#include "parameter.h"
 
 Kmeans::Kmeans(void)
 {
@@ -35,7 +34,33 @@ bool Kmeans::SetData(vector<double> data){
 		return false;
 	}
 	this->data = data;
+	for(int i = 0; i < data_no; i ++){
+		id[i] = rand() % cluster_no;
+	}
+	calcCenter();
 	return true;
+}
+
+void Kmeans::calcCenter()
+{
+	vector<double> center_t(cluster_no * parameter_no, 0.0);
+	vector<int> num(cluster_no, 0);
+
+	for(int i = 0; i < data_no; i++){
+		vector<double> pickup_data = GetVector(data, i);
+ 		int cluster = id[i];
+
+		num[cluster] ++;
+		for(int j = 0;j < parameter_no; j ++){
+			center_t[parameter_no * cluster + j] += pickup_data[j];
+		}
+    }
+	for(int i = 0; i < cluster_no; i ++){
+		for(int j = 0; j < parameter_no; j ++){
+			center_t[parameter_no * i + j] /= num[i];
+		}
+	}
+	copy(center_t.begin(), center_t.end(), center2.begin());
 }
 
 /*!
@@ -75,13 +100,10 @@ vector<double> Kmeans::GetVector(vector<double> a, int id){
  */
 void Kmeans::ReClustering(void)
 {
-	vector<double> center_t(cluster_no * parameter_no, 0.0);
-	vector<int> num(parameter_no, 0);
-
 	for(int i = 0; i < data_no; i++){
 		vector<double> pickup_data = GetVector(data, i);
-		min = GetDistance(pickup_data, GetVector(center2, 0));
-        min_j = 0;
+		double min = GetDistance(pickup_data, GetVector(center2, 0));
+        int min_j = 0;
  
 		for(int j = 1; j < cluster_no; j++){
 			double dist = GetDistance(pickup_data, GetVector(center2, j));
@@ -90,17 +112,9 @@ void Kmeans::ReClustering(void)
 				min_j = j;
 			}
         }
-		num[min_j] ++;
 		id[i] = min_j;
-		for(int j = 0;j < parameter_no; j ++){
-			center_t[parameter_no * min_j + j] += pickup_data[j];
-		}
     }
-	for(int i = 0; i < cluster_no; i ++){
-		for(int j = 0; j < parameter_no; j ++){
-			center_t[parameter_no * i + j] /= num[i];
-		}
-	}
+	calcCenter();
 }
 
 
@@ -108,7 +122,7 @@ void Kmeans::Clustering(void)
 {
 	vector<double> pre_center(cluster_no * parameter_no, 0);
 	double distance = 1.0;
-	while(distance == 0.0)
+	while(distance != 0.0)
 	{
 		copy(center2.begin(), center2.end(), pre_center.begin());
 		ReClustering();
@@ -128,7 +142,7 @@ void Kmeans::Clustering(void)
 void Kmeans::GetCluster(int c[RANDOM_MAX][PARAMETER_NUM], int clusterNum)
 {
 	int n = 0;
-	for(int i = 0; i < ClusterParameter[clusterNum]; i++)
+	for(int i = 0; i < data_no; i++)
 	{
 		if (id[i] = clusterNum){
 			for(int j = 0; j < parameter_no; j++)
@@ -143,75 +157,33 @@ void Kmeans::GetCluster(int c[RANDOM_MAX][PARAMETER_NUM], int clusterNum)
 /*
  * @brief クラスタ情報の表示
  */
-void Kmeans::DisplayClusters()
+ostream &operator<<(ostream &out, const Kmeans &kmeans)
 {
-	for(int i = 0; i < cluster_no; i++)
+	for(int i = 0; i < kmeans.cluster_no; i++)
 	{
-		cout << "Disp Cluster Num:" << i+1 << endl;
-		cout << "Center Point (" ;
+		out << "Disp Cluster Num:" << i + 1 << endl;
+		out << "Center Point " ;
 
-		ofs << "Disp Cluster Num:" << i+1 << endl;
-		ofs << "Center Point ";
-
-		for(int j = 0; j < parameter_no; j++)
+		for(int j = 0; j < kmeans.parameter_no; j++)
 		{
-			ofs << ",";
-			cout << " " << (int)center2[parameter_no * i + j] << " ";
-			ofs << " " << (int)center2[parameter_no * i + j] << " ";
+			out << ",";
+			out << " " << (int)kmeans.center2[kmeans.parameter_no * i + j] << " ";
 		}
-		ofs << endl << endl;
-		cout << ")" << endl << endl;
-		for(int j = 0; j < data_no; j++)
+		out << endl << endl;
+		for(int j = 0; j < kmeans.data_no; j++)
 		{
-			if (id[j] == i){
-				cout << "No." << j+1 << "("  ;
-				ofs << "No." << j+1 << " ";
-				for(int k = 0; k < parameter_no; k++)
+			if (kmeans.id[j] == i){
+				out << "No." << j+1 << " ";
+				for(int k = 0; k < kmeans.parameter_no; k++)
 				{
-					cout << " " << (int)data[parameter_no * j + k] << " ";
-					ofs << "," << (int)data[parameter_no * j + k];
+					out << "," << (int)kmeans.data[kmeans.parameter_no * j + k];
 				}
-				ofs << endl;
-				cout << ")" << endl;
+				out << endl;
 			}
 		}
-		cout << endl;
-		ofs << endl;
+		out << endl;
 	}
-	cout << endl;
-	ofs << endl;
-}
+	out << endl;
 
-/*!
- * @brief パラメータの表示
- */
-void Kmeans::DisplayParameter()
-{
-	for(int i = 0; i < data_no; i++)
-	{
-		cout << "No." << i + 1 << "(";
-		for(int j = 0; j < parameter_no; j++)
-		{
-			cout << " " << data[parameter_no * i + j] << " ";
-		}
-		cout << ")" << endl;
-	}
-	cout << endl;
+	return out;
 }
-
-/*
-void Kmeans::ChangePos(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum)
-{
-	for(int i=0;i<ClusterParameter[clusterNum];i++)
-	{
-		for(int j=0;j<PARAMETER_NUM;j++)
-		{
-			pos[cluster[clusterNum][i]][j] = (double)c[i][j];
-		}
-	}
-}
-
-void Kmeans::ChangeCenterPoint(int CenterPointNum,int clusterNum){
-	center[clusterNum] = CenterPointNum;
-}
-*/

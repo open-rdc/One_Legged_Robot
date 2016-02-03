@@ -25,27 +25,9 @@ enum
 class Kmeans
 {
 public:
-
-//	void ChangePos(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
-//	void ChangeCenterPoint(int CenterPointNum,int clusterNum);
 	int ClusterParameter[CLUSTER_NUM];
 
 private:
-	bool LoadFile(void);
-	bool LoadInitFile(void);
-	
-//	static bool InitFlg;				//初期化状態
-	double pos[RANDOM_MAX][PARAMETER_NUM];		//パラメータ
-	int center[CLUSTER_NUM];		//クラスタを保存
-	int cluster[CLUSTER_NUM][RANDOM_MAX];
-	double individual[RANDOM_MAX][PARAMETER_NUM];			//
-	double distance[CLUSTER_NUM][RANDOM_MAX];	//
-	double centerpoint[CLUSTER_NUM][PARAMETER_NUM];			//中心点
-	double count_Group[CLUSTER_NUM];			//
-	double min;							//
-	int min_j;							//
-	bool loop;							//繰返し用フラグ
-	FileManager fmp;						//再利用目的データ
 	ofstream ofs;
 
 public:
@@ -54,13 +36,14 @@ public:
 	bool SetData(vector<double> data);
 	void Clustering(void);				//クラスタリング
 	void GetCluster(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
+	friend ostream &operator<<(ostream &out, const Kmeans &kmeans);
 
 private:
+	void calcCenter();
 	void ReClustering(void);				//中心点を取得
 	double GetDistance(vector<double>a, vector<double>b);	//距離を計算
 	vector<double> GetVector(vector<double> a, int id);
 	void DisplayClusters(void);			//完成したクラスターを表示
-	void DisplayParameter(void);
 
 	int data_no;				// データ数 
 	int cluster_no;				// クラスタ数
