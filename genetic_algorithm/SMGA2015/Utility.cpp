@@ -1,5 +1,9 @@
 #include "Utility.h"
 
+Utility::Utility():gen(GetTimeStamp())
+{
+}
+
 unsigned long long Utility::GetTimeStamp()
 {
 	namespace pt = boost::posix_time;
@@ -22,10 +26,7 @@ std::string Utility::GetTimeISOString()
 
 void Utility::Random(int min, int max, int num)
 {
-	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
-
-	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
 
 	for(int i=0; i<RANDOM_MAX; i++)
 	{
@@ -35,10 +36,7 @@ void Utility::Random(int min, int max, int num)
 
 int Utility::Random(int min, int max)
 {
-	boost::random::mt19937 gen(GetTimeStamp());
 	boost::random::uniform_int_distribution<> dist(min, max);
-
-	boost::this_thread::sleep(boost::posix_time::microseconds(1000));
 
 	return dist(gen);
 }
@@ -93,11 +91,7 @@ void Utility::SetMaskRandom()
 	for(size_t i=0; i<mask_random.size(); i++)
 	{
 		bit_counter = Random(0, 1);
-
-		if(bit_counter == 0)
-		{
-			mask_random.set(i, 1);
-		}
+		mask_random.set(i, bit_counter == 1);
 	}
 }
 
