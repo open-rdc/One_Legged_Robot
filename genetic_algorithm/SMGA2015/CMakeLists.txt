@@ -16,7 +16,6 @@ ENDIF(WIN32)
 
 IF(UNIX)
 	add_definitions(
-		"-std=c++11"
 		${Boost_LIB_DIAGNOSTIC_DEFINITIONS}
 	)
 ENDIF(UNIX)
@@ -33,13 +32,21 @@ link_directories(
 )
 
 set(GA_SRCS
-GeneticAlgorithm.cpp	Serial.cpp	Utility.cpp	kmeansthreeparamater.cpp	FileManager.cpp
+GeneticAlgorithm.cpp	Serial.cpp	Utility.cpp	kmeans.cpp	FileManager.cpp
+GeneticAlgorithm.h	Serial.h	parameter.h	Utility.h	kmeans.h	FileManager.h
+)
 
-GeneticAlgorithm.h	Serial.h	parameter.h	Utility.h	kmeansthreeparamater.h	FileManager.h
+set(KMEANS_SRCS
+kmeans.cpp	kmeans_check.cpp
+kmeans.h
 )
 
 add_executable(GeneticAlgorithm
 	${GA_SRCS}
+)
+
+add_executable(kmeans_check
+	${KMEANS_SRCS}
 )
 
 target_link_libraries(GeneticAlgorithm

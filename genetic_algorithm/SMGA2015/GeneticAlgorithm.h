@@ -1,51 +1,60 @@
 #ifndef GENETICALGORITHM_H_
 #define GENETICALGORITHM_H_
 
+#define CHECK_ALGORITHM
+
+#include <vector>
 #include "parameter.h"
 #include "Utility.h"
 #include "Serial.h"
-#include "kmeans.h"
 #include "FileManager.h"
+#include "kmeans.h"
 
 class GA
 {
 public:
-	int LoadingClusterNum;
-	int GetRandom(int min,int max);
-	bool LoadInitFile();
-	bool LoadFile();
-	void SaveParameter(void);
-	void DataInit();
+	GA();
+	~GA();	
 	void Initialize();
-	void Selection();
-	void Crossover();
-	void Mutation();
+	void Clustering();
+	void SetCluster(int cluster_no);
+	void Selection(int cluster_no);
+	void Crossover(int cluster_no);
+	void Mutation(int cluster_no);
 	void MakeSring();
 	void RobotMove();
-	void DisplayEvaluatedValue();
-	void Clustering(void);
-	void InitEvalValue(void);
-	void GAProcessing(void);
+	void SaveParameter();
+	void SaveRandomParameter();
+	void SaveGenerationParameter();
+	void DevideCluster();
+	void IntegrateCluster();
+	int loopNo;
 
 private:
-	Utility utility;
+#ifndef CHECK_ALGORITHM
 	Serial serial;
+#endif
+	Utility utility;
 	Kmeans kmeans;
 	int angle[RANDOM_MAX][PARAMETER_NUM];
+	int angle_org[RANDOM_MAX][PARAMETER_NUM];
+	int angle_work[CLUSTER_NUM][RANDOM_MAX][PARAMETER_NUM];
 	int result[RANDOM_MAX][2];
+	int result_org[RANDOM_MAX][2];
+	int result_work[CLUSTER_NUM][RANDOM_MAX][2];
+	int individual_num[CLUSTER_NUM];
 	std::string str[RANDOM_MAX];
 	int move_result[RANDOM_MAX];
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
-	int EvalValue[CLUSTER_NUM];
-	FileManager fm;
-
+	std::ofstream ofs;
 	void ResetStr();
 
-	double pos[RANDOM_MAX][PARAMETER_NUM];		//パラメータ
-	double individual[RANDOM_MAX][PARAMETER_NUM];			//
-	FileManager fmp;						//再利用目的データ
-	ofstream ofs;
-	bool loop;							//繰返し用フラグ
+	FileManager fm;
+	FileManager fmg;
+	bool LoadInitFile();
+	bool LoadFile();
+
+	vector<double> data;
 };
 #endif

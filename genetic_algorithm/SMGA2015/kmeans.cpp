@@ -138,8 +138,10 @@ void Kmeans::Clustering(void)
  * 
  * @param[out] c クラスタに属するデータ
  * @param[in] clusterNum クラスタの番号
+ *
+ * @return クラスタに属するデータの数
  */
-void Kmeans::GetCluster(int c[RANDOM_MAX][PARAMETER_NUM], int clusterNum)
+int Kmeans::GetCluster(int c[RANDOM_MAX][PARAMETER_NUM], int clusterNum)
 {
 	int n = 0;
 	for(int i = 0; i < data_no; i++)
@@ -152,6 +154,7 @@ void Kmeans::GetCluster(int c[RANDOM_MAX][PARAMETER_NUM], int clusterNum)
 			n ++;
 		}
 	}
+	return n;
 }
 
 /*

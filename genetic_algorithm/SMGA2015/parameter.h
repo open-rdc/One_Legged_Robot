@@ -6,7 +6,6 @@ static const int LOOP_COUNT = 10;
 static const double RANKING_RATE = 0.2;
 static const int CLUSTER_NUM = 3;
 static int CLUST_PARAM_NUM[CLUSTER_NUM];
-static double INDIVIDUALS_NUMBER; //CLUSER_PARAM_NUM * RANKING_RATE
 static const double MUTATION_RATE = 0.01;
 static const int MUTATION_POS = 6;
 static const int PARAMETER_NUM = 2;
