@@ -260,10 +260,10 @@ void GA::Crossover()
 					child[i][k].set(j, parent[selected_no][k].test(j));
 				}
 			}
-			val = child[i          ][k].to_ulong();
-			if (val > 450) child[i          ][k] = utility.BinaryToDecimal(450);
+			val = child[i][k].to_ulong();
+			if (val > 450) child[i][k] = utility.BinaryToDecimal(450);
 
-			ofs << utility.DecimalToBinary(child[i          ][k]) << "\t";
+			ofs << utility.DecimalToBinary(child[i][k]) << "\t";
 		}
 	}
 	ofs << std::endl;
@@ -276,9 +276,9 @@ void GA::Mutation()
 	std::cout << "----- Mutation -----" << std::endl;
 	ofs << "Mutation" << std::endl;
 
-	for(int j=INDIVIDUALS_NUMBER; j<PARAMETER_NUM; j++)
+	for(int j=0; j<PARAMETER_NUM; j++)
 	{
-		for(int i=0; i<RANDOM_MAX; i++)
+		for(int i=INDIVIDUALS_NUMBER; i<RANDOM_MAX; i++)
 		{
 			random = utility.Random(0, 100) * 0.01;
 
