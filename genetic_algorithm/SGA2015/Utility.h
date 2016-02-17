@@ -12,6 +12,7 @@
 class Utility
 {
 public:
+	Utility();
 	std::string GetTimeISOString();
 	void Random(int min, int max, int num);
 	int Random(int min, int max);
@@ -25,6 +26,7 @@ private:
 	int result[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> mask;
 	std::bitset<32> mask_random;
+	boost::random::mt19937 gen;
 
 	unsigned long long GetTimeStamp();
 	void SetMask();

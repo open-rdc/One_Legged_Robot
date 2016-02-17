@@ -1,6 +1,8 @@
 #ifndef GENETICALGORITHM_H_
 #define GENETICALGORITHM_H_
 
+//#define CHECK_ALGORITHM
+
 #include "parameter.h"
 #include "Utility.h"
 #include "Serial.h"
@@ -23,8 +25,10 @@ public:
 	int loopNo;
 
 private:
-	Utility utility;
+#ifndef CHECK_ALGORITHM
 	Serial serial;
+#endif
+	Utility utility;
 	int angle[RANDOM_MAX][PARAMETER_NUM];
 	int result[RANDOM_MAX][2];
 	std::string str[RANDOM_MAX];
