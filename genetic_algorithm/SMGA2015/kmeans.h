@@ -33,7 +33,7 @@ private:
 public:
 	Kmeans(void);
 	void Init(int data_no, int cluseter_no, int parameter_no);
-	bool SetData(vector<double> data);
+	bool SetData(vector<double> data, bool is_initialize = true);
 	void Clustering(void);				//クラスタリング
 	int GetCluster(vector<int> *c, int clusterNum);
 	friend ostream &operator<<(ostream &out, const Kmeans &kmeans);

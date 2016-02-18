@@ -1,7 +1,7 @@
 #ifndef GENETICALGORITHM_H_
 #define GENETICALGORITHM_H_
 
-#define CHECK_ALGORITHM
+//#define CHECK_ALGORITHM
 
 #include <vector>
 #include "parameter.h"
@@ -31,6 +31,7 @@ public:
 	void IntegrateCluster();
 	int GetIndividualSize(int cluster_no);
 	int loopNo;
+	bool is_first_clustering;
 
 private:
 #ifndef CHECK_ALGORITHM

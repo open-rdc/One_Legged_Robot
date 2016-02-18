@@ -28,16 +28,18 @@ void Kmeans::Init(int data_no, int cluseter_no, int parameter_no)
  * @brief データのセット
  * @return true:成功，false:失敗
  */
-bool Kmeans::SetData(vector<double> data){
+bool Kmeans::SetData(vector<double> data, bool is_initialize){
 	if (data.size() != data_no * parameter_no){
 		cout << "SetData: check the number of data\n" << endl;
 		return false;
 	}
 	this->data = data;
-	for(int i = 0; i < data_no; i ++){
-		id[i] = rand() % cluster_no;
+	if (is_initialize){
+		for(int i = 0; i < data_no; i ++){
+			id[i] = rand() % cluster_no;
+		}
+		calcCenter();
 	}
-	calcCenter();
 	return true;
 }
 

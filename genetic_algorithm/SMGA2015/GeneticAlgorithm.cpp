@@ -6,11 +6,11 @@ template <typename T> std::string tostr(const T& t)
 }
 
 #ifndef CHECK_ALGORITHM
-GA::GA(): utility(), serial(), fm(), fmg(), ofs()
+GA::GA(): utility(), serial(), fm(), fmg(), ofs(), is_first_clustering(true)
 {
 	serial.Init();
 #else
-GA::GA(): utility(), fm(), fmg(), ofs()
+GA::GA(): utility(), fm(), fmg(), ofs(), is_first_clustering(true)
 {
 #endif
 }
@@ -98,7 +98,8 @@ void GA::Clustering()
 	for(int i = 0; i < RANDOM_MAX * PARAMETER_NUM; i ++){
 		data[i] = angle[i / 2][i % 2];
 	}
-	kmeans.SetData(data);
+	kmeans.SetData(data, is_first_clustering);
+	is_first_clustering = false;
 	kmeans.Clustering();
 	cout << kmeans << endl;
 	ofstream ofs;
@@ -452,54 +453,20 @@ void GA::SaveGenerationParameter(){
 	fmg.PutData("LoopCount:");
 	fmg.PutData(loopNo+1);
 	fmg.PutEndline();
-	for(int i=0;i<RANDOM_MAX;i++){
-		for(int j=0;j<PARAMETER_NUM;j++){
-			fmg.PutData(angle[i][j]);
+	for(int n = 0; n < CLUSTER_NUM; n ++){
+		fmg.PutData("Cluster:");
+		fmg.PutData(n + 1);
+		fmg.PutEndline();
+		for(int i = 0; i < individual_num[n]; i ++){
+			for(int j = 0; j < PARAMETER_NUM; j ++){
+				fmg.PutData(angle_work[n][i][j]);
+			}
+			fmg.PutEndline();
 		}
 		fmg.PutEndline();
 	}
 	fmg.PutEndline();
 }
-
-/*
- * @brief メインプロセス
- */
-/*
-void GA::GAProcessing()
-{
-	serial.Init();
-	Initialize();
-	for(int i=0;i<LOOP_COUNT;i++)
-	{
-		Clustering();
-		std::cout << "LOOP_COUNT: " << i+1 << std::endl; 
-		fm.PutData("Loop Count:");
-		fm.PutData(i+1);
-		InitEvalValue();
-		for(LoadingClusterNum=0;LoadingClusterNum<CLUSTER_NUM;LoadingClusterNum++){
-			cout << "Cluster Count:" << LoadingClusterNum+1 << endl;
-			ResetStr();
-			kmeans.GetCluster(angle,LoadingClusterNum);
-			fm.PutData(" Cluster No:");
-			fm.PutData(LoadingClusterNum+1);
-			//fm.PutData("Values");
-			MakeSring();
-			RobotMove();
-			Selection();
-			Crossover();
-			Mutation();
-//			kmeans.ChangePos(angle,LoadingClusterNum);
-			cout << "Finish Cluster" << endl << endl;
-		}
-//		DisplayEvaluatedValue();
-		fm.PutEndline();
-	}
-	cout << "final debug 1" << endl;
-	serial.close();
-	fm.CloseOutputFile();
-	cout << "final debug 2" << endl;
-}
-*/
 
 int main()
 {
@@ -510,12 +477,11 @@ int main()
 	{
 		std::cout << "LOOP_COUNT: " << ga.loopNo+1 << std::endl;
 
-		ga.SaveGenerationParameter();
-
 		ga.MakeSring();
 		ga.RobotMove();
 		ga.Clustering();
 		ga.DivideCluster();
+		ga.SaveGenerationParameter();
 		for(int i = 0; i < CLUSTER_NUM; i ++){
 			ga.SetCluster(i);
 			if (ga.GetIndividualSize(i) >= 10){

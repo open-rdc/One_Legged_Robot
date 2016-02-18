@@ -4,7 +4,7 @@
 static const int RANDOM_MAX = 150;
 static const int LOOP_COUNT = 10;
 static const double RANKING_RATE = 0.2;
-static const int CLUSTER_NUM = 2;
+static const int CLUSTER_NUM = 3;
 static int CLUST_PARAM_NUM[CLUSTER_NUM];
 static const double MUTATION_RATE = 0.01;
 static const int MUTATION_POS = 6;
