@@ -1,0 +1,65 @@
+#include "Serial.h"
+
+const char *PORT = "COM3";
+
+Serial::Serial():
+	io(), port(io, PORT), buf()
+{
+	buf.fill(0);
+}
+
+void Serial::Init()
+{	
+	port.set_option(serial_port_base::baud_rate(9600));
+	port.set_option(serial_port_base::character_size(8));
+	port.set_option(serial_port_base::flow_control(serial_port_base::flow_control::none));
+	port.set_option(serial_port_base::parity(serial_port_base::parity::none));
+	port.set_option(serial_port_base::stop_bits(serial_port_base::stop_bits::one));
+
+	boost::thread thr_io(boost::bind(&io_service::run, &io));
+}
+
+void Serial::close()
+{
+	port.close();
+}
+
+void Serial::ReadCallBack(const boost::system::error_code& e, std::size_t size)
+{
+	port.async_read_some(buffer(buf), boost::bind(&Serial::ReadCallBack, this, _1, _2));
+	io.run();
+}
+
+void Serial::WriteCallBack(const boost::system::error_code& e, std::size_t size )
+{
+	std::cout << "write :" << size << "byte[s]" << std::endl;
+}
+
+void Serial::AsyncBoostWrite(std::string buf)
+{
+	port.async_write_some(buffer(buf), boost::bind(&Serial::WriteCallBack, this, _1, _2));
+	io.run();
+}
+
+void Serial::BoostWrite(std::string buf)
+{
+	port.write_some(buffer(buf));
+}
+
+void Serial::BoostRead()
+{
+	port.async_read_some(buffer(buf), boost::bind(&Serial::ReadCallBack, this, _1, _2 ));
+	io.run();
+}
+
+int Serial::GetSerialBuf()
+{
+	std::string str = buf.data();
+	if (str.size() == 0) return 0;
+
+	str.erase(--str.end());
+	int buf2i = boost::lexical_cast<int>(str);
+	buf.fill(0);
+
+	return buf2i;
+}
