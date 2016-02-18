@@ -100,52 +100,88 @@ void GA::Clustering()
 	}
 	kmeans.SetData(data);
 	kmeans.Clustering();
+	cout << kmeans << endl;
+	ofstream ofs;
+	ofs.open("result.csv");
+	ofs << kmeans << endl;
+	ofs.close();
 }
 
 /*!
- * @brief 
+ * @brief クラスター毎に値をワーキングエリアに移動する
  */
-void GA::DevideCluster()
+void GA::DivideCluster()
 {
+	vector<int> indexs;
+
 	for(int i = 0; i < RANDOM_MAX; i ++){
 		for(int j = 0; j < PARAMETER_NUM; j ++){
 			angle_org[i][j] = angle[i][j];
 		}
-		for(int j = 0; j < 2; j ++){
-			result_org[i][j] = result[i][j];
-		}
+		move_result_org[i] = move_result[i];
 	}
 	for(int i = 0; i < CLUSTER_NUM; i ++){
-		individual_num[i] = kmeans.GetCluster(angle_work[i], i);
+		individual_num[i] = kmeans.GetCluster(&indexs, i);
+		for(int j = 0; j < individual_num[i]; j ++){
+			for(int k = 0; k < PARAMETER_NUM; k ++){
+				angle_work[i][j][k] = angle[indexs[j]][k];
+			}
+			move_result_work[i][j] = move_result[indexs[j]];
+		}
 	}
 }
 
+int GA::GetIndividualSize(int cluster_no){
+	return individual_num[cluster_no];
+}
+
 /*!
- * @brief 
+ * @brief クラスタ番号のデータをセットする
  */
 void GA::SetCluster(int cluster_no)
 {
 	for(int i = 0; i < individual_num[cluster_no]; i ++){
 		for(int j = 0; j < PARAMETER_NUM; j ++){
-			angle[i][j] = angle[i][j];
+			angle[i][j] = angle_work[cluster_no][i][j];
 		}
-		for(int j = 0; j < 2; j ++){
-			result[i][j] = result_work[cluster_no][i][j];
-		}
+		move_result[i] = move_result_work[cluster_no][i];
+		result[i][0] = move_result_work[cluster_no][i];
 	}
 }
 
 /*!
- * @brief 
+ * @brief クラスタ番号のデータを戻す
+ */
+void GA::RestoreCluster(int cluster_no)
+{
+	for(int i = 0; i < individual_num[cluster_no]; i ++){
+		for(int j = 0; j < PARAMETER_NUM; j ++){
+			angle_work[cluster_no][i][j] = angle[i][j];
+		}
+		move_result_work[cluster_no][i] = result[i][0];
+	}
+	fm.PutData("ClusterNo:");
+	fm.PutData(cluster_no);
+	fm.PutData(",");
+	for(int i = 0; i < individual_num[cluster_no]; i ++){
+		fm.PutData(move_result_work[cluster_no][i]);
+	}
+	fm.PutData("\n");
+}
+
+/*!
+ * @brief クラスタのデータを統合する
  */
 void GA::IntegrateCluster()
 {
-	for(int i = 0; i < RANDOM_MAX; i ++){
-		for(int j = 0; j < PARAMETER_NUM; j ++){
-			angle_org[i][j] = angle[i][j];
-		}
-		for(int j = 0; j < 2; j ++){
-			result_org[i][j] = result[i][j];
+	int n = 0;
+	for(int i = 0; i < CLUSTER_NUM; i ++){
+		for(int j = 0; j < individual_num[i]; j ++){
+			for(int k = 0; k < PARAMETER_NUM; k ++){
+				angle[n][k] = angle_work[i][j][k];
+			}
+			move_result[n] = move_result_work[i][j];
+			n ++;
 		}
 	}
 }
@@ -210,17 +246,17 @@ void GA::RobotMove()
 #else
 		int ang1, ang2;
 		{
-			sscanf(str[i].c_str(), "%d,%d", &ang1, &ang2);
+			sscanf_s(str[i].c_str(), "%d,%d", &ang1, &ang2);
 			enc = abs(ang1 + ang2 - 50) - 225;				// 実験条件１
 //			enc = (ang1 + ang2 - 50) - 225;					// 実験条件２
 		}
 #endif
 		std::cout << "ReadEnc: " << enc << std::endl << std::endl;
 		move_result[i] = enc;
-		fm.PutData(enc);
+//		fm.PutData(enc);
 		ofs << move_result[i] << "\t";
 	}
-	fm.PutEndline();
+//	fm.PutEndline();
 	ofs << std::endl;
 }
 
@@ -232,7 +268,7 @@ void GA::Selection(int cluster_no)
 	int temp, angle_temp;
 	int target[RANDOM_MAX][2];
 	int parent_cpy = 0;
-	int INDIVIDUALS_NUMBER = individual_num[cluster_no] * RANKING_RATE;
+	int INDIVIDUALS_NUMBER = (int)(individual_num[cluster_no] * RANKING_RATE);
 
 	std::cout << "----- Selection -----" << std::endl;
 	ofs << "Selection" << std::endl;
@@ -296,7 +332,7 @@ void GA::Crossover(int cluster_no)
 {
 	std::bitset<32> mask = utility.GetMask();
 	int counter = 0, val;
-	int INDIVIDUALS_NUMBER = individual_num[cluster_no] * RANKING_RATE;
+	int INDIVIDUALS_NUMBER = (int)(individual_num[cluster_no] * RANKING_RATE);
 	std::cout << "----- Crossover -----" << std::endl;
 	ofs << "Crossover" << std::endl;
 
@@ -337,7 +373,7 @@ void GA::Mutation(int cluster_no)
 {
 	double random;
 	int mutation_pos;
-	int INDIVIDUALS_NUMBER = individual_num[cluster_no] * RANKING_RATE;
+	int INDIVIDUALS_NUMBER = (int)(individual_num[cluster_no] * RANKING_RATE);
 	std::cout << "----- Mutation -----" << std::endl;
 	ofs << "Mutation" << std::endl;
 
@@ -479,12 +515,15 @@ int main()
 		ga.MakeSring();
 		ga.RobotMove();
 		ga.Clustering();
-		ga.DevideCluster();
+		ga.DivideCluster();
 		for(int i = 0; i < CLUSTER_NUM; i ++){
 			ga.SetCluster(i);
-			ga.Selection(i);
-			ga.Crossover(i);
-			ga.Mutation(i);
+			if (ga.GetIndividualSize(i) >= 10){
+				ga.Selection(i);
+				ga.Crossover(i);
+				ga.Mutation(i);
+			}
+			ga.RestoreCluster(i);
 		}
 		ga.IntegrateCluster();
 	}

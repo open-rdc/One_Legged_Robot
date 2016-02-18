@@ -18,6 +18,7 @@ public:
 	void Initialize();
 	void Clustering();
 	void SetCluster(int cluster_no);
+	void RestoreCluster(int cluster_no);
 	void Selection(int cluster_no);
 	void Crossover(int cluster_no);
 	void Mutation(int cluster_no);
@@ -26,8 +27,9 @@ public:
 	void SaveParameter();
 	void SaveRandomParameter();
 	void SaveGenerationParameter();
-	void DevideCluster();
+	void DivideCluster();
 	void IntegrateCluster();
+	int GetIndividualSize(int cluster_no);
 	int loopNo;
 
 private:
@@ -40,11 +42,11 @@ private:
 	int angle_org[RANDOM_MAX][PARAMETER_NUM];
 	int angle_work[CLUSTER_NUM][RANDOM_MAX][PARAMETER_NUM];
 	int result[RANDOM_MAX][2];
-	int result_org[RANDOM_MAX][2];
-	int result_work[CLUSTER_NUM][RANDOM_MAX][2];
 	int individual_num[CLUSTER_NUM];
 	std::string str[RANDOM_MAX];
 	int move_result[RANDOM_MAX];
+	int move_result_org[RANDOM_MAX];
+	int move_result_work[CLUSTER_NUM][RANDOM_MAX];
 	std::bitset<32> parent[RANDOM_MAX][PARAMETER_NUM];
 	std::bitset<32> child[RANDOM_MAX][PARAMETER_NUM];
 	std::ofstream ofs;
