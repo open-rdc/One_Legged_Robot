@@ -122,7 +122,7 @@ void Kmeans::Clustering(void)
 {
 	vector<double> pre_center(cluster_no * parameter_no, 0);
 	double distance = 1.0;
-	while(distance != 0.0)
+	for(int n = 0; (n < 100)&&(distance != 0.0); n ++)
 	{
 		copy(center2.begin(), center2.end(), pre_center.begin());
 		ReClustering();
@@ -136,25 +136,21 @@ void Kmeans::Clustering(void)
 /*!
  * @brief クラスタに属するデータを取得
  * 
- * @param[out] c クラスタに属するデータ
+ * @param[out] c クラスタに属するデータの番号
  * @param[in] clusterNum クラスタの番号
  *
  * @return クラスタに属するデータの数
  */
-int Kmeans::GetCluster(int c[RANDOM_MAX][PARAMETER_NUM], int clusterNum)
+int Kmeans::GetCluster(vector<int> *c, int clusterNum)
 {
-	int n = 0;
+	c->clear();
 	for(int i = 0; i < data_no; i++)
 	{
-		if (id[i] = clusterNum){
-			for(int j = 0; j < parameter_no; j++)
-			{
-				c[n][j] = (int)data[parameter_no * i + j];
-			}
-			n ++;
+		if (id[i] == clusterNum){
+			c->push_back(i);
 		}
 	}
-	return n;
+	return c->size();
 }
 
 /*

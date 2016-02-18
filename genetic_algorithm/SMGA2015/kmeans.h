@@ -35,7 +35,7 @@ public:
 	void Init(int data_no, int cluseter_no, int parameter_no);
 	bool SetData(vector<double> data);
 	void Clustering(void);				//クラスタリング
-	int GetCluster(int c[RANDOM_MAX][PARAMETER_NUM],int clusterNum);
+	int GetCluster(vector<int> *c, int clusterNum);
 	friend ostream &operator<<(ostream &out, const Kmeans &kmeans);
 
 private:
